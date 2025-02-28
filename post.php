@@ -32,9 +32,7 @@
             $('html,body').animate({ scrollTop: $('[name="cl-' + num + '"]').offset().top - 100 }, 500);
         }
         $("#toc-nomiao").click(tocshow);
-        <?php if ($this->options->toc == "able"): ?>
-        $(document).ready(tocshow);
-        <?php endif; ?>
+        $(document).ready(<?php if ($this->options->toc == "able") { echo("tocshow"); } ?>);
     </script>
     <section class="section">
         <div class="container container-lg py-5" style="max-width: 1500px;">
