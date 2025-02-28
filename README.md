@@ -27,6 +27,7 @@ Rorical Theme 是一款专为 Typecho 博客系统设计的主题，由 Rorical 
 
 1. **下载主题**：
    - 从 GitHub 或其他来源获取主题文件，解压至 Typecho 的 `usr/themes/` 目录。
+   - 从 GitHub 或其他来源获取依赖插件，请访问[https://github.com/SocialSisterYi/Typecho-Plugin-CommentShowIp](https://github.com/SocialSisterYi/Typecho-Plugin-CommentShowIp)进行下载并且启用
 2. **启用主题**：
    - 登录 Typecho 后台，在“外观”中启用“Rorical Theme”。
 3. **配置选项**：
@@ -61,3 +62,6 @@ Rorical Theme 是一款专为 Typecho 博客系统设计的主题，由 Rorical 
 ---
 
 *感谢使用 Rorical Theme，让你的博客更可爱、更独特！*
+
+原作者：[https://github.com/Rorical/RoricalTheme](https://github.com/Rorical/RoricalTheme)（停止维护）
+二次开发：[https://github.com/little-gt/THEME-RoricalTheme/](https://github.com/little-gt/THEME-RoricalTheme/)（不定期维护）

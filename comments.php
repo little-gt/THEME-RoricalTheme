@@ -41,8 +41,14 @@ $this->comments()->to($comments);
                     <div class="pl-4" style="width:90%;">
                         <h5 class="title text-success breakword"><?php $comments->author(); ?></h5>
                         <a class="text-success breakword">
-                            <?php if (class_exists('LocationIP_Plugin')) LocationIP_Plugin::output($comments, "{loc}"); ?> 
-                            <?php $comments->date('Y F jS'); ?>
+                            <span class="badge badge-info">
+                                <i class="fa fa-globe" aria-hidden="true"></i>
+                                <?php if (class_exists('LocationIP_Plugin')) LocationIP_Plugin::output($comments, "{loc}"); ?>
+                                </span>
+                            <span class="badge badge-success">
+                                <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                <?php $comments->date('Y F jS'); ?>
+                                </span>
                         </a>
                         <?php if ($comments->parent): ?>
                             <?php $p_comment = getPermalinkFromCoid($comments->parent); ?>
