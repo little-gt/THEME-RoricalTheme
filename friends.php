@@ -36,7 +36,7 @@
               <div class="col-lg-6">
                 <div class="card-profile-stats d-flex justify-content-center">
                   <div>
-                    <span class="heading"><?php echo ViewsCounter_Plugin::getViews(); ?></span>
+                    <span class="heading"><?php get_post_view($this) ?></span>
                     <span class="description">观看次数</span>
                   </div>
                   <div>

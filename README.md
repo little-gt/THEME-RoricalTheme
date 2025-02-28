@@ -1,32 +1,63 @@
-# Rorical
- [![stars](https://flat.badgen.net/github/stars/Liupaperbox/Rorical?icon=github)](https://github.com/Liupaperbox/Rorical)一个比较可爱的Typecho主题
+# Rorical Theme - 一个炒鸡可爱的 Typecho 主题
 
- 在博客被我抛弃了半年时，我又想起了我还有一个博客！
- 所以来重新整顿一下，弄一个让自己满意的博客吧
- 于是就用[Argon](https://demos.creative-tim.com/argon-design-system/)模板魔改了一个Typecho主题，这就是Rorical主题的由来
+![封面](/screenshot.png)
+*“简洁、可爱、功能强大，适合个人博客的理想选择”*
 
- 本人还是CSS和PHP渣，所以这次的目的是打造一个轻量的主题，没有那么多的功能，所以想要多功能主题的小伙伴请找找别的主题吧！
- 另外本主题还是在测试的阶段，所以有什么想法可以提出来，一起努力完善她！
+## 简介
 
-**注意！**
+Rorical Theme 是一款专为 Typecho 博客系统设计的主题，由 Rorical 开发，版本号为 1.0。它以现代化的卡片式设计和丰富的交互功能为特色，旨在为用户提供美观且实用的博客体验。无论是个人记录、生活分享还是技术笔记，这个主题都能满足你的需求。
 
-代码高亮已集成到主题，推荐使用Editor.md来写文章，文章浏览次数统计基于[quarkay](https://www.quarkay.com/)的[ViewsCounter](https://github.com/Quarkay/Typecho-ViewsCounter)，请一并食用
+## 主要特点
 
-独立页面需要设置专属的标志和颜色，表现在菜单栏上的图标：请在独立页面的自定义字段创建字符 color 和 icon 两个字段，color可用值bg-gradient-success绿色bg-gradient-danger红色bg-gradient-info蓝色bg-gradient-primary紫色bg-gradient-warning橙色bg-gradient-default灰紫色，icon可用值请到[这里](https://demos.creative-tim.com/argon-design-system/docs/foundation/icons.html)查看。（如果不懂可以问我）（以上假如你在设置选择了平铺式的导航栏那duck不必）
+- **可爱与现代并存**：采用 Argon Design 系统和 Bootstrap 框架，结合动态背景和圆点动画，打造独特的视觉风格。
+- **响应式设计**：支持电脑和手机端，自动适配不同设备，提供一致的用户体验。
+- **丰富交互**：
+  - 支持 PowerMode 打字特效和鼠标点击动画。
+  - 内置文章目录（TOC），便于长文导航。
+  - AJAX 评论提交，提升交互流畅性。
+- **自定义选项**：
+  - 可配置站点 LOGO、头像、背景图片（电脑/手机独立设置）。
+  - 支持自定义导航栏图标和样式（下拉式/平铺式可选）。
+- **文章管理**：
+  - 显示阅读次数、字数统计和评论数。
+  - 支持自定义文章头图，优先于随机图片显示。
+- **评论系统**：支持深层嵌套评论（最大999级），并提供密码保护文章功能。
 
-设置里的展示最新文章数量建议改成3，获得最佳的非强迫症效果（
+## 安装与配置
 
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
-*已经弃坑
+1. **下载主题**：
+   - 从 GitHub 或其他来源获取主题文件，解压至 Typecho 的 `usr/themes/` 目录。
+2. **启用主题**：
+   - 登录 Typecho 后台，在“外观”中启用“Rorical Theme”。
+3. **配置选项**：
+   - 在“外观设置”中填写 LOGO、头像、背景图片等 URL。
+   - 根据需要启用特效（如 PowerMode、点击动画）和导航样式。
+4. **添加自定义字段**：
+   - 在文章编辑页面，添加 `pic` 字段，填入头图 URL。
 
-博客链接[Rorical](https://blog.boxpaper.club/)
+## 使用说明
 
-### ScreenShot
-![ScreenShot](screenshot.png)
+- **首页**：展示最新文章列表，支持分页和懒加载图片。
+- **文章页面**：显示文章详情、目录、统计信息及上下篇导航。
+- **评论区**：支持嵌套回复，实时更新评论内容。
+- **侧边栏**：提供归档、最新文章、最近回复和搜索功能。
+
+## 技术细节
+
+- **依赖**：Typecho 1.x，jQuery，Bootstrap，Lazyload.js 等。
+- **文件结构**：
+  - `index.php`：首页模板
+  - `post.php`：文章页面模板
+  - `comments.php`：评论区模板
+  - `sidebar.php`：侧边栏模板
+  - `header.php` / `footer.php`：头部和底部模板
+
+## 贡献与支持
+
+- **作者**：Rorical
+- **版本**：1.0
+- **问题反馈**：欢迎通过 GitHub 或评论区提交建议和 Bug 报告。
+
+---
+
+*感谢使用 Rorical Theme，让你的博客更可爱、更独特！*
