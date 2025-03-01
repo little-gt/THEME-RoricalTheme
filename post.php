@@ -20,19 +20,23 @@
         </div>
     </div>
     <script>
-        let onshow = false;
-        function tocshow() {
-            const container = $(".toc-container");
-            const icon = $("#toc-miao");
-            container.css("right", onshow ? '-175px' : '-5px');
-            icon.toggleClass("ni-bold-left ni-bold-right");
-            onshow = !onshow;
-        }
-        function jumpto(num) {
-            $('html,body').animate({ scrollTop: $('[name="cl-' + num + '"]').offset().top - 100 }, 500);
-        }
-        $("#toc-nomiao").click(tocshow);
-        $(document).ready(<?php if ($this->options->toc == "able") { echo("tocshow"); } ?>);
+        $(document).ready(function() {
+            let onshow = false;
+            function tocshow() {
+                onshow = !onshow;
+                const container = $(".toc-container");
+                const icon = $("#toc-miao");
+                container.css("right", onshow ? '-5px' : '-175px');
+                icon.toggleClass("ni-bold-left ni-bold-right");
+                }
+            function jumpto(num) {
+                $('html,body').animate({ scrollTop: $('[name="cl-' + num + '"]').offset().top - 100 }, 500);
+            }
+            // 使用事件委托来绑定事件
+            $(document).on("click", "#toc-nomiao", tocshow);
+            // 检查页面加载时是否需要显示 TOC
+            <?php if ($this->options->toc == "able") { echo("tocshow();"); } ?>
+        });
     </script>
     <section class="section">
         <div class="container container-lg py-5" style="max-width: 1500px;">

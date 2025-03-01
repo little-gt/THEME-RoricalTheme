@@ -54,14 +54,13 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
             <div class="col-sm-3 col-6">
                 <h3><span><?php _e('最近回复'); ?></span></h3>
                 <?php $recentComments = $this->widget('Widget_Comments_Recent', 'ignoreAuthor=true&limit=3'); ?>
-                <?php $recentComments->to($comments); ?>
-                <?php if ($comments->have()): ?>
-                    <?php while ($comments->next()): ?>
-                        <a href="<?php $comments->permalink(); ?>" class="alert fade show" role="alert">
+                <?php if ($recentComments->have()): ?>
+                    <?php while ($recentComments->next()): ?>
+                        <a href="<?php $recentComments->permalink(); ?>" class="alert fade show" role="alert">
                             <div class="alert alert-warning">
                                 <span class="alert-inner--text">
-                                    <strong><?php $comments->author(false); ?></strong>: 
-                                    <?php $comments->excerpt(19, '...'); ?>
+                                    <strong><?php $recentComments->author(false); ?></strong>: 
+                                    <?php $recentComments->excerpt(19, '...'); ?>
                                 </span>
                             </div>
                         </a>

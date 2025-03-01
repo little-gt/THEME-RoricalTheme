@@ -157,118 +157,148 @@ $this->comments()->to($comments);
 
 <!-- JavaScript逻辑 -->
 <script>
-    // AJAX提交评论
-    function bindSubmit() {
-        $("#comment-form").submit(function() {
+    // 获取响应容器并创建一个隐藏的输入元素
+    var r = document.getElementById('<?= $this->respondId(); ?>'),
+        input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = '_';
+    input.value = <?php echo Typecho_Common::shuffleScriptVar($this->security->getToken(clear_urlcan($this->request->getRequestUrl()))); ?>;
+
+    // 如果响应容器存在，将隐藏的输入元素附加到表单中
+    if (null != r) {
+        var forms = r.getElementsByTagName('form');
+        if (forms.length > 0) {
+            forms[0].appendChild(input);
+        }
+    }
+
+    // 当邮箱输入框失去焦点时，更新头像显示
+    $("#mail").on('blur', function () {
+        var url = "https://cdn.sep.cc/avatar/" + hex_md5($(this).val()) + "?s=40&d=";
+        $("#author-head").css('background-image', 'url(' + url + ')');
+    });
+
+    // 绑定表单提交事件
+    function bindsubmit() {
+        $("#comment-form").submit(function () {
+            // 禁用提交按钮，防止重复提交
             $("#add-comment-button").attr("disabled", true);
             $.ajax({
                 url: $(this).attr("action"),
                 type: $(this).attr("method"),
                 data: $(this).serializeArray(),
-                complete: function() {
+                complete: function () {
+                    // 提交完成后重新启用提交按钮
                     $("#add-comment-button").attr("disabled", false);
                 },
-                success: function(data) {
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(data, "text/html");
-                    const refreshedComments = htmlDoc.getElementById("comment-refresh");
-                    if (refreshedComments) {
-                        const commentText = document.querySelector(".comment-text");
-                        const originalHtml = commentText.innerHTML;
-                        document.getElementById("comment-refresh").innerHTML = refreshedComments.innerHTML;
-                        if (!document.querySelector(".comment-text")) {
-                            commentText.innerHTML = originalHtml;
-                            commentText.querySelector(".cancel-comment-reply a").style.display = "none";
-                            document.querySelector(".comments").appendChild(commentText);
-                            bindSubmit();
-                            if (typeof window.emojify !== "undefined") {
-                                setTimeout(() => window.emojify.run(), 1000);
+                error: function () { },
+                success: function (data) {
+                    var parser = new DOMParser();
+                    var htmlDoc = parser.parseFromString(data, "text/html");
+                    // 如果返回的数据中包含评论刷新区域，则更新页面上的评论
+                    if (htmlDoc.getElementById("comment-refresh")) {
+                        var ele = document.getElementsByClassName("comment-text")[0];
+                        var elehtml = ele.innerHTML;
+                        document.getElementById("comment-refresh").innerHTML = htmlDoc.getElementById("comment-refresh").innerHTML;
+                        if (!document.getElementsByClassName("comment-text")[0]) {
+                            ele.innerHTML = elehtml;
+                            ele.children[0].children[0].children[0].children[0].children[0].getElementsByClassName("col-lg-3")[0].getElementsByClassName("cancel-comment-reply")[0].children[0].style.cssText = "display:none;";
+                            document.getElementsByClassName("comments")[0].appendChild(ele);
+                            bindsubmit();
+                            // 如果存在emojify对象，则运行emojify
+                            if (typeof emojify != "undefined") {
+                                setTimeout(function () {
+                                    emojify.run();
+                                }, 1000);
                             }
                         }
                     }
-                },
-                error: function(xhr, status, error) {
-                    console.error("评论提交失败:", error);
+
+                    // 清除评论框并显示提交成功提示
+                    $("#textarea").val('');
+                    showSuccessMessage();
                 }
             });
             return false;
         });
     }
-    bindSubmit();
+    bindsubmit();
 
-    // 监听新评论节点
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach((node) => {
-                    if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('comment-parent')) {
-                        console.log('新增评论:', node);
-                    }
-                });
-            }
-        });
-    });
-    observer.observe(document.getElementById('comment-refresh'), { attributes: false, childList: true, subtree: true });
-
-    // Typecho评论回复逻辑
-    window.TypechoComment = {
-        dom: (id) => document.getElementById(id),
-        create: (tag, attr) => {
-            const el = document.createElement(tag);
-            Object.keys(attr).forEach(key => el.setAttribute(key, attr[key]));
-            return el;
-        },
-        reply: (cid, coid) => {
-            const comment = TypechoComment.dom(cid),
-                  response = TypechoComment.dom('<?php $this->respondId(); ?>'),
-                  form = response.tagName === 'FORM' ? response : response.getElementsByTagName('form')[0],
-                  textarea = form.getElementsByTagName('textarea')[0];
-            let input = TypechoComment.dom('comment-parent');
-            if (!input) {
-                input = TypechoComment.create('input', { type: 'hidden', name: 'parent', id: 'comment-parent' });
-                form.appendChild(input);
-            }
-            input.setAttribute('value', coid);
-            if (!TypechoComment.dom('comment-form-place-holder')) {
-                const holder = TypechoComment.create('div', { id: 'comment-form-place-holder' });
-                response.parentNode.insertBefore(holder, response);
-            }
-            comment.appendChild(response);
-            TypechoComment.dom('cancel-comment-reply-link').style.display = '';
-            if (textarea && textarea.name === 'text') textarea.focus();
-            return false;
-        },
-        cancelReply: () => {
-            const response = TypechoComment.dom('<?php $this->respondId(); ?>'),
-                  holder = TypechoComment.dom('comment-form-place-holder'),
-                  input = TypechoComment.dom('comment-parent');
-            if (input) input.parentNode.removeChild(input);
-            if (!holder) return true;
-            TypechoComment.dom('cancel-comment-reply-link').style.display = 'none';
-            holder.parentNode.insertBefore(response, holder);
-            return false;
-        }
-    };
-
-    // Gravatar动态更新
-    $("#mail").on('blur', function() {
-        const email = $(this).val();
-        if (email) {
-            const url = `https://cdn.sep.cc/avatar/${hex_md5(email)}?s=40&d=`;
-            $("#author-head").css('background-image', `url(${url})`);
-        }
-    });
-
-    // 添加CSRF令牌
-    const respond = document.getElementById('<?php $this->respondId(); ?>');
-    if (respond) {
-        const form = respond.getElementsByTagName('form')[0];
-        if (form) {
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = '_';
-            input.value = '<?php echo Typecho_Common::shuffleScriptVar($this->security->getToken(clear_urlcan($this->request->getRequestUrl()))); ?>';
-            form.appendChild(input);
-        }
+    // 显示提交成功提示
+    function showSuccessMessage() {
+        var successMessage = $("<div class='alert alert-success alert-dismissible fade show' role='alert'>评论提交成功！<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        $("#comment-form").before(successMessage);
+        // 滑动页面到提示条位置
+        $('html, body').animate({
+            scrollTop: successMessage.offset().top - 100
+        }, 500);
+        setTimeout(function () {
+            successMessage.fadeOut(500, function () {
+                $(this).remove();
+            });
+        }, 3000); // 3秒后自动隐藏提示
     }
+
+    // TypechoComment对象，用于处理评论相关的DOM操作
+    (function () {
+        window.TypechoComment = {
+            dom: function (id) {
+                return document.getElementById(id);
+            },
+            create: function (tag, attr) {
+                var el = document.createElement(tag);
+                for (var key in attr) {
+                    el.setAttribute(key, attr[key]);
+                }
+                return el;
+            },
+            reply: function (cid, coid) {
+                var comment = this.dom(cid), parent = comment.parentNode,
+                    response = this.dom('<?= $this->respondId(); ?>'), input = this.dom('comment-parent'),
+                    form = 'form' == response.tagName ? response : response.getElementsByTagName('form')[0],
+                    textarea = response.getElementsByTagName('textarea')[0];
+
+                if (null == input) {
+                    input = this.create('input', {
+                        'type': 'hidden',
+                        'name': 'parent',
+                        'id': 'comment-parent'
+                    });
+                    form.appendChild(input);
+                }
+                input.setAttribute('value', coid);
+
+                if (null == this.dom('comment-form-place-holder')) {
+                    var holder = this.create('div', {
+                        'id': 'comment-form-place-holder'
+                    });
+                    response.parentNode.insertBefore(holder, response);
+                }
+
+                comment.appendChild(response);
+                this.dom('cancel-comment-reply-link').style.display = '';
+
+                if (null != textarea && 'text' == textarea.name) {
+                    textarea.focus();
+                }
+                return false;
+            },
+            cancelReply: function () {
+                var response = this.dom('<?= $this->respondId(); ?>'),
+                    holder = this.dom('comment-form-place-holder'), input = this.dom('comment-parent');
+
+                if (null != input) {
+                    input.parentNode.removeChild(input);
+                }
+
+                if (null == holder) {
+                    return true;
+                }
+
+                this.dom('cancel-comment-reply-link').style.display = 'none';
+                holder.parentNode.insertBefore(response, holder);
+                return false;
+            }
+        };
+    })();
 </script>

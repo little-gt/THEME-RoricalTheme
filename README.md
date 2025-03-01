@@ -1,6 +1,7 @@
 # Rorical Theme - 一个炒鸡可爱的 Typecho 主题
 
 ![封面](/screenshot.png)
+
 *“简洁、可爱、功能强大，适合个人博客的理想选择”*
 
 ## 简介
