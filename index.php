@@ -3,7 +3,7 @@
  * 炒鸡可爱的一款主题 - 博客首页
  *
  * @package Rorical Theme
- * @author Rorical
+ * @author Rorical & little-gt
  * @version 1.0
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
@@ -146,6 +146,8 @@ $this->need('header.php');
             });
         </script>
     <?php endif; ?>
+
+
 </section>
 
 <?php $this->need('footer.php'); ?>
