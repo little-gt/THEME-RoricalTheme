@@ -120,17 +120,6 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a href="#" class="nav-link" data-toggle="dropdown" role="button">
-                                    <i class="ni ni-compass-04 d-lg-none"></i>
-                                    <span class="nav-link-inner--text">指南</span>
-                                </a>
-                                <div class="dropdown-menu">
-                                    <a href="https://www.bilibili.com/" class="dropdown-item">哔哩哔哩</a>
-                                    <a href="https://www.ilab-x.com/" class="dropdown-item">实验空间</a>
-                                    <a href="https://www.un.org/library/" class="dropdown-item">世界图书</a>
-                                </div>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a href="#" class="nav-link" data-toggle="dropdown" role="button">
                                     <i class="ni ni-collection d-lg-none"></i>
                                     <span class="nav-link-inner--text">分类</span>
                                 </a>
