@@ -378,13 +378,35 @@ class Widget_Comments_Archive extends Widget_Abstract_Comments {
         return $value;
     }
 
-    public function pageNav($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '...', $template = '') {
+    public function pageNav($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '···', $template = ''){
         if (!$this->options->commentsPageBreak || $this->_total <= $this->options->commentsPageSize) return;
 
-        $template = array_merge(['wrapTag' => 'ol', 'wrapClass' => 'page-navigator'], is_string($template) ? [] : $template);
+        $template = array_merge([
+            'wrapTag' => 'ul',
+            'wrapClass' => 'pagination pagination-lg justify-content-center',
+            'itemTag' => 'li',
+            'textTag' => 'span',
+            'currentClass' => 'active',
+            'prevClass' => 'prev',
+            'nextClass' => 'next',
+            'itemClass' => 'page-item',
+            'linkClass' => 'page-link'
+        ], is_string($template) ? [] : $template);
+
         $pageRow = $this->parameter->parentContent;
-        $pageRow['permalink'] = $pageRow['pathinfo'];
+        // Construct the base URL with /page/{commentPage}/
+        $baseUrl = rtrim($this->options->index, '/') . '/page/{commentPage}/';
+        if (!empty($pageRow['pathinfo']) && $pageRow['pathinfo'] !== '/') {
+            $baseUrl = rtrim($pageRow['pathinfo'], '/') . '/page/{commentPage}/';
+        }
+        $pageRow['permalink'] = $baseUrl;
         $query = Typecho_Router::url('comment_page', $pageRow, $this->options->index);
+
+        // Force correct placeholder to avoid {page}, {1}, {2}, etc.
+        $query = str_replace('{page}', '{commentPage}', $query);
+
+        // Debug: Log the query to verify the URL
+        error_log('PageNav Query: ' . $query);
 
         $nav = new Typecho_Widget_Helper_PageNavigator_Box($this->_total, $this->_currentPage, $this->options->commentsPageSize, $query);
         $nav->setPageHolder('commentPage');
@@ -454,13 +476,53 @@ class Widget_Comments_Archive extends Widget_Abstract_Comments {
 /**
  * 自定义分页导航组件
  */
-class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_PageNavigator {
-    public function render($prev = 'PREV', $next = 'NEXT', $splitPage = 3, $splitWord = '...', array $template = []) {
+class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_PageNavigator{
+    protected $_total;
+    protected $_pageSize;
+    protected $_currentPage;
+    protected $_totalPage;
+    protected $_pageTemplate;
+    protected $_pageHolder = 'commentPage';
+    protected $_anchor;
+
+    public function __construct($total, $currentPage, $pageSize, $pageTemplate, $anchor = NULL)
+    {
+        $this->_total = intval($total);
+        $this->_pageSize = intval($pageSize);
+        $this->_currentPage = intval($currentPage);
+        $this->_pageTemplate = $pageTemplate;
+        $this->_anchor = $anchor ? '#' . $anchor : '';
+        $this->_totalPage = ceil($this->_total / $this->_pageSize);
+
+        if ($this->_currentPage < 1) {
+            $this->_currentPage = 1;
+        } else if ($this->_currentPage > $this->_totalPage) {
+            $this->_currentPage = $this->_totalPage;
+        }
+
+        // Normalize pageTemplate: replace {page} or {X} with {commentPage}
+        $this->_pageTemplate = str_replace('{page}', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
+        $this->_pageTemplate = preg_replace('/\{\d+\}/', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
+
+        // Debug: Log the pageTemplate
+        error_log('PageNavigator Template: ' . $this->_pageTemplate);
+
+        // Call parent constructor with 4 arguments for older Typecho compatibility
+        parent::__construct($this->_total, $this->_currentPage, $this->_pageSize, $this->_pageTemplate);
+    }
+
+    public function render($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '···', array $template = [])
+    {
         if ($this->_total < 1) return;
 
         $template = array_merge([
-            'itemTag' => 'li', 'textTag' => 'span', 'currentClass' => 'current',
-            'prevClass' => 'prev', 'nextClass' => 'next'
+            'itemTag' => 'li',
+            'textTag' => 'span',
+            'currentClass' => 'active',
+            'prevClass' => 'prev',
+            'nextClass' => 'next',
+            'itemClass' => 'page-item',
+            'linkClass' => 'page-link'
         ], $template);
 
         extract($template);
@@ -471,25 +533,37 @@ class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_Page
         $from = max(1, $this->_currentPage - $splitPage);
         $to = min($this->_totalPage, $this->_currentPage + $splitPage);
 
+        // Previous page link
         if ($this->_currentPage > 1) {
-            echo "{$itemBegin}" . sprintf($linkBegin, str_replace($this->_pageHolder, $this->_currentPage - 1, $this->_pageTemplate) . $this->_anchor) . $prev . "</a>{$itemEnd}";
+            $prevUrl = str_replace('{' . $this->_pageHolder . '}', $this->_currentPage - 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $prevUrl, $prevClass) . $prev . "</a>{$itemEnd}";
         }
 
+        // First page link
         if ($from > 1) {
-            echo "{$itemBegin}" . sprintf($linkBegin, str_replace($this->_pageHolder, 1, $this->_pageTemplate) . $this->_anchor) . '1</a>' . "{$itemEnd}";
+            $firstUrl = str_replace('{' . $this->_pageHolder . '}', 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $firstUrl) . '1</a>' . "{$itemEnd}";
+            if ($from > 2) echo "{$itemBegin}<{$textTag} class=\"page-link\">{$splitWord}</{$textTag}>{$itemEnd}";
         }
 
+        // Page number links
         for ($i = $from; $i <= $to; $i++) {
+            $pageUrl = str_replace('{' . $this->_pageHolder . '}', $i, $this->_pageTemplate) . $this->_anchor;
             $class = $i == $this->_currentPage ? $currentClass : $itemClass;
-            echo "<{$itemTag}" . ($class ? " class=\"{$class}\"" : '') . ">" . sprintf($linkBegin, str_replace($this->_pageHolder, $i, $this->_pageTemplate) . $this->_anchor) . $i . "</a></{$itemTag}>";
+            echo "<{$itemTag}" . ($class ? " class=\"{$class}\"" : '') . ">" . sprintf($linkBegin, $pageUrl) . $i . "</a></{$itemTag}>";
         }
 
+        // Last page link
         if ($to < $this->_totalPage) {
-            echo "{$itemBegin}" . sprintf($linkBegin, str_replace($this->_pageHolder, $this->_totalPage, $this->_pageTemplate) . $this->_anchor) . $this->_totalPage . "</a>{$itemEnd}";
+            if ($to < $this->_totalPage - 1) echo "{$itemBegin}<{$textTag} class=\"page-link\">{$splitWord}</{$textTag}>{$itemEnd}";
+            $lastUrl = str_replace('{' . $this->_pageHolder . '}', $this->_totalPage, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $lastUrl) . $this->_totalPage . "</a>{$itemEnd}";
         }
 
+        // Next page link
         if ($this->_currentPage < $this->_totalPage) {
-            echo "{$itemBegin}" . sprintf($linkBegin, str_replace($this->_pageHolder, $this->_currentPage + 1, $this->_pageTemplate) . $this->_anchor) . $next . "</a>{$itemEnd}";
+            $nextUrl = str_replace('{' . $this->_pageHolder . '}', $this->_currentPage + 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $nextUrl, $nextClass) . '<i class="fa fa-angle-right"></i>' . "</a>{$itemEnd}";
         }
     }
 }
