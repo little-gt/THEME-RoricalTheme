@@ -29,7 +29,7 @@
               <div class="col-lg-6">
                 <div class="card-profile-stats d-flex justify-content-center">
                   <div>
-                    <span class="heading"><?php echo ViewsCounter_Plugin::getViews(); ?></span>
+                    <span class="heading"><?php get_post_view($this) ?></span>
                     <span class="description">观看次数</span>
                   </div>
                   <div>
@@ -62,7 +62,7 @@
               <div class="row justify-content-center">
                 <div class="col-lg-9 breakword content">
                   <?php 
-                	$content = preg_replace('/<img(.*?)src=[\'"]([^\'"]+)[\'"](.*?)>/i',"<noscript>\$0</noscript><img\$1data-original=\"\$2\" \$3>",$this->content); 
+                	$content = preg_replace('/<img(.*?)data-original=[\'"]([^\'"]+)[\'"](.*?)>/i',"<noscript>\$0</noscript><img\$1data-original=\"\$2\" \$3>",$this->content); 
                 	echo $content 
                 	?>
                   

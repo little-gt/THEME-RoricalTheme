@@ -1,862 +1,605 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
-
+/**
+ * 主题配置函数
+ * @param Typecho_Widget_Helper_Form $form 配置表单对象
+ */
 function themeConfig($form) {
-    $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'), _t('在这里填入一个图片 URL 地址, 以在网站标题前加上一个 LOGO'));
+    // 站点 LOGO
+    $logoUrl = new Typecho_Widget_Helper_Form_Element_Text('logoUrl', NULL, NULL, _t('站点 LOGO 地址'), _t('填入图片 URL 地址，用于网站标题前的 LOGO'));
     $form->addInput($logoUrl);
-    $AvatarUrl = new Typecho_Widget_Helper_Form_Element_Text('AvatarUrl', NULL, NULL, _t('你的大头'), _t('在这里填入一个图片 URL 地址'));
+
+    // 用户头像
+    $defaultAvatar = 'https://cdn.sep.cc/avatar/';
+    $AvatarUrl = new Typecho_Widget_Helper_Form_Element_Text('AvatarUrl', NULL, $defaultAvatar, _t('用户头像'), _t('填入图片 URL 地址，用于站点头像'));
     $form->addInput($AvatarUrl);
-    
-    $pcbackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('pcbackgroundUrl', NULL, NULL, _t('电脑主页背景'), _t('在这里填入电脑的背景图片 URL 地址'));
-    $mobilebackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('mobilebackgroundUrl', NULL, NULL, _t('手机主页背景'), _t('在这里填入手机的背景图片 URL 地址'));
+
+    // 背景图片
+    $defaultBackground = 'https://cdn.garfieldtom.cool/homepage/img/background.jpg';
+    $pcbackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('pcbackgroundUrl', NULL, $defaultBackground, _t('电脑主页背景'), _t('填入电脑背景图片 URL'));
+    $mobilebackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('mobilebackgroundUrl', NULL, $defaultBackground, _t('手机主页背景'), _t('填入手机背景图片 URL'));
     $form->addInput($pcbackgroundUrl);
     $form->addInput($mobilebackgroundUrl);
-    
-    $randompicUrl = new Typecho_Widget_Helper_Form_Element_Text('randompicUrl', NULL, NULL, _t('随机图片'), _t('在这里填入一个图片 URL 地址'));
+
+    // 随机图片
+    $randompicUrl = new Typecho_Widget_Helper_Form_Element_Text('randompicUrl', NULL, $defaultBackground, _t('随机图片'), _t('填入图片 URL，用于文章默认头图'));
     $form->addInput($randompicUrl);
-    
-    $powermode = new Typecho_Widget_Helper_Form_Element_Radio('powermode',
-        array('able' => _t('启用'),
-            'disable' => _t('禁止'),
-        ),
-        'disable', _t('PowerMode打字特效'), _t('默认禁止，可以打开'));
+
+    // PowerMode 打字特效
+    $powermode = new Typecho_Widget_Helper_Form_Element_Radio('powermode', ['able' => _t('启用'), 'disable' => _t('禁止')], 'disable', _t('PowerMode 打字特效'), _t('默认禁用，可启用'));
     $form->addInput($powermode);
-    $clickanime = new Typecho_Widget_Helper_Form_Element_Radio('clickanime',
-        array('able' => _t('启用'),
-            'disable' => _t('禁止'),
-        ),
-        'disable', _t('鼠标点击特效'), _t('默认禁止，也可以打开'));
+
+    // 鼠标点击特效
+    $clickanime = new Typecho_Widget_Helper_Form_Element_Radio('clickanime', ['able' => _t('启用'), 'disable' => _t('禁止')], 'disable', _t('鼠标点击特效'), _t('默认禁用，可启用'));
     $form->addInput($clickanime);
-    
-    $Analytic = new Typecho_Widget_Helper_Form_Element_Textarea('Analytic', NULL, NULL, _t('填写什么网站记录代码，类似Google Analytics等'), _t('给你加进Header，可以不填'));
+
+    // 网站统计代码
+    $Analytic = new Typecho_Widget_Helper_Form_Element_Textarea('Analytic', NULL, NULL, _t('网站统计代码'), _t('填入类似 Google Analytics 的代码，添加到 Header'));
     $form->addInput($Analytic);
-    
-    $navbarIcons = new Typecho_Widget_Helper_Form_Element_Textarea('navbarIcons', NULL, _t('fa fa-github$$Github$$https://github.com/Liupaperbox/'), _t('自定义主页上面的标志，输错就爆炸哦'), _t('一行一个，格式为：图标的class$$显示文字$$点击跳转的链接'));
+
+    // 导航栏图标
+    $navbarIcons = new Typecho_Widget_Helper_Form_Element_Textarea('navbarIcons', NULL, _t('fa fa-github$$Github$$https://github.com/Liupaperbox/'), _t('导航栏图标'), _t('格式：图标class$$文字$$链接，一行一个'));
     $form->addInput($navbarIcons);
-    
-    $navbar = new Typecho_Widget_Helper_Form_Element_Radio('navbar',
-        array('able' => _t('下拉式'),
-            'disable' => _t('平铺式'),
-        ),
-        'able', _t('网站导航栏对于独立页面的表现形式'), _t('默认为下拉式，不习惯可以改成和别的博客一样的平铺式'));
+
+    // 导航栏样式
+    $navbar = new Typecho_Widget_Helper_Form_Element_Radio('navbar', ['able' => _t('下拉式'), 'disable' => _t('平铺式')], 'able', _t('导航栏样式'), _t('默认下拉式，可改为平铺式'));
     $form->addInput($navbar);
-    
-    $toc = new Typecho_Widget_Helper_Form_Element_Radio('toc',
-        array('able' => _t('开启'),
-            'disable' => _t('关闭'),
-        ),
-        'disable', _t('文章侧边的导航默认开不开'), _t('默认为关闭'));
+
+    // 文章目录开关
+    $toc = new Typecho_Widget_Helper_Form_Element_Radio('toc', ['able' => _t('开启'), 'disable' => _t('关闭')], 'disable', _t('文章目录默认开关'), _t('默认关闭'));
     $form->addInput($toc);
 }
 
-function createCatalog($obj) {    //为文章标题添加锚点
-    global $catalog;
-    global $catalog_count;
-    $catalog = array();
+/**
+ * 重写头像逻辑，使用指定镜像
+ * @param string $mail 评论者的邮箱
+ * @param int $size 头像尺寸
+ * @param string $author 评论者作者
+ * @param string $class CSS class
+ */
+function get_custom_gravatar($mail, $size = 40, $author = '', $class = 'rounded-circle') {
+    $url = "https://cdn.sep.cc/avatar/" . md5(strtolower(trim($mail)));
+    $url .= "?s=" . $size;
+    echo '<img src="' . $url . '" class="' . $class . '" alt="' . $author . '">';
+}
+
+/**
+ * 为文章标题添加锚点以生成目录
+ * @param string $obj 文章内容
+ * @return string 处理后的内容
+ */
+function createCatalog($obj) {
+    global $catalog, $catalog_count;
+    $catalog = [];
     $catalog_count = 0;
-    $obj = preg_replace_callback('/<h([1-6])(.*?)>(.*?)<\/h\1>/i', function($obj) {
-        global $catalog;
-        global $catalog_count;
-        $catalog_count ++;
-        $catalog[] = array('text' => trim(strip_tags($obj[3])), 'depth' => $obj[1], 'count' => $catalog_count);
-        return '<h'.$obj[1].$obj[2].'><a name="cl-'.$catalog_count.'"></a>'.$obj[3].'</h'.$obj[1].'>';
+    $obj = preg_replace_callback('/<h([1-6])(.*?)>(.*?)<\/h\1>/i', function($match) use (&$catalog, &$catalog_count) {
+        $catalog_count++;
+        $catalog[] = ['text' => trim(strip_tags($match[3])), 'depth' => $match[1], 'count' => $catalog_count];
+        return "<h{$match[1]}{$match[2]} id=\"cl-{$catalog_count}\">{$match[3]}</h{$match[1]}>";
     }, $obj);
     return $obj;
 }
 
-function getCatalog() {    //输出文章目录容器
+/**
+ * 输出文章目录 HTML
+ */
+function getCatalog() {
     global $catalog;
-    $index = '';
-    if ($catalog) {
-        $index = '<ul>'."\n";
-        $prev_depth = '';
-        $to_depth = 0;
-        foreach($catalog as $catalog_item) {
-            $catalog_depth = $catalog_item['depth'];
-            if ($prev_depth) {
-                if ($catalog_depth == $prev_depth) {
-                    $index .= '</li>'."\n";
-                } elseif ($catalog_depth > $prev_depth) {
-                    $to_depth++;
-                    $index .= '<ul>'."\n";
-                } else {
-                    $to_depth2 = ($to_depth > ($prev_depth - $catalog_depth)) ? ($prev_depth - $catalog_depth) : $to_depth;
-                    if ($to_depth2) {
-                        for ($i=0; $i<$to_depth2; $i++) {
-                            $index .= '</li>'."\n".'</ul>'."\n";
-                            $to_depth--;
-                        }
-                    }
-                    $index .= '</li>';
-                }
+    if (empty($catalog)) {
+        echo '<p>暂无目录</p>';
+        return;
+    }
+
+    $html = '<ul>';
+    $prev_depth = 0;
+    $depth_diff = 0;
+
+    foreach ($catalog as $item) {
+        $depth = $item['depth'];
+        if ($prev_depth) {
+            if ($depth > $prev_depth) {
+                $html .= '<ul>';
+                $depth_diff++;
+            } elseif ($depth < $prev_depth) {
+                $diff = min($depth_diff, $prev_depth - $depth);
+                $html .= str_repeat('</li></ul>', $diff);
+                $depth_diff -= $diff;
+                $html .= '</li>';
+            } else {
+                $html .= '</li>';
             }
-            $index .= '<li><a href="javascript:jumpto('.$catalog_item['count'].')">'.$catalog_item['text'].'</a>';
-            $prev_depth = $catalog_item['depth'];
         }
-        for ($i=0; $i<=$to_depth; $i++) {
-            $index .= '</li>'."\n".'</ul>'."\n";
+        $html .= "<li><a href=\"#cl-{$item['count']}\" onclick=\"jumpto({$item['count']})\" style=\"color: #000000;\">{$item['text']}</a>";
+        $prev_depth = $depth;
+    }
+
+    $html .= str_repeat('</li></ul>', $depth_diff + 1);
+    echo $html;
+}
+
+/**
+ * 获取文章浏览次数
+ * @param Widget_Archive $archive 文章对象
+ */
+function get_post_view($archive) {
+    $cid = $archive->cid;
+    $db = Typecho_Db::get();
+    $prefix = $db->getPrefix();
+
+    // Note: This check only verifies the first row. Assumes all rows have the same structure.
+    if (!array_key_exists('views', $db->fetchRow($db->select()->from('table.contents')))) {
+        $db->query("ALTER TABLE `{$prefix}contents` ADD `views` INT(10) DEFAULT 0;");
+        echo 0; // Return 0 for the first time.
+        return;
+    }
+
+    $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
+    if ($archive->is('single')) {
+        $views = Typecho_Cookie::get('extend_contents_views');
+        $viewed_cids = $views ? explode(',', $views) : [];
+        if (!in_array($cid, $viewed_cids)) {
+            $db->query($db->update('table.contents')->rows(['views' => (int)$row['views'] + 1])->where('cid = ?', $cid));
+            $viewed_cids[] = $cid;
+            Typecho_Cookie::set('extend_contents_views', implode(',', $viewed_cids));
         }
     }
-    echo $index;
-}
-class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_PageNavigator {
-	/**
-     * 输出盒装样式分页栏
-     *
-     * @access public
-     * @param string $prevWord 上一页文字
-     * @param string $nextWord 下一页文字
-     * @param int $splitPage 分割范围
-     * @param string $splitWord 分割字符
-     * @param string $currentClass 当前激活元素class
-     * @return void
-     */
-	public function render($prevWord = 'PREV', $nextWord = 'NEXT', $splitPage = 3, $splitWord = '...', array $template = array()) {
-		if ($this->_total < 1) {
-			return;
-		}
-		$default = array(
-		            'itemTag'       =>  'li',
-		            'textTag'       =>  'span',
-		            'currentClass'  =>  'current',
-		            'prevClass'     =>  'prev',
-		            'nextClass'     =>  'next'
-		        );
-		$template = array_merge($default, $template);
-		extract($template);
-		// 定义item
-		$itemClass = empty($itemClass) ? '' : ('class="' . $itemClass . '"');
-		$itemBegin = empty($itemTag) ? '' : ('<' . $itemTag . ' ' . $itemClass . ' >');
-		$itemCurrentBegin = empty($itemTag) ? '' : ('<' . $itemTag 
-		            . (empty($currentClass) ? '' : ' class="' . $currentClass . '"') . '>');
-		$itemPrevBegin = empty($itemTag) ? '' : ('<' . $itemTag 
-		            . (empty($prevClass) ? '' : ' class="' . $prevClass . '"') . '>');
-		$itemNextBegin = empty($itemTag) ? '' : ('<' . $itemTag 
-		            . (empty($nextClass) ? '' : ' class="' . $nextClass . '"') . '>');
-		$itemEnd = empty($itemTag) ? '' : ('</' . $itemTag . '>');
-		$textBegin = empty($textTag) ? '' : ('<' . $textTag . '>');
-		$textEnd = empty($textTag) ? '' : ('</' . $textTag . '>');
-		$linkClass = empty($linkClass) ? '' : ('class="' . $linkClass . '"');
-		$linkBegin = '<a href="%s"' . $linkClass . '>';
-		$linkCurrentBegin = empty($itemTag) ? ('<a href="%s"'
-		            . (empty($currentClass) ? '' : ' class="' . $currentClass . '"') . '>')
-		            : $linkBegin;
-		$linkPrevBegin = empty($itemTag) ? ('<a href="%s"'
-		            . (empty($prevClass) ? '' : ' class="' . $prevClass . '"') . '>')
-		            : $linkBegin;
-		$linkNextBegin = empty($itemTag) ? ('<a href="%s"'
-		            . (empty($nextClass) ? '' : ' class="' . $nextClass . '"') . '>')
-		            : $linkBegin;
-		$linkEnd = '</a>';
-		$from = max(1, $this->_currentPage - $splitPage);
-		$to = min($this->_totalPage, $this->_currentPage + $splitPage);
-		//输出上一页
-		if ($this->_currentPage > 1) {
-			echo $itemPrevBegin . sprintf($linkPrevBegin,
-			                str_replace($this->_pageHolder, $this->_currentPage - 1, $this->_pageTemplate) . $this->_anchor)
-			                . $prevWord . $linkEnd . $itemEnd;
-		}
-		//输出第一页
-		if ($from > 1) {
-			echo $itemBegin . sprintf($linkBegin, str_replace($this->_pageHolder, 1, $this->_pageTemplate) . $this->_anchor)
-			                . '1' . $linkEnd . $itemEnd;
-			if ($from > 2) {
-				//输出省略号
-				echo $itemBegin . $textBegin . $splitWord . $textEnd . $itemEnd;
-			}
-		}
-		//输出中间页
-		for ($i = $from; $i <= $to; $i ++) {
-			$current = ($i == $this->_currentPage);
-			echo ($current ? $itemCurrentBegin : $itemBegin) . sprintf(($current ? $linkCurrentBegin : $linkBegin),
-			                str_replace($this->_pageHolder, $i, $this->_pageTemplate) . $this->_anchor)
-			                . $i . $linkEnd . $itemEnd;
-		}
-		//输出最后页
-		if ($to < $this->_totalPage) {
-			if ($to < $this->_totalPage - 1) {
-				echo $itemBegin . $textBegin . $splitWord . $textEnd . $itemEnd;
-			}
-			echo $itemBegin . sprintf($linkBegin, str_replace($this->_pageHolder, $this->_totalPage, $this->_pageTemplate) . $this->_anchor)
-			                . $this->_totalPage . $linkEnd . $itemEnd;
-		}
-		//输出下一页
-		if ($this->_currentPage < $this->_totalPage) {
-			echo $itemNextBegin . sprintf($linkNextBegin,
-			                str_replace($this->_pageHolder, $this->_currentPage + 1, $this->_pageTemplate) . $this->_anchor)
-			                . $nextWord . $linkEnd . $itemEnd;
-		}
-	}
+    echo $row['views'];
 }
 
-
-function themeFields($layout) {
-    $pic = new Typecho_Widget_Helper_Form_Element_Text('pic', NULL, NULL, _t('文章头图'), _t('在这里填入一个图片URL地址'));
-    $layout->addItem($pic);
+/**
+ * 计算文章字数（仅中文）
+ * @param int $cid 文章 ID
+ */
+function art_count($cid) {
+    $db = Typecho_Db::get();
+    $row = $db->fetchRow($db->select('text')->from('table.contents')->where('cid = ?', $cid));
+    $text = preg_replace("/[^\x{4e00}-\x{9fa5}]/u", "", $row['text']);
+    echo mb_strlen($text, 'UTF-8');
 }
 
-
-function  art_count ($cid){
-    $db=Typecho_Db::get ();
-    $rs=$db->fetchRow ($db->select ('table.contents.text')->from ('table.contents')->where ('table.contents.cid=?',$cid)->order ('table.contents.cid',Typecho_Db::SORT_ASC)->limit (1));
-    $text = preg_replace("/[^\x{4e00}-\x{9fa5}]/u", "", $rs['text']);
-    echo mb_strlen($text,'UTF-8');
-}
-
-function themeInit($archive)
-{
- Helper::options()->commentsMaxNestingLevels = 999;//正常设置最高只有7层
- if ($archive->is('single')) {
+/**
+ * 主题初始化
+ * @param Widget_Archive $archive 当前页面对象
+ */
+function themeInit($archive) {
+    Helper::options()->commentsMaxNestingLevels = 999;
+    if ($archive->is('single')) {
         $archive->content = createCatalog($archive->content);
     }
 }
-function getPermalinkFromCoid($coid) {//留言加@  
-$db       = Typecho_Db::get();   
-$options  = Typecho_Widget::widget('Widget_Options');   
-$contents = Typecho_Widget::widget('Widget_Abstract_Contents');   
-$row = $db->fetchRow($db->select('cid, type, author, text')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));   
-if (empty($row)) return 'Comment not found!';   
-    $cid = $row['cid'];   
-    $select = $db->select('coid, parent')->from('table.comments')->where('cid = ? AND status = ?', $cid, 'approved')->order('coid');   
-if ($options->commentsShowCommentOnly)   
-    $select->where('type = ?', 'comment');   
-    $comments = $db->fetchAll($select);   
-if ($options->commentsOrder == 'DESC')   
-    $comments = array_reverse($comments);   
-foreach ($comments as $key => $val)   
-    $array[$val['coid']] = $val['parent'];   
-    $i = $coid;   
-while ($i != 0) {   
-    $break = $i;   
-    $i = $array[$i];   
-}   
-$count = 0;   
-foreach ($array as $key => $val) {   
-    if ($val == 0) $count++;    
-    if ($key == $break) break;    
-}   
-$parentContent = $contents->push($db->fetchRow($contents->select()->where('table.contents.cid = ?', $cid)));   
-$permalink = rtrim($parentContent['permalink'], '/');   
-$page = ($options->commentsPageBreak)? '/comment-page-' . ceil($count / $options->commentsPageSize) : ( substr($permalink, -5, 5) == '.html' ? '' : '/' );   
-return array(   
-    "author" => $row['author'],   
-    "text" => $row['text'],   
-    "href" => "{$permalink}{$page}#{$row['type']}-{$coid}"  
-);   
-}
+
 /**
-* 上一篇
-* @access public
-* @param string $default 如果没有上一篇,显示的默认文字
-* @return void
-*/
-function theNext($widget, $randompicUrl)
-{
-  $db = Typecho_Db::get();
-  $sql = $db->select()->from('table.contents')
-  ->where('table.contents.created > ?', $widget->created)
-  ->where('table.contents.status = ?', 'publish')
-  ->where('table.contents.type = ?', $widget->type)
-  ->where('table.contents.password IS NULL')
-  ->order('table.contents.created', Typecho_Db::SORT_ASC)
-  ->limit(1);
-  $content = $db->fetchRow($sql);
+ * 获取评论的永久链接（用于 @ 回复）
+ * @param int $coid 评论 ID
+ * @return array|string
+ */
+function getPermalinkFromCoid($coid) {
+    $db = Typecho_Db::get();
+    $options = Typecho_Widget::widget('Widget_Options');
+    $row = $db->fetchRow($db->select('cid', 'type', 'author', 'text')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));
 
-  if ($content) {
-  $widget->widget('Widget_Archive@cid'.$content["cid"], 'pageSize=1&type=post', 'cid='.$content["cid"])->to($ji);
-  $pic = $ji->fields->pic ? $ji->fields->pic:$randompicUrl . "?_=" . mt_rand();
-  $link = '<a class="carousel" href="'.$ji->permalink.'" title="'.$ji->title.'"><div style="background-image:url('.$pic.');" class="card-img tu"></div><div class="carousel-indicators"><h2 class="heading-title text-info blackback" style="text-transform:none;">'.$ji->title.'</h2><i class="ni ni-bold-right"></i></div></a>';
-  echo $link;
-  } else {
-  $link = '<a class="carousel" title="没啦"><div style="background-image:url('.$randompicUrl.');" class="card-img tu"></div><div class="carousel-indicators"><h3 class="heading-title text-info blackback" style="text-transform:none;">没啦</h3></div></a>';
-  echo $link;
-  }
+    if (empty($row)) return 'Comment not found!';
+
+    $cid = $row['cid'];
+    $select = $db->select('coid', 'parent', 'type')->from('table.comments')->where('cid = ? AND status = ?', $cid, 'approved')->order('coid');
+    
+    if ($options->commentsShowCommentOnly) {
+         $select->where('type = ?', 'comment');
+    }
+    $comments = $db->fetchAll($select);
+
+    if ($options->commentsOrder === 'DESC') {
+        $comments = array_reverse($comments);
+    }
+
+    $parents = array_column($comments, 'parent', 'coid');
+    $count = 0;
+    $i = $coid;
+    while ($i != 0 && isset($parents[$i])) {
+        $i = $parents[$i];
+        if ($i == 0) $count++;
+    }
+
+    $content = Typecho_Widget::widget('Widget_Abstract_Contents')->push($db->fetchRow($db->select()->from('table.contents')->where('cid = ?', $cid)));
+    $permalink = rtrim($content['permalink'], '/');
+    $page_suffix = $options->commentsPageBreak ? '/comment-page-' . ceil($count / $options->commentsPageSize) : (substr($permalink, -5) === '.html' ? '' : '/');
+
+    return [
+        'author' => $row['author'],
+        'text' => $row['text'],
+        'href' => "{$permalink}{$page_suffix}#{$row['type']}-{$coid}"
+    ];
 }
- 
+
 /**
-* 下一篇
-* @access public
-* @param string $default 如果没有下一篇,显示的默认文字
-* @return void
-*/
-function thePrev($widget, $randompicUrl)
-{
-  $db = Typecho_Db::get();
-  $sql = $db->select()->from('table.contents')
-  ->where('table.contents.created < ?', $widget->created)
-  ->where('table.contents.status = ?', 'publish')
-  ->where('table.contents.type = ?', $widget->type)
-  ->where('table.contents.password IS NULL')
-  ->order('table.contents.created', Typecho_Db::SORT_DESC)
-  ->limit(1);
-  $content = $db->fetchRow($sql);
-  if ($content) {
-  $widget->widget('Widget_Archive@cid'.$content["cid"], 'pageSize=1&type=post', 'cid='.$content["cid"])->to($ji);
-  $pic = $ji->fields->pic ? $ji->fields->pic:$randompicUrl . "?_=" . mt_rand();
-  $link = '<a class="carousel" href="'.$ji->permalink.'" title="'.$ji->title.'"><div style="background-image:url('.$pic.');" class="card-img tu"></div><div class="carousel-indicators"><i class="ni ni-bold-left"></i><h2 class="heading-title text-info blackback" style="text-transform:none;">'.$ji->title.'</h2></div></a>';
-  // $link 输出的为翻页的样式
-  echo $link;
-  } else {
-  $link = '<a title="没啦" class="carousel"><div style="background-image:url('.$randompicUrl.');" class="card-img tu"></div><div class="carousel-indicators"><h3 class="heading-title text-info blackback" style="text-transform:none;">没啦</h3></div></a>';
-  echo $link;
-  }
+ * 输出上一篇链接
+ */
+function thePrev($widget, $randompicUrl) {
+    $db = Typecho_Db::get();
+    $content = $db->fetchRow($db->select()->from('table.contents')
+        ->where('table.contents.created < ?', $widget->created)
+        ->where('table.contents.status = ?', 'publish')
+        ->where('table.contents.type = ?', $widget->type)
+        ->where('table.contents.password IS NULL')
+        ->order('table.contents.created', Typecho_Db::SORT_DESC)
+        ->limit(1));
+
+    echo generatePostLink($content, $widget, $randompicUrl, 'prev');
 }
 
-class Widget_Comments_Archive extends Widget_Abstract_Comments
-{
-    /**
-     * 当前页
-     *
-     * @access private
-     * @var integer
-     */
-    private $_currentPage;
+/**
+ * 输出下一篇链接
+ */
+function theNext($widget, $randompicUrl) {
+    $db = Typecho_Db::get();
+    $content = $db->fetchRow($db->select()->from('table.contents')
+        ->where('table.contents.created > ?', $widget->created)
+        ->where('table.contents.status = ?', 'publish')
+        ->where('table.contents.type = ?', $widget->type)
+        ->where('table.contents.password IS NULL')
+        ->order('table.contents.created', Typecho_Db::SORT_ASC)
+        ->limit(1));
 
-    /**
-     * 所有文章个数
-     *
-     * @access private
-     * @var integer
-     */
-    private $_total = false;
+    echo generatePostLink($content, $widget, $randompicUrl, 'next');
+}
 
-    /**
-     * 子父级评论关系
-     *
-     * @access private
-     * @var array
-     */
-    private $_threadedComments = array();
+/**
+ * 生成上一篇/下一篇链接 HTML
+ */
+function generatePostLink($content, $widget, $randompicUrl, $direction) {
+    if ($content) {
+        $post = Typecho_Widget::widget('Widget_Archive@temp');
+        $db = Typecho_Db::get();
+        $sql = $db->select()->from('table.contents')->where('cid = ?', $content['cid']);
+        $db->fetchRow($sql, array($post, 'push'));
+        $pic = $post->fields->pic ?: $randompicUrl . "?_=" . mt_rand();
+        $icon = $direction === 'prev' ? '<i class="ni ni-bold-left"></i>' : '<i class="ni ni-bold-right"></i>';
+        $layout = $direction === 'prev' ? "{$icon}<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$post->title}</h2>" : "<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$post->title}</h2>{$icon}";
+        return "<a class=\"carousel\" href=\"{$post->permalink}\" title=\"{$post->title}\"><div style=\"background-image:url({$pic});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\">{$layout}</div></a>";
+    }
+    return "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$randompicUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
+}
 
-    /**
-     * _singleCommentOptions  
-     * 
-     * @var mixed
-     * @access private
-     */
-    private $_singleCommentOptions = NULL;
+/**
+ * 自定义评论组件
+ */
+class Widget_Comments_Archive extends Widget_Abstract_Comments {
+    private $_currentPage, $_total, $_threadedComments = [], $_singleCommentOptions;
 
-    /**
-     * 构造函数,初始化组件
-     *
-     * @access public
-     * @param mixed $request request对象
-     * @param mixed $response response对象
-     * @param mixed $params 参数列表
-     * @return void
-     */
-    public function __construct($request, $response, $params = NULL)
-    {
+    public function __construct($request, $response, $params = NULL) {
         parent::__construct($request, $response, $params);
         $this->parameter->setDefault('parentId=0&commentPage=0&commentsNum=0&allowComment=1');
     }
-    
-    /**
-     * 评论回调函数
-     * 
-     * @access private
-     * @return void
-     */
-    private function threadedCommentsCallback()
-    {
-        $singleCommentOptions = $this->_singleCommentOptions;
-        if (function_exists('threadedComments')) {
-            return threadedComments($this, $singleCommentOptions);
-        }
-        
-        $commentClass = '';
-        if ($this->authorId) {
-            if ($this->authorId == $this->ownerId) {
-                $commentClass .= ' comment-by-author';
-            } else {
-                $commentClass .= ' comment-by-user';
-            }
-        }
-?>
-<li itemscope itemtype="http://schema.org/UserComments" id="<?php $this->theId(); ?>" class="comment-body<?php
-    if ($this->levels > 0) {
-        echo ' comment-child';
-        $this->levelsAlt(' comment-level-odd', ' comment-level-even');
-    } else {
-        echo ' comment-parent';
-    }
-    $this->alt(' comment-odd', ' comment-even');
-    echo $commentClass;
-?>">
-    <div class="comment-author" itemprop="creator" itemscope itemtype="http://schema.org/Person">
-        <span itemprop="image"><?php $this->gravatar($singleCommentOptions->avatarSize, $singleCommentOptions->defaultAvatar); ?></span>
-        <cite class="fn" itemprop="name"><?php $singleCommentOptions->beforeAuthor();
-        $this->author();
-        $singleCommentOptions->afterAuthor(); ?></cite>
-    </div>
-    <div class="comment-meta">
-        <a href="<?php $this->permalink(); ?>"><time itemprop="commentTime" datetime="<?php $this->date('c'); ?>"><?php $singleCommentOptions->beforeDate();
-        $this->date($singleCommentOptions->dateFormat);
-        $singleCommentOptions->afterDate(); ?></time></a>
-        <?php if ('waiting' == $this->status) { ?>
-        <em class="comment-awaiting-moderation"><?php $singleCommentOptions->commentStatus(); ?></em>
-        <?php } ?>
-    </div>
-    <div class="comment-content" itemprop="commentText">
-    <?php $this->content(); ?>
-    </div>
-    <div class="comment-reply">
-        <?php $this->reply($singleCommentOptions->replyWord); ?>
-    </div>
-    <?php if ($this->children) { ?>
-    <div class="comment-children" itemprop="discusses">
-        <?php $this->threadedComments(); ?>
-    </div>
-    <?php } ?>
-</li>
-<?php
-    }
-    
-    /**
-     * 获取当前评论链接
-     *
-     * @access protected
-     * @return string
-     */
-    protected function ___permalink()
-    {
 
-        if ($this->options->commentsPageBreak) {            
-            $pageRow = array('permalink' => $this->parentContent['pathinfo'], 'commentPage' => $this->_currentPage);
-            return Typecho_Router::url('comment_page',
-                        $pageRow, $this->options->index) . '#' . $this->theId;
+    private function threadedCommentsCallback() {
+        $options = $this->_singleCommentOptions;
+        if (function_exists('threadedComments')) {
+            threadedComments($this, $options);
+            return;
         }
-        
+        $commentClass = $this->authorId ? ($this->authorId == $this->ownerId ? ' comment-by-author' : ' comment-by-user') : '';
+        ?>
+        <li id="<?php $this->theId(); ?>" class="comment-body<?php
+        echo $this->levels > 0 ? ' comment-child' . $this->levelsAlt(' comment-level-odd', ' comment-level-even') : ' comment-parent';
+        $this->alt(' comment-odd', ' comment-even');
+        echo $commentClass;
+        ?>">
+            <div class="comment-author">
+                <?php get_custom_gravatar($this->mail, $options->avatarSize, $this->author); ?>
+                <cite><?php $this->author(); ?></cite>
+            </div>
+            <div class="comment-meta">
+                <a href="<?php $this->permalink(); ?>"><time><?php $this->date($options->dateFormat); ?></time></a>
+                <?php if ($this->status === 'waiting') echo '<em>' . $options->commentStatus . '</em>'; ?>
+            </div>
+            <div class="comment-content"><?php $this->content(); ?></div>
+            <div class="comment-reply"><?php $this->reply($options->replyWord); ?></div>
+            <?php if ($this->children) echo '<div class="comment-children">' . $this->threadedComments() . '</div>'; ?>
+        </li>
+        <?php
+    }
+
+    protected function ___permalink(): string {
+        if ($this->options->commentsPageBreak) {
+            $pageRow = ['permalink' => $this->parentContent['pathinfo'], 'commentPage' => $this->_currentPage];
+            return Typecho_Router::url('comment_page', $pageRow, $this->options->index) . '#' . $this->theId;
+        }
         return $this->parentContent['permalink'] . '#' . $this->theId;
     }
 
-    /**
-     * 子评论
-     *
-     * @access protected
-     * @return array
-     */
-    protected function ___children()
-    {
-        return $this->options->commentsThreaded && !$this->isTopLevel && isset($this->_threadedComments[$this->coid]) 
-            ? $this->_threadedComments[$this->coid] : array();
+    protected function ___children() {
+        return $this->options->commentsThreaded && !$this->isTopLevel && isset($this->_threadedComments[$this->coid]) ? $this->_threadedComments[$this->coid] : [];
     }
 
-    /**
-     * 是否到达顶层
-     *
-     * @access protected
-     * @return boolean
-     */
-    protected function ___isTopLevel()
-    {
+    protected function ___isTopLevel() {
         return $this->levels > $this->options->commentsMaxNestingLevels - 2;
     }
 
-    /**
-     * 重载内容获取
-     *
-     * @access protected
-     * @return void
-     */
-    protected function ___parentContent()
-    {
+    protected function ___parentContent(): ?array {
         return $this->parameter->parentContent;
     }
 
-    /**
-     * 输出文章评论数
-     *
-     * @access public
-     * @param string $string 评论数格式化数据
-     * @return void
-     */
-    public function num()
-    {
-        $args = func_get_args();
-        if (!$args) {
-            $args[] = '%d';
-        }
-
-        $num = intval($this->_total);
-
-        echo sprintf(isset($args[$num]) ? $args[$num] : array_pop($args), $num);
+    public function num() {
+        $args = func_get_args() ?: ['%d'];
+        echo sprintf($args[min(count($args) - 1, (int)$this->_total)], $this->_total);
     }
 
-    /**
-     * 执行函数
-     *
-     * @access public
-     * @return void
-     */
-    public function execute()
-    {
-        if (!$this->parameter->parentId) {
-            return;
-        }
+    public function execute() {
+        if (!$this->parameter->parentId) return;
 
         $commentsAuthor = Typecho_Cookie::get('__typecho_remember_author');
         $commentsMail = Typecho_Cookie::get('__typecho_remember_mail');
-        $select = $this->select()->where('table.comments.cid = ?', $this->parameter->parentId)
-        ->where('table.comments.status = ? OR (table.comments.author = ? AND table.comments.mail = ? AND table.comments.status = ?)', 'approved', $commentsAuthor, $commentsMail, 'waiting');
-        $threadedSelect = NULL;
-        
-        if ($this->options->commentsShowCommentOnly) {
-            $select->where('table.comments.type = ?', 'comment');
-        }
-        
-        $select->order('table.comments.coid', 'ASC');
-        $this->db->fetchAll($select, array($this, 'push'));
-        
-        /** 需要输出的评论列表 */
-        $outputComments = array();
-        
-        /** 如果开启评论回复 */
+        $select = $this->select()->where('cid = ?', $this->parameter->parentId)
+            ->where('status = ? OR (author = ? AND mail = ? AND status = ?)', 'approved', $commentsAuthor, $commentsMail, 'waiting')
+            ->order('coid', 'ASC');
+        if ($this->options->commentsShowCommentOnly) $select->where('type = ?', 'comment');
+
+        $this->db->fetchAll($select, [$this, 'push']);
+        $outputComments = [];
+
         if ($this->options->commentsThreaded) {
-        
             foreach ($this->stack as $coid => &$comment) {
-                
-                /** 取出父节点 */
                 $parent = $comment['parent'];
-            
-                /** 如果存在父节点 */
-                if (0 != $parent && isset($this->stack[$parent])) {
-                
-                    /** 如果当前节点深度大于最大深度, 则将其挂接在父节点上 */
+                if ($parent && isset($this->stack[$parent])) {
                     if ($comment['levels'] >= $this->options->commentsMaxNestingLevels) {
                         $comment['levels'] = $this->stack[$parent]['levels'];
-                        $parent = $this->stack[$parent]['parent'];     // 上上层节点
-                        $comment['parent'] = $parent;
+                        $comment['parent'] = $this->stack[$parent]['parent'];
                     }
-                
-                    /** 计算子节点顺序 */
-                    $comment['order'] = isset($this->_threadedComments[$parent]) 
-                        ? count($this->_threadedComments[$parent]) + 1 : 1;
-                
-                    /** 如果是子节点 */
+                    $comment['order'] = isset($this->_threadedComments[$parent]) ? count($this->_threadedComments[$parent]) + 1 : 1;
                     $this->_threadedComments[$parent][$coid] = $comment;
                 } else {
                     $outputComments[$coid] = $comment;
                 }
-                
             }
-        
             $this->stack = $outputComments;
         }
-        
-        /** 评论排序 */
-        if ('DESC' == $this->options->commentsOrder) {
+
+        if ($this->options->commentsOrder === 'DESC') {
             $this->stack = array_reverse($this->stack, true);
             $this->_threadedComments = array_map('array_reverse', $this->_threadedComments);
         }
-        
-        /** 评论总数 */
+
         $this->_total = count($this->stack);
-        
-        /** 对评论进行分页 */
         if ($this->options->commentsPageBreak) {
-            if ('last' == $this->options->commentsPageDisplay && !$this->parameter->commentPage) {
-                $this->_currentPage = ceil($this->_total / $this->options->commentsPageSize);
-            } else {
-                $this->_currentPage = $this->parameter->commentPage ? $this->parameter->commentPage : 1;
-            }
-            
-            /** 截取评论 */
-            $this->stack = array_slice($this->stack,
-                ($this->_currentPage - 1) * $this->options->commentsPageSize, $this->options->commentsPageSize);
-            
-            /** 评论置位 */
+            $this->_currentPage = $this->parameter->commentPage ?: ('last' === $this->options->commentsPageDisplay ? ceil($this->_total / $this->options->commentsPageSize) : 1);
+            $this->stack = array_slice($this->stack, ($this->_currentPage - 1) * $this->options->commentsPageSize, $this->options->commentsPageSize);
             $this->row = current($this->stack);
             $this->length = count($this->stack);
         }
-        
         reset($this->stack);
     }
 
-    /**
-     * 将每行的值压入堆栈
-     *
-     * @access public
-     * @param array $value 每行的值
-     * @return array
-     */
-    public function push(array $value)
-    {
+    public function push(array $value): array {
         $value = $this->filter($value);
-        
-        /** 计算深度 */
-        if (0 != $value['parent'] && isset($this->stack[$value['parent']]['levels'])) {
-            $value['levels'] = $this->stack[$value['parent']]['levels'] + 1;
-        } else {
-            $value['levels'] = 0;
-        }
-
-        /** 重载push函数,使用coid作为数组键值,便于索引 */
+        $value['levels'] = ($value['parent'] && isset($this->stack[$value['parent']])) ? $this->stack[$value['parent']]['levels'] + 1 : 0;
         $this->stack[$value['coid']] = $value;
-        $this->length ++;
-        
+        $this->length++;
         return $value;
     }
 
-    /**
-     * 输出分页
-     *
-     * @access public
-     * @param string $prev 上一页文字
-     * @param string $next 下一页文字
-     * @param int $splitPage 分割范围
-     * @param string $splitWord 分割字符
-     * @param string $template 展现配置信息
-     * @return void
-     */
-    public function pageNav($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '...', $template = '')
-    {
-        if ($this->options->commentsPageBreak && $this->_total > $this->options->commentsPageSize) {
-            $default = array(
-                'wrapTag'       =>  'ol',
-                'wrapClass'     =>  'page-navigator'
-            );
+    public function pageNav($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '···', $template = ''){
+        if (!$this->options->commentsPageBreak || $this->_total <= $this->options->commentsPageSize) return;
 
-            if (is_string($template)) {
-                parse_str($template, $config);
-            } else {
-                $config = $template;
-            }
+        $template = array_merge([
+            'wrapTag' => 'ul',
+            'wrapClass' => 'pagination pagination-lg justify-content-center',
+            'itemTag' => 'li',
+            'textTag' => 'span',
+            'currentClass' => 'active',
+            'prevClass' => 'prev',
+            'nextClass' => 'next',
+            'itemClass' => 'page-item',
+            'linkClass' => 'page-link'
+        ], is_string($template) ? [] : $template);
 
-            $template = array_merge($default, $config);
-
-            $pageRow = $this->parameter->parentContent;
-            $pageRow['permalink'] = $pageRow['pathinfo'];
-
-            $query = Typecho_Router::url('comment_page', $pageRow, $this->options->index);
-
-            /** 使用盒状分页 */
-            $nav = new Typecho_Widget_Helper_PageNavigator_Box($this->_total,
-                $this->_currentPage, $this->options->commentsPageSize, $query);
-            $nav->setPageHolder('commentPage');
-            $nav->setAnchor('comments');
-            
-            echo '<' . $template['wrapTag'] . (empty($template['wrapClass']) 
-                    ? '' : ' class="' . $template['wrapClass'] . '"') . '>';
-            $nav->render($prev, $next, $splitPage, $splitWord, $template);
-            echo '</' . $template['wrapTag'] . '>';
+        $pageRow = $this->parameter->parentContent;
+        // Construct the base URL with /page/{commentPage}/
+        $baseUrl = rtrim($this->options->index, '/') . '/page/{commentPage}/';
+        if (!empty($pageRow['pathinfo']) && $pageRow['pathinfo'] !== '/') {
+            $baseUrl = rtrim($pageRow['pathinfo'], '/') . '/page/{commentPage}/';
         }
+        $pageRow['permalink'] = $baseUrl;
+        $query = Typecho_Router::url('comment_page', $pageRow, $this->options->index);
+
+        // Force correct placeholder to avoid {page}, {1}, {2}, etc.
+        $query = str_replace('{page}', '{commentPage}', $query);
+
+        // Debug: Log the query to verify the URL
+        error_log('PageNav Query: ' . $query);
+
+        $nav = new Typecho_Widget_Helper_PageNavigator_Box($this->_total, $this->_currentPage, $this->options->commentsPageSize, $query);
+        $nav->setPageHolder('commentPage');
+        $nav->setAnchor('comments');
+
+        echo "<{$template['wrapTag']} class=\"{$template['wrapClass']}\">";
+        $nav->render($prev, $next, $splitPage, $splitWord, $template);
+        echo "</{$template['wrapTag']}>";
     }
 
-    /**
-     * 递归输出评论
-     *
-     * @access protected
-     * @return void
-     */
-    public function threadedComments()
-    {
-        $children = $this->children;
-        if ($children) {
-            //缓存变量便于还原
-            $tmp = $this->row;
-            $this->sequence ++;
+    public function threadedComments() {
+        if (!$this->children) return;
+        $tmp = $this->row;
+        $this->sequence++;
+        echo $this->_singleCommentOptions->before;
+        foreach ($this->children as $child) {
+            $this->row = $child;
+            $this->threadedCommentsCallback();
+        }
+        echo $this->_singleCommentOptions->after;
+        $this->row = $tmp;
+        $this->sequence--;
+    }
 
-            //在子评论之前输出
+    public function listComments($options = NULL) {
+        $this->_singleCommentOptions = Typecho_Config::factory($options);
+        $this->_singleCommentOptions->setDefault([
+            'before' => '', 'after' => '', 'beforeAuthor' => '', 'afterAuthor' => '',
+            'beforeDate' => '', 'afterDate' => '', 'dateFormat' => $this->options->commentDateFormat,
+            'replyWord' => _t('回复'), 'commentStatus' => _t('审核中...'), 'avatarSize' => 32, 'defaultAvatar' => NULL
+        ]);
+
+        if ($this->have()) {
             echo $this->_singleCommentOptions->before;
-
-            foreach ($children as $child) {
-                $this->row = $child;
-                $this->threadedCommentsCallback();
-                $this->row = $tmp;
-            }
-
-            //在子评论之后输出
+            while ($this->next()) $this->threadedCommentsCallback();
             echo $this->_singleCommentOptions->after;
-
-            $this->sequence --;
         }
     }
-    
-    /**
-     * 列出评论
-     * 
-     * @access private
-     * @param mixed $singleCommentOptions 单个评论自定义选项
-     * @return void
-     */
-    public function listComments($singleCommentOptions = NULL)
-    {
-        //初始化一些变量
-        $this->_singleCommentOptions = Typecho_Config::factory($singleCommentOptions);
-        $this->_singleCommentOptions->setDefault(array(
-            'before'        =>  '',
-            'after'         =>  '',
-            'beforeAuthor'  =>  '',
-            'afterAuthor'   =>  '',
-            'beforeDate'    =>  '',
-            'afterDate'     =>  '',
-            'dateFormat'    =>  $this->options->commentDateFormat,
-            'replyWord'     =>  _t('回复'),
-            'commentStatus' =>  "_t('审核ing...')",
-            'avatarSize'    =>  32,
-            'defaultAvatar' =>  NULL
-        ));
-        $this->pluginHandle()->trigger($plugged)->listComments($this->_singleCommentOptions, $this);
 
-        if (!$plugged) {
-            if ($this->have()) {
-                echo $this->_singleCommentOptions->before;
-            
-                while ($this->next()) {
-                    $this->threadedCommentsCallback();
-                }
-            
-                echo $this->_singleCommentOptions->after;
-            }
-        }
-    }
-    
-    /**
-     * 重载alt函数,以适应多级评论
-     * 
-     * @access public
-     * @return void
-     */
-    public function alt()
-    {
-        $args = func_get_args();
-        $num = func_num_args();
-        
+    public function alt(...$args) {
+        $num = count($args);
         $sequence = $this->levels <= 0 ? $this->sequence : $this->order;
-        
-        $split = $sequence % $num;
-        echo $args[(0 == $split ? $num : $split) -1];
+        echo $args[($sequence % $num + $num - 1) % $num];
     }
 
-    /**
-     * 根据深度余数输出
-     *
-     * @access public
-     * @param string $param 需要输出的值
-     * @return void
-     */
-    public function levelsAlt()
-    {
-        $args = func_get_args();
-        $num = func_num_args();
-        $split = $this->levels % $num;
-        echo $args[(0 == $split ? $num : $split) -1];
+    public function levelsAlt(...$args) {
+        $num = count($args);
+        echo $args[($this->levels % $num + $num - 1) % $num];
     }
-    
-    /**
-     * 评论回复链接
-     * 
-     * @access public
-     * @param string $word 回复链接文字
-     * @return void
-     */
-    public function reply($word = '')
-    {
+
+    public function reply($word = '') {
         if ($this->options->commentsThreaded && !$this->isTopLevel && $this->parameter->allowComment) {
-            $word = empty($word) ? _t('回复') : $word;
-            $this->pluginHandle()->trigger($plugged)->reply($word, $this);
-            
-            if (!$plugged) {
-                echo '<a href="javascript:;" rel="nofollow" onclick="return TypechoComment.reply(\'' .
-                    $this->theId . '\', ' . $this->coid . ');">' . $word . '</a>';
-            }
+            $word = $word ?: _t('回复');
+            echo "<a href=\"javascript:;\" rel=\"nofollow\" onclick=\"return TypechoComment.reply('{$this->theId}', {$this->coid});\">$word</a>";
         }
     }
-    
-    /**
-     * 取消评论回复链接
-     * 
-     * @access public
-     * @param string $word 取消回复链接文字
-     * @return void
-     */
-    public function cancelReply($word = '',$class = "")
-    {
+
+    public function cancelReply($word = '', $class = "") {
         if ($this->options->commentsThreaded) {
-            $word = empty($word) ? _t('取消回复') : $word;
-            $this->pluginHandle()->trigger($plugged)->cancelReply($word, $this);
-            
-            if (!$plugged) {
-                $replyId = $this->request->filter('int')->replyTo;
-                echo '<a class="' . $class . '" id="cancel-comment-reply-link" href="' . $this->parameter->parentContent['permalink'] . '#' . $this->parameter->respondId .
-                '" rel="nofollow"' . ($replyId ? '' : ' style="display:none"') . ' onclick="return TypechoComment.cancelReply();">' . $word . '</a>';
-            }
+            $word = $word ?: _t('取消回复');
+            $replyId = $this->request->filter('int')->replyTo;
+            echo "<a class=\"{$class}\" id=\"cancel-comment-reply-link\" href=\"{$this->parameter->parentContent['permalink']}#{$this->parameter->respondId}\" rel=\"nofollow\"" . ($replyId ? '' : ' style="display:none"') . " onclick=\"return TypechoComment.cancelReply();\">$word</a>";
         }
     }
 }
-function clear_urlcan($url){
-    $rstr='';
-    $tmparr=parse_url($url);
-    $rstr=empty($tmparr['scheme'])?'http://':$tmparr['scheme'].'://';
-    $rstr.=$tmparr['host'].$tmparr['path'];
-    return $rstr;
-}
-class Titleshow_Plugin implements Typecho_Plugin_Interface
-{
-    /**
-     * 激活插件方法,如果激活失败,直接抛出异常
-     * 
-     * @access public
-     * @return void
-     * @throws Typecho_Plugin_Exception
-     */
-    public static function activate()
+
+/**
+ * 自定义分页导航组件
+ */
+class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_PageNavigator{
+    protected $_total;
+    protected $_pageSize;
+    protected $_currentPage;
+    protected $_totalPage;
+    protected $_pageTemplate;
+    protected $_pageHolder = 'commentPage';
+    protected $_anchor;
+
+    public function __construct($total, $currentPage, $pageSize, $pageTemplate, $anchor = NULL)
     {
-        
+        $this->_total = intval($total);
+        $this->_pageSize = intval($pageSize);
+        $this->_currentPage = intval($currentPage);
+        $this->_pageTemplate = $pageTemplate;
+        $this->_anchor = $anchor ? '#' . $anchor : '';
+        $this->_totalPage = ceil($this->_total / $this->_pageSize);
+
+        if ($this->_currentPage < 1) {
+            $this->_currentPage = 1;
+        } else if ($this->_currentPage > $this->_totalPage) {
+            $this->_currentPage = $this->_totalPage;
+        }
+
+        // Normalize pageTemplate: replace {page} or {X} with {commentPage}
+        $this->_pageTemplate = str_replace('{page}', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
+        $this->_pageTemplate = preg_replace('/\{\d+\}/', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
+
+        // Debug: Log the pageTemplate
+        error_log('PageNavigator Template: ' . $this->_pageTemplate);
+
+        // Call parent constructor with 4 arguments for older Typecho compatibility
+        parent::__construct($this->_total, $this->_currentPage, $this->_pageSize, $this->_pageTemplate);
     }
-    
-    /**
-     * 禁用插件方法,如果禁用失败,直接抛出异常
-     * 
-     * @static
-     * @access public
-     * @return void
-     * @throws Typecho_Plugin_Exception
-     */
-    public static function deactivate(){}
-    
-    /**
-     * 获取插件配置面板
-     * 
-     * @access public
-     * @param Typecho_Widget_Helper_Form $form 配置面板
-     * @return void
-     */
-    public static function config(Typecho_Widget_Helper_Form $form)
-    {}
-    
-    /**
-     * 个人用户的配置面板
-     * 
-     * @access public
-     * @param Typecho_Widget_Helper_Form $form
-     * @return void
-     */
-    public static function personalConfig(Typecho_Widget_Helper_Form $form){}
-    
-    /**
-     * 插件实现方法
-     * 
-     * @access public
-     * @return void
-     */
-public static function tshow($v, $obj) {
-/** 如果访问权限被禁止【就是如果需要密码】 */
-if ($v['hidden']){
-$v['text'] = "输入密码才能看哦";
-/** 跳过系统默认 */
-$v['hidden'] = false;
-/** 用于模板判断插件 */
-$v['titleshow'] = true;
+
+    public function render($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '···', array $template = [])
+    {
+        if ($this->_total < 1) return;
+
+        $template = array_merge([
+            'itemTag' => 'li',
+            'textTag' => 'span',
+            'currentClass' => 'active',
+            'prevClass' => 'prev',
+            'nextClass' => 'next',
+            'itemClass' => 'page-item',
+            'linkClass' => 'page-link'
+        ], $template);
+
+        extract($template);
+        $itemBegin = $itemTag ? "<{$itemTag}" . ($itemClass ? " class=\"{$itemClass}\"" : '') . ">" : '';
+        $itemEnd = $itemTag ? "</{$itemTag}>" : '';
+        $linkBegin = "<a href=\"%s\"" . ($linkClass ? " class=\"{$linkClass}\"" : '') . ">";
+
+        $from = max(1, $this->_currentPage - $splitPage);
+        $to = min($this->_totalPage, $this->_currentPage + $splitPage);
+
+        // Previous page link
+        if ($this->_currentPage > 1) {
+            $prevUrl = str_replace('{' . $this->_pageHolder . '}', $this->_currentPage - 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $prevUrl, $prevClass) . $prev . "</a>{$itemEnd}";
+        }
+
+        // First page link
+        if ($from > 1) {
+            $firstUrl = str_replace('{' . $this->_pageHolder . '}', 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $firstUrl) . '1</a>' . "{$itemEnd}";
+            if ($from > 2) echo "{$itemBegin}<{$textTag} class=\"page-link\">{$splitWord}</{$textTag}>{$itemEnd}";
+        }
+
+        // Page number links
+        for ($i = $from; $i <= $to; $i++) {
+            $pageUrl = str_replace('{' . $this->_pageHolder . '}', $i, $this->_pageTemplate) . $this->_anchor;
+            $class = $i == $this->_currentPage ? $currentClass : $itemClass;
+            echo "<{$itemTag}" . ($class ? " class=\"{$class}\"" : '') . ">" . sprintf($linkBegin, $pageUrl) . $i . "</a></{$itemTag}>";
+        }
+
+        // Last page link
+        if ($to < $this->_totalPage) {
+            if ($to < $this->_totalPage - 1) echo "{$itemBegin}<{$textTag} class=\"page-link\">{$splitWord}</{$textTag}>{$itemEnd}";
+            $lastUrl = str_replace('{' . $this->_pageHolder . '}', $this->_totalPage, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $lastUrl) . $this->_totalPage . "</a>{$itemEnd}";
+        }
+
+        // Next page link
+        if ($this->_currentPage < $this->_totalPage) {
+            $nextUrl = str_replace('{' . $this->_pageHolder . '}', $this->_currentPage + 1, $this->_pageTemplate) . $this->_anchor;
+            echo "{$itemBegin}" . sprintf($linkBegin, $nextUrl, $nextClass) . '<i class="fa fa-angle-right"></i>' . "</a>{$itemEnd}";
+        }
+    }
 }
-/** 返回数据 */
-return $v; 
+
+/**
+ * 添加文章自定义字段
+ */
+function themeFields(Typecho_Widget_Helper_Layout $layout) {
+    $pic = new Typecho_Widget_Helper_Form_Element_Text('pic', NULL, NULL, _t('文章头图'), _t('填入图片 URL 地址'));
+    $layout->addItem($pic);
 }
 
+/**
+ * 清理 URL 中的查询参数
+ */
+function clear_urlcan($url) {
+    $parsed = parse_url($url);
+    return ($parsed['scheme'] ?? 'http') . '://' . $parsed['host'] . ($parsed['path'] ?? '');
 }
-Typecho_Plugin::factory('Widget_Abstract_Contents')->filter = array('Titleshow_Plugin', 'tshow');
 
+/**
+ * 文章标题显示插件（内置于主题）
+ */
+class Titleshow_Plugin implements Typecho_Plugin_Interface {
+    public static function activate() {}
+    public static function deactivate() {}
+    public static function config(Typecho_Widget_Helper_Form $form) {}
+    public static function personalConfig(Typecho_Widget_Helper_Form $form) {}
 
-
+    public static function tshow($v, $obj) {
+        if ($v['hidden']) {
+            $v['text'] = "输入密码才能看哦";
+            $v['hidden'] = false;
+            $v['titleshow'] = true;
+        }
+        return $v;
+    }
+}
+Typecho_Plugin::factory('Widget_Abstract_Contents')->filter = ['Titleshow_Plugin', 'tshow'];

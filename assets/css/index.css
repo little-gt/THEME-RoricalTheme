@@ -210,7 +210,7 @@ blockquote{
     padding-left: 1rem;
 }
 .gravatar{
-	background-image:url(https://secure.gravatar.com/avatar/);
+	background-image:url(https://cdn.sep.cc/avatar/);
 	background-position: center;
 	background-size: cover;
 	background-repeat: no-repeat;
