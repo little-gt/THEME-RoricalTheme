@@ -4,11 +4,11 @@
 > 一款为 Typecho 打造的现代化卡片式主题，专注于优雅与实用的平衡。  
 > “Rorical Theme 是你理想的个人博客选择。”
 
-[![License](https://img.shields.io/badge/license-GPL-green.svg)](LICENSE)
-[![Typecho](https://img.shields.io/badge/Typecho-1.2.1+-blue.svg)](https://typecho.org)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-4.6-purple.svg)](https://getbootstrap.com)
-[![Argon Design System](https://img.shields.io/badge/Design-Argon-orange.svg)](https://demos.creative-tim.com/argon-design-system/)
-[![GitHub Stars](https://img.shields.io/github/stars/little-gt/THEME-RoricalTheme.svg?style=social&label=Star)](https://github.com/little-gt/THEME-RoricalTheme/stargazers)
+[![项目版本](https://img.shields.io/badge/版本-1.2.2-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
+[![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
+[![作者信息](https://img.shields.io/badge/作者-GARFIELDTOM-6f42c1?style=flat-square&logo=github)](https://garfieldtom.cool/)
 
 主题预览：
 
@@ -25,7 +25,7 @@
 | ⚡ **轻快交互** | PowerMode 打字特效、鼠标点击涟漪、AJAX 评论与搜索 |
 | 📝 **文章增强** | 自动 TOC 目录、阅读统计、字数统计、评论计数 |
 | 🎨 **高度自定义** | 独立页面图标与配色、自定义导航栏样式、双端背景、LOGO 设置 |
-| 🧩 **插件支持** | 评论区 IP 归属展示（依赖 [CommentShowIp](https://github.com/SocialSisterYi/Typecho-Plugin-CommentShowIp)） |
+| 🧩 **插件支持** | 评论区 IP 归属展示（依赖 [XQLocation](https://www.toubiec.cn/1194.html)） |
 | 🧠 **兼容优化** | 完全支持 Typecho 1.2.1 / PHP 8.X / MySQL 8.X |
 
 ---
@@ -68,7 +68,7 @@
 
 3. **依赖插件**
 
-   * 安装 [CommentShowIp](https://github.com/SocialSisterYi/Typecho-Plugin-CommentShowIp) 插件以启用 IP 归属显示功能
+   * 安装 [XQLocation](https://www.toubiec.cn/1194.html) 插件以启用 IP 归属显示功能
 
 ---
 

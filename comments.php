@@ -42,7 +42,13 @@ $this->comments()->to($comments);
                         <a class="text-success breakword">
                             <span class="badge badge-info">
                                 <i class="fa fa-globe" aria-hidden="true"></i>
-                                <?php if (class_exists('LocationIP_Plugin')) LocationIP_Plugin::output($comments, "{loc}"); ?>
+                                <?php
+                                    if (class_exists('XQLocation_Plugin') && method_exists('XQLocation_Plugin', 'render')) {
+                                        XQLocation_Plugin::render($comments->ip);
+                                    } else {
+                                        echo '尚未进行配置';
+                                    }
+                                ?>
                             </span>
                             <span class="badge badge-success">
                                 <i class="fa fa-clock-o" aria-hidden="true"></i>
