@@ -35,7 +35,7 @@ function themeConfig($form) {
     $form->addInput($clickanime);
 
     // 网站统计代码
-    $Analytic = new Typecho_Widget_Helper_Form_Element_Textarea('Analytic', NULL, NULL, _t('网站统计代码'), _t('填入类似 Google Analytics 的代码，添加到 Header'));
+    $Analytic = new Typecho_Widget_Helper_Form_Element_Textarea('Analytic', NULL, NULL, _t('网站统计代码'), _t('填入类似 Google Analytics 的代码，添加到 Header（直接输入代码，该功能会通过 Cookie 管理器控制）'));
     $form->addInput($Analytic);
 
     // 导航栏图标

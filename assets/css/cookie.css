@@ -1,0 +1,183 @@
+/* --- General Cookie Component Styles --- */
+:root {
+    --cookie-primary-color: #007BFF;
+    --cookie-secondary-color: #6c757d;
+    --cookie-dark-bg: #2c3e50;
+    --cookie-light-text: #ecf0f1;
+    --cookie-border-color: #ddd;
+}
+
+/* --- Main Banner --- */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--cookie-dark-bg);
+    color: var(--cookie-light-text);
+    z-index: 1050;
+    box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+    display: none; /* Controlled by JS */
+    padding: 1rem;
+}
+.cookie-banner-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+.cookie-banner-content p { margin: 0; font-size: 0.9rem; }
+.cookie-banner-buttons { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.cookie-banner-buttons button {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+#cookie-customize-btn { background-color: var(--cookie-secondary-color); color: white; }
+#cookie-customize-btn:hover { background-color: #5a6268; }
+#cookie-accept-all-btn { background-color: var(--cookie-primary-color); color: white; }
+#cookie-accept-all-btn:hover { background-color: #0056b3; }
+
+/* --- Settings Modal --- */
+.cookie-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 1060;
+    display: none; /* Controlled by JS */
+    align-items: center;
+    justify-content: center;
+}
+.cookie-modal-content {
+    background-color: white;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+}
+.cookie-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--cookie-border-color);
+}
+.cookie-modal-header h2 { margin: 0; font-size: 1.25rem; }
+.cookie-modal-close { background: none; border: none; font-size: 2rem; cursor: pointer; color: #888; }
+.cookie-modal-body { padding: 1.5rem; overflow-y: auto; }
+.cookie-modal-body > p { font-size: 0.9rem; color: #555; margin-top: 0; }
+.cookie-category { border-bottom: 1px solid var(--cookie-border-color); padding: 1rem 0; }
+.cookie-category:last-child { border-bottom: none; }
+.cookie-category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+.cookie-category-header strong { font-size: 1rem; }
+.cookie-category-description { font-size: 0.85rem; color: #666; margin: 0; }
+.cookie-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--cookie-border-color);
+    background-color: #f9f9f9;
+}
+.cookie-modal-footer button {
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--cookie-secondary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    background-color: var(--cookie-secondary-color);
+    color: white;
+    transition: background-color 0.2s;
+}
+.cookie-modal-footer button:hover { background-color: #5a6268; }
+.cookie-modal-footer #cookie-accept-all-modal-btn { background-color: var(--cookie-primary-color); border-color: var(--cookie-primary-color); }
+.cookie-modal-footer #cookie-accept-all-modal-btn:hover { background-color: #0056b3; }
+
+
+/* --- Toggle Switch --- */
+.cookie-toggle-switch, .cookie-toggle-switch-disabled {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+.cookie-toggle-switch input, .cookie-toggle-switch-disabled input { opacity: 0; width: 0; height: 0; }
+.cookie-toggle-switch span, .cookie-toggle-switch-disabled span {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 26px;
+}
+.cookie-toggle-switch span:before, .cookie-toggle-switch-disabled span:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + span { background-color: var(--cookie-primary-color); }
+input:checked + span:before { transform: translateX(24px); }
+.cookie-toggle-switch-disabled { opacity: 0.6; cursor: not-allowed; }
+.cookie-toggle-switch-disabled span { cursor: not-allowed; }
+
+
+/* --- Manage Consent Trigger --- */
+#manage-consent-trigger {
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-color: var(--cookie-dark-bg);
+    color: white;
+    border-radius: 50%;
+    display: none; /* Controlled by JS */
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1040;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+    .cookie-banner-content { flex-direction: column; text-align: center; }
+    .cookie-modal-content { width: 100%; height: 100%; max-height: 100%; border-radius: 0; }
+    .cookie-modal-footer { justify-content: center; }
+}
+
+/*
+ * Styles for the comment form consent prompt.
+ * This is shown when functional cookies are not accepted.
+ */
+#comment-consent-prompt {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#comment-consent-prompt p {
+    margin: 0;
+    font-size: 0.9em;
+    line-height: 1.5;
+}

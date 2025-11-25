@@ -198,5 +198,88 @@
     </button>
 </a>
 
+<!-- START - Cookie Consent Management -->
+<script src="<?php $this->options->themeUrl('./assets/js/cookie.js'); ?>"></script>
+<!-- 1. Main Consent Banner (Initially Visible) -->
+<div id="cookie-consent-banner" class="cookie-banner">
+    <div class="cookie-banner-content">
+        <p>欢迎来到「<?php $this->options->title(); ?>」。我们使用 Cookie 来优化您的体验、提供安全保障并分析网站流量。您可以选择接受所有 Cookie，或自定义您的设置。您可以阅读<a href="/privacy.html">隐私政策</a>了解更多。</p>
+        <div class="cookie-banner-buttons">
+            <button id="cookie-customize-btn">自定义设置</button>
+            <button id="cookie-accept-all-btn">接受所有</button>
+        </div>
+    </div>
+</div>
+<!-- 2. Detailed Settings Modal (Initially Hidden) -->
+<div id="cookie-settings-modal" class="cookie-modal-backdrop">
+    <div class="cookie-modal-content">
+        <div class="cookie-modal-header">
+            <h2>Cookie 设置</h2>
+            <button id="cookie-modal-close-btn" class="cookie-modal-close">&times;</button>
+        </div>
+        <div class="cookie-modal-body">
+            <p>为了网站的正常运行和安全，某些 Cookie 是必需的。对于其他类型的 Cookie，您可根据需要，选择是否启用。您的选择将被保存，并且可以随时通过页脚的 Cookie 图标进行修改。您可以阅读<a href="<?php $this->options->siteUrl('./privacy.html'); ?>">隐私政策</a>了解更多。</p>
+            <!-- Strictly Necessary Cookies -->
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label for="cookie-necessary">
+                        <strong>绝对必要的 Cookie (始终启用)</strong>
+                    </label>
+                    <div class="cookie-toggle-switch-disabled">
+                        <input type="checkbox" id="cookie-necessary" checked disabled>
+                        <span></span>
+                    </div>
+                </div>
+                <p class="cookie-category-description">
+                    这些 Cookie 对于网站的核心功能至关重要，例如安全性和可访问性。它们无法被禁用。
+                    <br>• <strong>用途</strong>: 安全人机验证、会话管理。
+                </p>
+            </div>
+            <!-- Functional Cookies -->
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label for="cookie-functional">
+                        <strong>功能性 Cookie</strong>
+                    </label>
+                    <label class="cookie-toggle-switch">
+                        <input type="checkbox" id="cookie-functional">
+                        <span></span>
+                    </label>
+                </div>
+                <p class="cookie-category-description">
+                    这些 Cookie 用于提供增强功能和个性化设置，例如记住您的偏好（如主题颜色、语言等）。
+                    <br>• <strong>用途</strong>: 记住界面偏好。
+                </p>
+            </div>
+            <!-- Analytics Cookies -->
+            <div class="cookie-category">
+                <div class="cookie-category-header">
+                    <label for="cookie-analytics">
+                        <strong>分析性 Cookie</strong>
+                    </label>
+                    <label class="cookie-toggle-switch">
+                        <input type="checkbox" id="cookie-analytics">
+                        <span></span>
+                    </label>
+                </div>
+                <p class="cookie-category-description">
+                    这些 Cookie 帮助我们了解访问者如何与网站互动，通过收集和报告匿名信息来帮助我们改进网站。
+                    <br>• <strong>用途</strong>: 统计网站访问量和流量来源。
+                </p>
+            </div>
+
+        </div>
+        <div class="cookie-modal-footer">
+            <button id="cookie-save-prefs-btn">保存我的选择</button>
+            <button id="cookie-accept-all-modal-btn">接受所有</button>
+        </div>
+    </div>
+</div>
+<!-- 3. Manage Consent Trigger (Visible after initial choice) -->
+<div id="manage-consent-trigger" title="管理 Cookie 设置">
+    <svg t="1761489949848" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="16013" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M512 128a384 384 0 0 0-384 384 384 384 0 0 0 384 384 384 384 0 0 0 384-384c0-21.333333-1.706667-42.666667-5.546667-64C878.933333 426.666667 853.333333 426.666667 853.333333 426.666667h-85.333333V384c0-42.666667-42.666667-42.666667-42.666667-42.666667h-85.333333V298.666667c0-42.666667-42.666667-42.666667-42.666667-42.666667h-42.666666V170.666667c0-42.666667-42.666667-42.666667-42.666667-42.666667M405.333333 256A64 64 0 0 1 469.333333 320 64 64 0 0 1 405.333333 384 64 64 0 0 1 341.333333 320 64 64 0 0 1 405.333333 256m-128 170.666667A64 64 0 0 1 341.333333 490.666667 64 64 0 0 1 277.333333 554.666667 64 64 0 0 1 213.333333 490.666667 64 64 0 0 1 277.333333 426.666667m213.333334 42.666666a64 64 0 0 1 64 64 64 64 0 0 1-64 64 64 64 0 0 1-64-64 64 64 0 0 1 64-64m213.333333 85.333334a64 64 0 0 1 64 64 64 64 0 0 1-64 64 64 64 0 0 1-64-64 64 64 0 0 1 64-64M469.333333 682.666667a64 64 0 0 1 64 64A64 64 0 0 1 469.333333 810.666667a64 64 0 0 1-64-64A64 64 0 0 1 469.333333 682.666667z" fill="#ffffff" p-id="16014" data-spm-anchor-id="a313x.search_index.0.i5.43dc3a81CmRlcO" class="selected"></path></svg>
+</div>
+<!-- END - Cookie Consent Management -->
+
 </body>
 </html>

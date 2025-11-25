@@ -1,16 +1,22 @@
 # 🌸 Rorical Theme for Typecho
 
-> **简洁 · 可爱 · 功能强大**  
-> 一款为 Typecho 打造的现代化卡片式主题，专注于优雅与实用的平衡。  
-> “Rorical Theme 是你理想的个人博客选择。”
+> 简洁 · 可爱 · 功能强大
+>
+> 一款为 Typecho 打造的现代化卡片式主题.
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.2-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![项目版本](https://img.shields.io/badge/版本-1.2.3-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 [![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
 [![作者信息](https://img.shields.io/badge/作者-GARFIELDTOM-6f42c1?style=flat-square&logo=github)](https://garfieldtom.cool/)
 
 主题预览：
+
+![预览1](MARKDOWN_2025-11-26_002123_964.png)
+
+![预览2](MARKDOWN_2025-11-26_002203_506.png)
+
+![预览3](MARKDOWN_2025-11-26_002210_813.png)
 
 * [Typecho 官方论坛主题帖](https://forum.typecho.org/viewtopic.php?t=25532)
 * [Typecho.work 主题收录页](https://typecho.work/archives/Rorical.html)
@@ -27,21 +33,14 @@
 | 🎨 **高度自定义** | 独立页面图标与配色、自定义导航栏样式、双端背景、LOGO 设置 |
 | 🧩 **插件支持** | 评论区 IP 归属展示（依赖 [XQLocation](https://www.toubiec.cn/1194.html)） |
 | 🧠 **兼容优化** | 完全支持 Typecho 1.2.1 / PHP 8.X / MySQL 8.X |
+| 🍪**Cookie合规** | 支持 GDPR/最新2026年执行的中国网络安全规范的 Cookie 同意模式 |
 
 ---
 
-## 🚀 近期更新 (二次开发增强版)
-
-> 当前维护者：[**little-gt**](https://github.com/little-gt/THEME-RoricalTheme)  
-> 原作者：[**Rorical**](https://github.com/Rorical/RoricalTheme)
+## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- 全面重写 `functions.php`，升级 SQL 路由兼容 Typecho 1.2.1  
-- 优化头像逻辑，支持自定义 Gravatar CDN（默认 `cdn.sep.cc`）  
-- 评论区 UI 改进，新增 IP 归属地显示功能  
-- 修复 **MathJax** 加载问题并更新至 v3.2.2  
-- 优化 TOC 快捷跳转逻辑与显示样式  
-- 重构部分前端 JS 与 CSS，提升整体性能  
+- 更新了 Cookie 管理器
 
 ### 🔮 未来规划
 - 私密评论支持  
@@ -95,6 +94,34 @@
 | `bg-gradient-default` | 灰紫色  |
 
 > 图标来源：[Argon Icons Reference](https://demos.creative-tim.com/argon-design-system/docs/foundation/icons.html)
+
+---
+
+## 🍪 Cookie 合规功能配置
+
+本次更新新增了新的 Cookie 管理器功能，并且需要你配置一个名为“隐私政策”的独立页面，其 URL 应该形为 example.com/privacy.html，或者你可以替换`footer.php`下面的代码：
+
+```php
+<a href="/privacy.html">隐私政策</a>
+```
+
+如果需要添加非必要的功能性或者是分析性的 Cookie 代码，请你参考下面的形式进行添加，以便于其受到 Cookie 管理器的控制：
+
+```html
+<!-- Google Analytics (Part 1 - External Script) -->
+<script type="text/plain" data-consent-category="analytics" async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script>
+
+<!-- Google Analytics (Part 2 - Inline Script) -->
+<script type="text/plain" data-consent-category="analytics">
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'YOUR_GA_ID');
+</script>
+
+<!-- 一个功能性脚本，例如评论系统 -->
+<script type="text/plain" data-consent-category="functional" src="/path/to/comments.js"></script>
+```
 
 ---
 

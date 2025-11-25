@@ -15,12 +15,14 @@
             'author'    =>  _t('%s 的文章')
         ), '', ' - '); ?><?php $this->options->title(); ?></title>
     <!-- Analytics -->
-    <?php $this->options->Analytic() ?>
+    <script type="text/plain" data-consent-category="analytics">
+        <?php $this->options->Analytic() ?? '//Analytical script not deployed.' ?>
+    </script>
 	<!-- Jquery -->
     <script src="<?php $this->options->themeUrl('./assets/js/jquery.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/jquery.pjax.js'); ?>"></script>
     <!-- Fonts -->
-    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet">-->
+    <link href="<?php $this->options->themeUrl('./assets/css/fonts.css'); ?>" rel="stylesheet">
     <!-- Icons -->
     <link href="<?php $this->options->themeUrl('./assets/vendor/nucleo/css/nucleo.css'); ?>" rel="stylesheet" />
     <link href="<?php $this->options->themeUrl('./assets/vendor/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet" />
@@ -32,16 +34,17 @@
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/csshake.min.css'); ?>" />
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/viewer.min.css'); ?>" />
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/prism.css'); ?>" />
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/cookie.css'); ?>" />
     <!-- JS -->
-    <script src="<?php $this->options->themeUrl('./assets/js/lazyload.js'); ?>" charset="utf-8"></script>
+    <script src="<?php $this->options->themeUrl('./assets/js/lazyload.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/functions.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/md5.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/viewer.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/jquery-viewer.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/prism.js'); ?>"></script>
     <!--[if lt IE 9]>
-    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/html5shiv/3.7.3/html5shiv.min.js" type="application/javascript"></script>
-    <script src="https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/respond.js/1.4.2/respond.min.js" type="application/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha512-UDJtJXfzfsiPPgnI5S1000FPLBHMhvzAMX15I+qG2E2OAzC9P1JzUwJOfnypXiOH7MRPaqzhPbBGDNNj7zBfoA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.3.0/respond.min.js" integrity="sha512-i/6nAYMMwXZ3dTsq+ngdkSl4MbtVQF0FdCeqP5/1HSXPxyEd43vrxhafg1P4iqKRAnZVHn48GYaFUYRcTB0YrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <![endif]-->
 	<!-- okaikia -->
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/okaikia.css'); ?>" />

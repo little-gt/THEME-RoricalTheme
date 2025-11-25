@@ -84,18 +84,24 @@ $this->comments()->to($comments);
 
     <!-- 评论表单 -->
     <?php if ($this->allow('comment')): ?>
-        <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
-            <form method="post" action="<?php $this->commentUrl(); ?>" id="comment-form" role="form">
-                <div class="container mt-5">
-                    <div class="card bg-gradient-warning border-0">
-                        <div class="p-5">
-                            <div class="row align-items-center">
-                                <div class="col-lg-8">
-                                    <h3 class="text-white"><?php _e('添加新评论'); ?></h3>
-                                    <?php if ($this->user->hasLogin()): ?>
-                                        <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required 
-                                                  placeholder="<?php echo $this->user->screenName(); ?>? 写点什么吧..."></textarea>
-                                    <?php else: ?>
+    <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
+        <form method="post" action="<?php $this->commentUrl(); ?>" id="comment-form" role="form">
+            <div class="container mt-5">
+                <div class="card bg-gradient-warning border-0">
+                    <div class="p-5">
+                        <div class="row align-items-center">
+                            <div class="col-lg-8">
+                                <h3 class="text-white"><?php _e('添加新评论'); ?></h3>
+                                <?php if ($this->user->hasLogin()): ?>
+                                    <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required
+                                              placeholder="<?php echo $this->user->screenName(); ?>? 写点什么吧..."></textarea>
+                                <?php else: ?>
+                                    <!-- Cookie 同意提醒 -->
+                                    <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                        <p class="text-white" style="margin: 0;">为了记住您的昵称、邮箱等信息以便下次评论，请启用功能性 Cookie。您可以点击左下角的 🍪 图标来管理您的设置。</p>
+                                    </div>
+                                    <!-- 评论区 -->
+                                    <div id="comment-user-details">
                                         <div class="row lead text-white mt-3">
                                             <div class="col-md-4">
                                                 <div class="form-group input-group input-group-alternative">
@@ -120,22 +126,23 @@ $this->comments()->to($comments);
                                                 </div>
                                             </div>
                                         </div>
-                                        <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required placeholder="写点什么吧..."></textarea>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="col-lg-3 ml-lg-auto mt-3">
-                                    <button class="btn btn-lg btn-block btn-white" type="submit" id="add-comment-button">提交！</button>
-                                    <div class="cancel-comment-reply mt-5 align-items-center">
-                                        <?php $comments->cancelReply('取消回复', 'btn btn-danger'); ?>
                                     </div>
+                                    <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required placeholder="写点什么吧..."></textarea>
+                                <?php endif; ?>
+                            </div>
+                            <div class="col-lg-3 ml-lg-auto mt-3">
+                                <button class="btn btn-lg btn-block btn-white" type="submit" id="add-comment-button">提交！</button>
+                                <div class="cancel-comment-reply mt-5 align-items-center">
+                                    <?php $comments->cancelReply('取消回复', 'btn btn-danger'); ?>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </form>
-        </div>
-    <?php endif; ?>
+            </div>
+        </form>
+    </div>
+<?php endif; ?>
 
     <!-- 评论分页 -->
     <div id="comments">
