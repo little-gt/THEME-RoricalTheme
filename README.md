@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题.
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.3-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![项目版本](https://img.shields.io/badge/版本-1.2.4-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 [![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
@@ -18,7 +18,9 @@
 
 ![预览3](MARKDOWN_2025-11-26_002210_813.png)
 
-* [Typecho 官方论坛主题帖](https://forum.typecho.org/viewtopic.php?t=25532)
+主题帖子：
+
+* [Typecho 官方论坛主题帖](https://forum.typecho.org/viewtopic.php?t=25572)
 * [Typecho.work 主题收录页](https://typecho.work/archives/Rorical.html)
 
 ---
@@ -40,7 +42,10 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- 更新了 Cookie 管理器
+- 更新了 Cookie 管理器 的 JavaScript 逻辑，适配更多情况。
+- 修复了 评论区 Cookie 管理加载异常不显示的问题；
+- 修复了 资源加载逻辑，修复了字体在移动端浏览器不加载的问题；
+- 统一了 资源加载风格。
 
 ### 🔮 未来规划
 - 私密评论支持  
@@ -102,25 +107,39 @@
 本次更新新增了新的 Cookie 管理器功能，并且需要你配置一个名为“隐私政策”的独立页面，其 URL 应该形为 example.com/privacy.html，或者你可以替换`footer.php`下面的代码：
 
 ```php
-<a href="/privacy.html">隐私政策</a>
+<?php $this->options->siteUrl('./privacy.html'); ?>
 ```
 
-如果需要添加非必要的功能性或者是分析性的 Cookie 代码，请你参考下面的形式进行添加，以便于其受到 Cookie 管理器的控制：
+### 这个版本做了两点小优化：
 
+1.  **自动清理**：执行后移除 `data-consent-category` 属性，防止混淆。
+2.  **通用性**：完美支持 `src`、`async`、`defer` 等属性的复制。
+
+### 如何使用 Cookie 合规功能
+
+你可以在 HTML 中随意混合使用这两种方式，脚本都会自动处理：
+
+#### 1. 外部引用 JS (如引入某个特效库)
 ```html
-<!-- Google Analytics (Part 1 - External Script) -->
-<script type="text/plain" data-consent-category="analytics" async src="https://www.googletagmanager.com/gtag/js?id=YOUR_GA_ID"></script>
+<script type="text/plain"
+        data-consent-category="functional"
+        src="/path/to/afunction.js"></script>
+```
 
-<!-- Google Analytics (Part 2 - Inline Script) -->
-<script type="text/plain" data-consent-category="analytics">
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'YOUR_GA_ID');
+#### 2. 外部引用 JS (带 async/defer 属性)
+```html
+<script type="text/plain"
+        data-consent-category="analytics"
+        src="https://www.googletagmanager.com/gtag/js?id=XXX"
+        async></script>
+```
+
+#### 3. 内嵌 JS (如初始化代码)
+```html
+<script type="text/plain" data-consent-category="functional">
+    console.log("功能性脚本已加载");
+    myFunction.init();
 </script>
-
-<!-- 一个功能性脚本，例如评论系统 -->
-<script type="text/plain" data-consent-category="functional" src="/path/to/comments.js"></script>
 ```
 
 ---

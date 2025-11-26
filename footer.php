@@ -26,13 +26,13 @@
 
 <?php $this->footer(); ?>
 
-<script src="<?php $this->options->themeUrl('assets/vendor/popper/popper.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/vendor/bootstrap/bootstrap.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/vendor/headroom/headroom.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/vendor/onscreen/onscreen.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/vendor/nouislider/js/nouislider.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/argon.js?v=1.0.0'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/popper/popper.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/bootstrap/bootstrap.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/headroom/headroom.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/onscreen/onscreen.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/nouislider/js/nouislider.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/vendor/bootstrap-datepicker/js/bootstrap-datepicker.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/js/argon.js?v=1.0.0'); ?>"></script>
 <script type="text/javascript">
     window.MathJax = {
         tex: {
@@ -61,8 +61,8 @@
     };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.js" integrity="sha512-dYOCdOl06012DI+59NDm+JDwE5nfEOHU3OSwP1ydeLK5/dUcUohVx2Ojd7kNqw711V8++78udRAZMOGoKYJgvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="<?php $this->options->themeUrl('assets/js/prism.js'); ?>"></script>
-<script src="<?php $this->options->themeUrl('assets/js/clipboard.min.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/js/prism.js'); ?>"></script>
+<script src="<?php $this->options->themeUrl('./assets/js/clipboard.min.js'); ?>"></script>
 
 <script type="text/javascript">
     function init() {
@@ -177,7 +177,7 @@
 </div>
 
 <?php if ($this->options->powermode == "able"): ?>
-    <script src="<?php $this->options->themeUrl('assets/js/activate-power-mode.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('./assets/js/activate-power-mode.js'); ?>"></script>
     <script>
         $(document).ready(function () {
             POWERMODE.colorful = true;
@@ -189,7 +189,7 @@
 
 <?php if ($this->options->clickanime == "able"): ?>
     <canvas id="clickcanvas"></canvas>
-    <script src="<?php $this->options->themeUrl('assets/js/click.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('./assets/js/click.js'); ?>"></script>
 <?php endif; ?>
 
 <a href="javascript:$('html,body').animate({ scrollTop: 0 }, 500)">
@@ -199,11 +199,10 @@
 </a>
 
 <!-- START - Cookie Consent Management -->
-<script src="<?php $this->options->themeUrl('./assets/js/cookie.js'); ?>"></script>
 <!-- 1. Main Consent Banner (Initially Visible) -->
 <div id="cookie-consent-banner" class="cookie-banner">
     <div class="cookie-banner-content">
-        <p>欢迎来到「<?php $this->options->title(); ?>」。我们使用 Cookie 来优化您的体验、提供安全保障并分析网站流量。您可以选择接受所有 Cookie，或自定义您的设置。您可以阅读<a href="/privacy.html">隐私政策</a>了解更多。</p>
+        <p>欢迎来到「<?php $this->options->title(); ?>」。我们使用 Cookie 来优化您的体验、提供安全保障并分析网站流量。您可以选择接受所有 Cookie，或自定义您的设置。您可以阅读<a href="<?php $this->options->siteUrl('./privacy.html'); ?>">隐私政策</a>了解更多。</p>
         <div class="cookie-banner-buttons">
             <button id="cookie-customize-btn">自定义设置</button>
             <button id="cookie-accept-all-btn">接受所有</button>
@@ -214,7 +213,7 @@
 <div id="cookie-settings-modal" class="cookie-modal-backdrop">
     <div class="cookie-modal-content">
         <div class="cookie-modal-header">
-            <h2>Cookie 设置</h2>
+            <h2>管理我的 Cookie 设置</h2>
             <button id="cookie-modal-close-btn" class="cookie-modal-close">&times;</button>
         </div>
         <div class="cookie-modal-body">
@@ -223,7 +222,7 @@
             <div class="cookie-category">
                 <div class="cookie-category-header">
                     <label for="cookie-necessary">
-                        <strong>绝对必要的 Cookie (始终启用)</strong>
+                        <strong>必要的 Cookie</strong>
                     </label>
                     <div class="cookie-toggle-switch-disabled">
                         <input type="checkbox" id="cookie-necessary" checked disabled>
@@ -231,8 +230,8 @@
                     </div>
                 </div>
                 <p class="cookie-category-description">
-                    这些 Cookie 对于网站的核心功能至关重要，例如安全性和可访问性。它们无法被禁用。
-                    <br>• <strong>用途</strong>: 安全人机验证、会话管理。
+                    这些 Cookie 对于网站的核心功能至关重要，例如安全性和可访问性。它们始终启用，无法被禁用。
+                    <br><strong>用途</strong>: 安全人机验证、会话管理。
                 </p>
             </div>
             <!-- Functional Cookies -->
@@ -247,8 +246,8 @@
                     </label>
                 </div>
                 <p class="cookie-category-description">
-                    这些 Cookie 用于提供增强功能和个性化设置，例如记住您的偏好（如主题颜色、语言等）。
-                    <br>• <strong>用途</strong>: 记住界面偏好。
+                    这些 Cookie 用于提供增强功能和个性化设置，例如记住您的偏好（如启用评论区等功能）。
+                    <br><strong>用途</strong>: 记住服务偏好信息。
                 </p>
             </div>
             <!-- Analytics Cookies -->
@@ -264,7 +263,7 @@
                 </div>
                 <p class="cookie-category-description">
                     这些 Cookie 帮助我们了解访问者如何与网站互动，通过收集和报告匿名信息来帮助我们改进网站。
-                    <br>• <strong>用途</strong>: 统计网站访问量和流量来源。
+                    <br><strong>用途</strong>: 统计网站访问量和流量来源。
                 </p>
             </div>
 

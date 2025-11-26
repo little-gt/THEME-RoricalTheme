@@ -11,9 +11,8 @@
 
 | Version     | Supported |
 | ----------- | --------- |
-| **1.2.3**   | ✅ Yes     |
-| **1.2.2**   | ✅ Yes     |
-| **＜ 1.2.2** | ❌ No     |
+| **1.2.4**   | ✅ No     |
+| **＜ 1.2.3** | ❌ No     |
 
 ---
 
@@ -38,7 +37,7 @@
 
 为加快问题定位、复现与修复，建议在您的报告中尽可能包含以下信息：
 
-* 影响版本（如：`v1.2.2` 或 commit hash）
+* 影响版本（如：`v1.2.4` 或 commit hash）
 * 环境信息：Typecho / PHP / MySQL / 浏览器 / OS 等
 * 漏洞类型（XSS / SQL Injection / Privilege Escalation / CSRF / Info Leak 等）
 * 清晰的复现步骤（step-by-step）

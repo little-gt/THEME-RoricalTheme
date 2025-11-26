@@ -93,14 +93,20 @@ $this->comments()->to($comments);
                             <div class="col-lg-8">
                                 <h3 class="text-white"><?php _e('添加新评论'); ?></h3>
                                 <?php if ($this->user->hasLogin()): ?>
+                                    <!-- Cookie同意提醒 -->
+                                    <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                        <p class="text-white" style="margin: 0;">您好，<?php echo $this->user->screenName(); ?>。您已经登录「<?php $this->options->title(); ?>」，即视为您同意了评论区相关功能的功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
+                                    </div>
+                                    <div id="comment-user-details"></div>
+                                    <!-- 评论内容输入框 -->
                                     <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required
                                               placeholder="<?php echo $this->user->screenName(); ?>? 写点什么吧..."></textarea>
                                 <?php else: ?>
-                                    <!-- Cookie 同意提醒 -->
+                                    <!-- Cookie同意提醒 -->
                                     <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                                        <p class="text-white" style="margin: 0;">为了记住您的昵称、邮箱等信息以便下次评论，请启用功能性 Cookie。您可以点击左下角的 🍪 图标来管理您的设置。</p>
+                                        <p class="text-white" style="margin: 0;">为了记住您的昵称、邮箱等信息以便下次评论，请启用功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
                                     </div>
-                                    <!-- 评论区 -->
+                                    <!-- 评论用户信息区 -->
                                     <div id="comment-user-details">
                                         <div class="row lead text-white mt-3">
                                             <div class="col-md-4">
@@ -115,18 +121,17 @@ $this->comments()->to($comments);
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input type="email" name="mail" id="mail" placeholder="邮箱" value="<?php $this->remember('mail'); ?>" 
-                                                           class="form-control form-control-alternative" required/>
+                                                    <input type="email" name="mail" id="mail" placeholder="邮箱" value="<?php $this->remember('mail'); ?>"  class="form-control form-control-alternative" required/>
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <input type="url" name="url" id="url" value="<?php $this->remember('url'); ?>" placeholder="网站" 
-                                                           class="form-control form-control-alternative"/>
+                                                    <input type="url" name="url" id="url" value="<?php $this->remember('url'); ?>" placeholder="网站" class="form-control form-control-alternative"/>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- 评论内容输入框 -->
                                     <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required placeholder="写点什么吧..."></textarea>
                                 <?php endif; ?>
                             </div>
@@ -142,7 +147,47 @@ $this->comments()->to($comments);
             </div>
         </form>
     </div>
-<?php endif; ?>
+
+    <!-- 独立评论区 Cookie 检查脚本 -->
+    <script>
+    (function() {
+        /**
+         * 主动检查并更新评论区 UI 状态
+         * 此函数不依赖外部庞大的 JS 库，确保加载即运行
+         */
+        function checkCommentConsentState() {
+            const COOKIE_KEY = 'cookie_consent_settings';
+            const userDetails = document.getElementById('comment-user-details');
+            const consentPrompt = document.getElementById('comment-consent-prompt');
+
+            // 防报错，如果元素不存在，直接返回
+            if (!userDetails || !consentPrompt) return;
+
+            // 读取本地存储，默认为拒绝(false)
+            let settings = { functional: false };
+            try {
+                const saved = localStorage.getItem(COOKIE_KEY);
+                if (saved) settings = JSON.parse(saved);
+            } catch (e) { console.error('Cookie settings parse error', e); }
+
+            // 根据状态切换显示
+            if (settings.functional) {
+                userDetails.style.display = 'block';
+                consentPrompt.style.display = 'none';
+            } else {
+                userDetails.style.display = 'none';
+                consentPrompt.style.display = 'block';
+            }
+        }
+
+        // 立即执行一次 处理首次加载/PJAX重载
+        checkCommentConsentState();
+
+        // 监听全局自定义事件 处理用户在不刷新页面的情况下修改了 Cookie 设置
+        window.addEventListener('cookieConsentUpdated', checkCommentConsentState);
+    })();
+    </script>
+    <?php endif; ?>
 
     <!-- 评论分页 -->
     <div id="comments">
@@ -247,7 +292,7 @@ $this->comments()->to($comments);
     }
     
     function showErrorMessage() {
-        var errorMessage = $("<div class='alert alert-danger alert-dismissible fade show' role='alert'>评论提交失败，请检查网络或必填项！<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
+        var errorMessage = $("<div class='alert alert-danger alert-dismissible fade show' role='alert'>评论提交失败，请检查网络、必填项，或者启用功能性 Cookie 再试！<button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>");
         $("#comment-form").before(errorMessage);
         $('html, body').animate({
             scrollTop: errorMessage.offset().top - 100

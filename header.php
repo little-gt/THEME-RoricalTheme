@@ -18,16 +18,16 @@
     <script type="text/plain" data-consent-category="analytics">
         <?php $this->options->Analytic() ?? '//Analytical script not deployed.' ?>
     </script>
-	<!-- Jquery -->
+    <!-- Jquery -->
     <script src="<?php $this->options->themeUrl('./assets/js/jquery.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/jquery.pjax.js'); ?>"></script>
-    <!-- Fonts -->
-    <link href="<?php $this->options->themeUrl('./assets/css/fonts.css'); ?>" rel="stylesheet">
     <!-- Icons -->
-    <link href="<?php $this->options->themeUrl('./assets/vendor/nucleo/css/nucleo.css'); ?>" rel="stylesheet" />
-    <link href="<?php $this->options->themeUrl('./assets/vendor/font-awesome/css/font-awesome.min.css'); ?>" rel="stylesheet" />
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/vendor/nucleo/css/nucleo.css'); ?>" />
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/vendor/font-awesome/css/font-awesome.min.css'); ?>" />
     <!-- Argon CSS -->
-    <link type="text/css" href="<?php $this->options->themeUrl('./assets/css/argon.css?v=1.0.0'); ?>" rel="stylesheet" />
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/argon.css?v=1.0.0'); ?>" />
+    <!-- Fonts -->
+    <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/fonts.css'); ?>" />
     <!-- Docs CSS -->
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/index.css'); ?>" />
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/style.css'); ?>" />
@@ -42,11 +42,12 @@
     <script src="<?php $this->options->themeUrl('./assets/js/viewer.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/jquery-viewer.min.js'); ?>"></script>
     <script src="<?php $this->options->themeUrl('./assets/js/prism.js'); ?>"></script>
+    <script src="<?php $this->options->themeUrl('./assets/js/cookie.js'); ?>"></script>
     <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" integrity="sha512-UDJtJXfzfsiPPgnI5S1000FPLBHMhvzAMX15I+qG2E2OAzC9P1JzUwJOfnypXiOH7MRPaqzhPbBGDNNj7zBfoA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/respond.js/1.3.0/respond.min.js" integrity="sha512-i/6nAYMMwXZ3dTsq+ngdkSl4MbtVQF0FdCeqP5/1HSXPxyEd43vrxhafg1P4iqKRAnZVHn48GYaFUYRcTB0YrQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <![endif]-->
-	<!-- okaikia -->
+    <!-- okaikia -->
     <link rel="stylesheet" href="<?php $this->options->themeUrl('./assets/css/okaikia.css'); ?>" />
     <!-- 通过自有函数输出HTML头部信息 -->
     <?php $this->header(); ?>
