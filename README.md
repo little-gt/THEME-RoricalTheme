@@ -2,7 +2,7 @@
 
 > 简洁 · 可爱 · 功能强大
 >
-> 一款为 Typecho 打造的现代化卡片式主题.
+> 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
 [![项目版本](https://img.shields.io/badge/版本-1.2.4-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
@@ -18,10 +18,9 @@
 
 ![预览3](MARKDOWN_2025-11-26_002210_813.png)
 
-主题帖子：
+参与讨论：
 
-* [Typecho 官方论坛主题帖](https://forum.typecho.org/viewtopic.php?t=25572)
-* [Typecho.work 主题收录页](https://typecho.work/archives/Rorical.html)
+[Typecho 官方论坛主题帖](https://forum.typecho.org/viewtopic.php?t=25572)
 
 ---
 
@@ -29,13 +28,13 @@
 
 | 功能模块 | 说明 |
 | :-- | :-- |
-| 💎 **现代化设计** | 基于 Argon Design System 与 Bootstrap 4，响应式支持多端展示 |
-| ⚡ **轻快交互** | PowerMode 打字特效、鼠标点击涟漪、AJAX 评论与搜索 |
-| 📝 **文章增强** | 自动 TOC 目录、阅读统计、字数统计、评论计数 |
-| 🎨 **高度自定义** | 独立页面图标与配色、自定义导航栏样式、双端背景、LOGO 设置 |
-| 🧩 **插件支持** | 评论区 IP 归属展示（依赖 [XQLocation](https://www.toubiec.cn/1194.html)） |
-| 🧠 **兼容优化** | 完全支持 Typecho 1.2.1 / PHP 8.X / MySQL 8.X |
-| 🍪**Cookie合规** | 支持 GDPR/最新2026年执行的中国网络安全规范的 Cookie 同意模式 |
+| **轻快交互** | PowerMode 打字特效、鼠标点击涟漪、AJAX 评论与搜索 |
+| **文章增强** | 自动 TOC 目录、阅读统计、字数统计、评论计数 |
+| **兼容优化** | 完全支持 Typecho 1.2.1 / PHP 8.X / MySQL 8.X |
+| **高度自定义** | 独立页面图标与配色、自定义导航栏样式、双端背景、LOGO 设置 |
+| **现代化设计** | 基于 Argon Design System 与 Bootstrap 4，响应式支持多端展示 |
+| **归属地展示** | 评论区 IP 归属展示（依赖 [XQLocation](https://www.toubiec.cn/1194.html)） |
+| **Cookie合规** | 支持 GDPR/最新2026年执行的中国网络安全规范的 Cookie 同意模式 |
 
 ---
 
@@ -89,6 +88,8 @@
 
 **可用颜色值表**
 
+请务必填写下面参考的可用颜色值，否则菜单栏图标的背景颜色将不会正常显示。
+
 | 字段值                   | 颜色效果 |
 | :-------------------- | :--- |
 | `bg-gradient-success` | 绿色   |
@@ -98,26 +99,31 @@
 | `bg-gradient-warning` | 橙色   |
 | `bg-gradient-default` | 灰紫色  |
 
-> 图标来源：[Argon Icons Reference](https://demos.creative-tim.com/argon-design-system/docs/foundation/icons.html)
+**可用图标值说明**
+
+请访问 Creative Tim 的 Argon 前端框架的 ICONS 参考值文档，复制文档中对应的值。
+
+[Argon Icons Reference](https://demos.creative-tim.com/argon-design-system/docs/foundation/icons.html)
 
 ---
 
 ## 🍪 Cookie 合规功能配置
 
-本次更新新增了新的 Cookie 管理器功能，并且需要你配置一个名为“隐私政策”的独立页面，其 URL 应该形为 example.com/privacy.html，或者你可以替换`footer.php`下面的代码：
+### 关于 Cookie 合规功能
+
+为了适配 Cookie 管理器功能，需要你新建一个名为“隐私政策”的独立页面，其 URL 形为`example.com/privacy.html`，或者你可以替换`footer.php`下面的代码到特定的隐私政策页面上：
 
 ```php
 <?php $this->options->siteUrl('./privacy.html'); ?>
 ```
 
-### 这个版本做了两点小优化：
+### 使用 Cookie 合规功能
 
-1.  **自动清理**：执行后移除 `data-consent-category` 属性，防止混淆。
-2.  **通用性**：完美支持 `src`、`async`、`defer` 等属性的复制。
+你可以在 HTML 中随意混合使用外部引用 JS 和内嵌 JS 这两种类型的可选择的 JavaScript，脚本都会自动处理。
 
-### 如何使用 Cookie 合规功能
+**自动清理**：执行后移除 `data-consent-category` 属性，防止混淆。
 
-你可以在 HTML 中随意混合使用这两种方式，脚本都会自动处理：
+**通用适配**：支持 `src`、`async`、`defer` 等属性的复制。
 
 #### 1. 外部引用 JS (如引入某个特效库)
 ```html
@@ -144,16 +150,18 @@
 
 ---
 
-## 💬 特效与交互控制
+## 📢 特效交互控制
 
 * ✅ PowerMode 打字特效（评论区）
+* ✅ 评论区 Cookie 同意提示
 * ✅ 鼠标点击涟漪动画
 * ✅ Lazyload 图片懒加载
 * ✅ AJAX 评论与搜索（PJAX 技术）
+* ✅ 无刷新的一致性浏览体验
 
 ---
 
-## 🧱 技术栈
+## 🧱 使用的组件
 
 | 组件       | 描述                             |
 | :------- | :----------------------------- |
@@ -174,4 +182,4 @@
 
 ---
 
-🪄 **Rorical Theme** — 让博客更优雅、更有趣。
+**Rorical Theme** — 让博客更活泼、更有趣。

@@ -6,19 +6,18 @@
 
 ## 📌 Supported Versions
 
-目前我们仅为以下版本提供安全更新：
-建议尽快升级至最新版本以确保安全性与稳定性。
+目前我们仅为以下版本提供安全更新，建议尽快升级至最新版本以确保安全性与稳定性。目前该主题已经彻底完成了对于 Typecho 1.2.1、 PHP 8 和 MySQL 9 的支持。并且完成了 Cookie 管理器的支持更新。自 1.2.4 版本之后的更新速率将会放缓。
 
-| Version     | Supported |
-| ----------- | --------- |
-| **1.2.4**   | ✅ No     |
-| **＜ 1.2.3** | ❌ No     |
+| Version | Status |
+| :------ | :----- |
+| **1.2.4**   | ✅ Latest     |
+| **＜ 1.2.3** | ❌ Out of Scope     |
 
 ---
 
 ## 📮 Reporting a Vulnerability
 
-如您在 Rorical Theme 中发现潜在安全问题，请通过**私密渠道**向维护者发送邮件：
+我们欢迎社区对本项目进行安全审计。如果您发现了任何安全漏洞，请遵循负责任的披露原则，**不要在公开场合（如 GitHub Issues）发布**。
 
 ### 📧 Security Contact
 
@@ -88,7 +87,7 @@
 
 ---
 
-## 🙋 Maintainer Commitment
+## 💬 Maintainer Commitment
 
 我们承诺：
 
@@ -111,3 +110,7 @@
 * 遵守相关法律法规
 
 我们欢迎所有善意的安全贡献者，共同让 Rorical Theme 更加安全。
+
+---
+
+感谢你可以看到这里，因为有你，Rorical Theme 才能有今天的成就。
