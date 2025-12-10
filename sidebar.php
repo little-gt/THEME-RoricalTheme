@@ -54,9 +54,11 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
             <!-- Recent Comments Widget -->
             <div class="col-sm-3 col-6">
                 <h3><span><?php _e('最近回复'); ?></span></h3>
-                <?php $this->widget('Widget_Comments_Recent', 'ignoreAuthor=true&limit=3')->to($recentComments); ?>
+                <?php $this->widget('Widget_Comments_Recent', 'limit=3&ignoreAuthor=true')->to($recentComments); ?>
                 <?php if ($recentComments->have()): ?>
-                    <?php while ($recentComments->next()): ?>
+                    <?php $count = 0; ?>
+                    <?php while ($recentComments->next() && $count < 3): ?>
+                        <?php $count++; ?>
                         <a href="<?php $recentComments->permalink(); ?>" class="alert fade show" role="alert">
                             <div class="alert alert-warning">
                                 <span class="alert-inner--text">
