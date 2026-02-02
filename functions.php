@@ -1,6 +1,8 @@
 <?php
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 
+use Widget\Base\Contents;
+
 /**
  * 主题配置函数
  * @param Typecho_Widget_Helper_Form $form 配置表单对象
@@ -262,213 +264,207 @@ function generatePostLink($content, $widget, $randompicUrl, $direction) {
 }
 
 /**
- * 自定义评论组件
+ * 自定义评论组件（兼容 Typecho 1.2.1 / PHP 8.x）
  */
-class Widget_Comments_Archive extends Widget_Abstract_Comments {
-    private $_currentPage, $_total, $_threadedComments = [], $_singleCommentOptions;
+class Widget_Comments_Archive extends Widget_Abstract_Comments
+{
+    private $_currentPage = 1;
+    private $_total = 0;
+    private $_threadedComments = [];
+    private $_singleCommentOptions;
 
-    public function __construct($request, $response, $params = NULL) {
+    public function __construct($request, $response, $params = NULL)
+    {
         parent::__construct($request, $response, $params);
-        $this->parameter->setDefault('parentId=0&commentPage=0&commentsNum=0&allowComment=1');
+        $this->parameter->setDefault(
+            'parentId=0&commentPage=0&commentsNum=0&allowComment=1'
+        );
     }
 
-    private function threadedCommentsCallback() {
-        $options = $this->_singleCommentOptions;
-        if (function_exists('threadedComments')) {
-            threadedComments($this, $options);
-            return;
+    /* ===============================
+     * 必须与父类完全一致的返回类型
+     * =============================== */
+    protected function ___parentContent(): Contents
+    {
+        if ($this->parameter->parentContent instanceof Contents) {
+            return $this->parameter->parentContent;
         }
-        $commentClass = $this->authorId ? ($this->authorId == $this->ownerId ? ' comment-by-author' : ' comment-by-user') : '';
-        ?>
-        <li id="<?php $this->theId(); ?>" class="comment-body<?php
-        echo $this->levels > 0 ? ' comment-child' . $this->levelsAlt(' comment-level-odd', ' comment-level-even') : ' comment-parent';
-        $this->alt(' comment-odd', ' comment-even');
-        echo $commentClass;
-        ?>">
-            <div class="comment-author">
-                <?php get_custom_gravatar($this->mail, $options->avatarSize, $this->author); ?>
-                <cite><?php $this->author(); ?></cite>
-            </div>
-            <div class="comment-meta">
-                <a href="<?php $this->permalink(); ?>"><time><?php $this->date($options->dateFormat); ?></time></a>
-                <?php if ($this->status === 'waiting') echo '<em>' . $options->commentStatus . '</em>'; ?>
-            </div>
-            <div class="comment-content"><?php $this->content(); ?></div>
-            <div class="comment-reply"><?php $this->reply($options->replyWord); ?></div>
-            <?php if ($this->children) echo '<div class="comment-children">' . $this->threadedComments() . '</div>'; ?>
-        </li>
-        <?php
+
+        // 兜底（极少数情况）
+        return new Contents(
+            $this->request,
+            $this->response,
+            $this->parameter->parentContent
+        );
     }
 
-    protected function ___permalink(): string {
-        if ($this->options->commentsPageBreak) {
-            $pageRow = ['permalink' => $this->parentContent['pathinfo'], 'commentPage' => $this->_currentPage];
-            return Typecho_Router::url('comment_page', $pageRow, $this->options->index) . '#' . $this->theId;
-        }
-        return $this->parentContent['permalink'] . '#' . $this->theId;
+    protected function ___children(): array
+    {
+        return (
+            $this->options->commentsThreaded
+            && !$this->isTopLevel
+            && isset($this->_threadedComments[$this->coid])
+        )
+            ? $this->_threadedComments[$this->coid]
+            : [];
     }
 
-    protected function ___children() {
-        return $this->options->commentsThreaded && !$this->isTopLevel && isset($this->_threadedComments[$this->coid]) ? $this->_threadedComments[$this->coid] : [];
-    }
-
-    protected function ___isTopLevel() {
+    protected function ___isTopLevel(): bool
+    {
         return $this->levels > $this->options->commentsMaxNestingLevels - 2;
     }
 
-    protected function ___parentContent(): ?array {
-        return $this->parameter->parentContent;
+    protected function ___permalink(): string
+    {
+        $parent = $this->parentContent;
+
+        if ($this->options->commentsPageBreak) {
+            $pageRow = [
+                'permalink'  => $parent->pathinfo,
+                'commentPage'=> $this->_currentPage
+            ];
+
+            return Typecho_Router::url(
+                'comment_page',
+                $pageRow,
+                $this->options->index
+            ) . '#' . $this->theId;
+        }
+
+        return $parent->permalink . '#' . $this->theId;
     }
 
-    public function num() {
-        $args = func_get_args() ?: ['%d'];
-        echo sprintf($args[min(count($args) - 1, (int)$this->_total)], $this->_total);
-    }
-
-    public function execute() {
+    /* ===============================
+     * 核心执行逻辑
+     * =============================== */
+    public function execute()
+    {
         if (!$this->parameter->parentId) return;
 
         $commentsAuthor = Typecho_Cookie::get('__typecho_remember_author');
-        $commentsMail = Typecho_Cookie::get('__typecho_remember_mail');
-        $select = $this->select()->where('cid = ?', $this->parameter->parentId)
-            ->where('status = ? OR (author = ? AND mail = ? AND status = ?)', 'approved', $commentsAuthor, $commentsMail, 'waiting')
+        $commentsMail   = Typecho_Cookie::get('__typecho_remember_mail');
+
+        $select = $this->select()
+            ->where('cid = ?', $this->parameter->parentId)
+            ->where(
+                'status = ? OR (author = ? AND mail = ? AND status = ?)',
+                'approved',
+                $commentsAuthor,
+                $commentsMail,
+                'waiting'
+            )
             ->order('coid', 'ASC');
-        if ($this->options->commentsShowCommentOnly) $select->where('type = ?', 'comment');
+
+        if ($this->options->commentsShowCommentOnly) {
+            $select->where('type = ?', 'comment');
+        }
 
         $this->db->fetchAll($select, [$this, 'push']);
-        $outputComments = [];
+
+        $output = [];
 
         if ($this->options->commentsThreaded) {
             foreach ($this->stack as $coid => &$comment) {
                 $parent = $comment['parent'];
+
                 if ($parent && isset($this->stack[$parent])) {
                     if ($comment['levels'] >= $this->options->commentsMaxNestingLevels) {
                         $comment['levels'] = $this->stack[$parent]['levels'];
                         $comment['parent'] = $this->stack[$parent]['parent'];
                     }
-                    $comment['order'] = isset($this->_threadedComments[$parent]) ? count($this->_threadedComments[$parent]) + 1 : 1;
                     $this->_threadedComments[$parent][$coid] = $comment;
                 } else {
-                    $outputComments[$coid] = $comment;
+                    $output[$coid] = $comment;
                 }
             }
-            $this->stack = $outputComments;
+            $this->stack = $output;
         }
 
         if ($this->options->commentsOrder === 'DESC') {
             $this->stack = array_reverse($this->stack, true);
-            $this->_threadedComments = array_map('array_reverse', $this->_threadedComments);
+            $this->_threadedComments = array_map(
+                'array_reverse',
+                $this->_threadedComments
+            );
         }
 
         $this->_total = count($this->stack);
+
         if ($this->options->commentsPageBreak) {
-            $this->_currentPage = $this->parameter->commentPage ?: ('last' === $this->options->commentsPageDisplay ? ceil($this->_total / $this->options->commentsPageSize) : 1);
-            $this->stack = array_slice($this->stack, ($this->_currentPage - 1) * $this->options->commentsPageSize, $this->options->commentsPageSize);
+            $this->_currentPage =
+                $this->parameter->commentPage
+                ?: ($this->options->commentsPageDisplay === 'last'
+                    ? ceil($this->_total / $this->options->commentsPageSize)
+                    : 1);
+
+            $this->stack = array_slice(
+                $this->stack,
+                ($this->_currentPage - 1) * $this->options->commentsPageSize,
+                $this->options->commentsPageSize,
+                true
+            );
+
             $this->row = current($this->stack);
             $this->length = count($this->stack);
         }
+
         reset($this->stack);
     }
 
-    public function push(array $value): array {
+    public function push(array $value): array
+    {
         $value = $this->filter($value);
-        $value['levels'] = ($value['parent'] && isset($this->stack[$value['parent']])) ? $this->stack[$value['parent']]['levels'] + 1 : 0;
+        $value['levels'] =
+            ($value['parent'] && isset($this->stack[$value['parent']]))
+            ? $this->stack[$value['parent']]['levels'] + 1
+            : 0;
+
         $this->stack[$value['coid']] = $value;
         $this->length++;
         return $value;
     }
 
-    public function pageNav($prev = '&laquo;', $next = '&raquo;', $splitPage = 3, $splitWord = '···', $template = ''){
-        if (!$this->options->commentsPageBreak || $this->_total <= $this->options->commentsPageSize) return;
-
-        $template = array_merge([
-            'wrapTag' => 'ul',
-            'wrapClass' => 'pagination pagination-lg justify-content-center',
-            'itemTag' => 'li',
-            'textTag' => 'span',
-            'currentClass' => 'active',
-            'prevClass' => 'prev',
-            'nextClass' => 'next',
-            'itemClass' => 'page-item',
-            'linkClass' => 'page-link'
-        ], is_string($template) ? [] : $template);
-
-        $pageRow = $this->parameter->parentContent;
-        // Construct the base URL with /page/{commentPage}/
-        $baseUrl = rtrim($this->options->index, '/') . '/page/{commentPage}/';
-        if (!empty($pageRow['pathinfo']) && $pageRow['pathinfo'] !== '/') {
-            $baseUrl = rtrim($pageRow['pathinfo'], '/') . '/page/{commentPage}/';
-        }
-        $pageRow['permalink'] = $baseUrl;
-        $query = Typecho_Router::url('comment_page', $pageRow, $this->options->index);
-
-        // Force correct placeholder to avoid {page}, {1}, {2}, etc.
-        $query = str_replace('{page}', '{commentPage}', $query);
-
-        // Debug: Log the query to verify the URL
-        error_log('PageNav Query: ' . $query);
-
-        $nav = new Typecho_Widget_Helper_PageNavigator_Box($this->_total, $this->_currentPage, $this->options->commentsPageSize, $query);
-        $nav->setPageHolder('commentPage');
-        $nav->setAnchor('comments');
-
-        echo "<{$template['wrapTag']} class=\"{$template['wrapClass']}\">";
-        $nav->render($prev, $next, $splitPage, $splitWord, $template);
-        echo "</{$template['wrapTag']}>";
-    }
-
-    public function threadedComments() {
+    /* ===============================
+     * 输出部分
+     * =============================== */
+    public function threadedComments()
+    {
         if (!$this->children) return;
+
         $tmp = $this->row;
         $this->sequence++;
+
         echo $this->_singleCommentOptions->before;
+
         foreach ($this->children as $child) {
             $this->row = $child;
             $this->threadedCommentsCallback();
         }
+
         echo $this->_singleCommentOptions->after;
+
         $this->row = $tmp;
         $this->sequence--;
     }
 
-    public function listComments($options = NULL) {
+    public function listComments($options = NULL)
+    {
         $this->_singleCommentOptions = Typecho_Config::factory($options);
         $this->_singleCommentOptions->setDefault([
-            'before' => '', 'after' => '', 'beforeAuthor' => '', 'afterAuthor' => '',
-            'beforeDate' => '', 'afterDate' => '', 'dateFormat' => $this->options->commentDateFormat,
-            'replyWord' => _t('回复'), 'commentStatus' => _t('审核中...'), 'avatarSize' => 32, 'defaultAvatar' => NULL
+            'before'        => '',
+            'after'         => '',
+            'dateFormat'    => $this->options->commentDateFormat,
+            'replyWord'     => _t('回复'),
+            'commentStatus' => _t('审核中...'),
+            'avatarSize'    => 32
         ]);
 
         if ($this->have()) {
             echo $this->_singleCommentOptions->before;
-            while ($this->next()) $this->threadedCommentsCallback();
+            while ($this->next()) {
+                $this->threadedCommentsCallback();
+            }
             echo $this->_singleCommentOptions->after;
-        }
-    }
-
-    public function alt(...$args) {
-        $num = count($args);
-        $sequence = $this->levels <= 0 ? $this->sequence : $this->order;
-        echo $args[($sequence % $num + $num - 1) % $num];
-    }
-
-    public function levelsAlt(...$args) {
-        $num = count($args);
-        echo $args[($this->levels % $num + $num - 1) % $num];
-    }
-
-    public function reply($word = '') {
-        if ($this->options->commentsThreaded && !$this->isTopLevel && $this->parameter->allowComment) {
-            $word = $word ?: _t('回复');
-            echo "<a href=\"javascript:;\" rel=\"nofollow\" onclick=\"return TypechoComment.reply('{$this->theId}', {$this->coid});\">$word</a>";
-        }
-    }
-
-    public function cancelReply($word = '', $class = "") {
-        if ($this->options->commentsThreaded) {
-            $word = $word ?: _t('取消回复');
-            $replyId = $this->request->filter('int')->replyTo;
-            echo "<a class=\"{$class}\" id=\"cancel-comment-reply-link\" href=\"{$this->parameter->parentContent['permalink']}#{$this->parameter->respondId}\" rel=\"nofollow\"" . ($replyId ? '' : ' style="display:none"') . " onclick=\"return TypechoComment.cancelReply();\">$word</a>";
         }
     }
 }
@@ -593,8 +589,9 @@ class Titleshow_Plugin implements Typecho_Plugin_Interface {
     public static function config(Typecho_Widget_Helper_Form $form) {}
     public static function personalConfig(Typecho_Widget_Helper_Form $form) {}
 
-    public static function tshow($v, $obj) {
-        if ($v['hidden']) {
+    public static function tshow($v, $obj)
+    {
+        if (array_key_exists('hidden', $v) && $v['hidden'] === true) {
             $v['text'] = "输入密码才能看哦";
             $v['hidden'] = false;
             $v['titleshow'] = true;

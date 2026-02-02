@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.4-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![项目版本](https://img.shields.io/badge/版本-1.2.5-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 [![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
@@ -12,11 +12,11 @@
 
 主题预览：
 
-![预览1](MARKDOWN_2025-11-26_002123_964.png)
+![预览1](screenshot/MARKDOWN_2025-11-26_002123_964.png)
 
-![预览2](MARKDOWN_2025-11-26_002203_506.png)
+![预览2](screenshot/MARKDOWN_2025-11-26_002203_506.png)
 
-![预览3](MARKDOWN_2025-11-26_002210_813.png)
+![预览3](screenshot/MARKDOWN_2025-11-26_002210_813.png)
 
 参与讨论：
 
@@ -41,6 +41,7 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
+- 支持了 Typecho 1.3.0 版本
 - 更新了 Cookie 管理器 的 JavaScript 逻辑，适配更多情况。
 - 修复了 评论区 Cookie 管理加载异常不显示的问题；
 - 修复了 资源加载逻辑，修复了字体在移动端浏览器不加载的问题；
