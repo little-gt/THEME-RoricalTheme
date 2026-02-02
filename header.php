@@ -111,11 +111,17 @@
                                         <?php $this->widget('Widget_Contents_Page_List')->to($pages); ?>
                                         <?php while ($pages->next()): ?>
                                             <a href="<?php $pages->permalink(); ?>" class="media d-flex align-items-center">
-                                                <div class="icon icon-shape <? echo(isset($pages->fields->color) ? "":$pages->fields->color)?> rounded-circle text-white">
-                                                    <i class="ni <? echo(isset($pages->fields->icon) ? "":$pages->fields->icon)?>"></i>
+                                                <div class="icon icon-shape
+                                                    <?php echo !empty($pages->fields->color) ? $pages->fields->color : 'bg-gradient-primary'; ?>
+                                                    rounded-circle text-white">
+                                                    <i class="ni
+                                                    <?php echo !empty($pages->fields->icon) ? $pages->fields->icon : 'ni-planet'; ?>">
+                                                    </i>
                                                 </div>
                                                 <div class="media-body ml-3">
-                                                    <h6 class="heading text-primary mb-md-1"><?php $pages->title(); ?></h6>
+                                                    <h6 class="heading text-primary mb-md-1">
+                                                        <?php $pages->title(); ?>
+                                                    </h6>
                                                 </div>
                                             </a>
                                         <?php endwhile; ?>
