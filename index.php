@@ -4,7 +4,7 @@
  *
  * @package Rorical Theme
  * @author Rorical & little-gt
- * @version 1.2
+ * @version 1.2.6
  * @link https://www.garfieldtom.cool/
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
@@ -59,10 +59,16 @@ $this->need('header.php');
 <section class="section section-components bg-secondary">
     <div class="container container-lg py-5 align-items-center" style="text-align: center;">
         <?php while ($this->next()): ?>
+            <?php
+            // 安全获取文章头图
+            $postPic = (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) 
+                ? $this->fields->pic 
+                : $this->options->randompicUrl();
+            ?>
             <div class="row-grid justify-content-between mt-lg card card-lift--hover shadow border-0" style="margin:auto;">
                 <a href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">
-                    <img src="<?php echo $this->fields->pic ?: $this->options->randompicUrl() ; ?>" 
-                         data-original="<?php echo $this->fields->pic ?: $this->options->randompicUrl() ; ?>" 
+                    <img src="<?php echo htmlspecialchars($postPic, ENT_QUOTES, 'UTF-8'); ?>" 
+                         data-original="<?php echo htmlspecialchars($postPic, ENT_QUOTES, 'UTF-8'); ?>" 
                          no-viewer class="card-img" alt="<?php $this->title(); ?>">
                     <div class="card shadow">
                         <div class="card-body">
@@ -87,14 +93,14 @@ $this->need('header.php');
                                                 <span>
                                                     <i class="fa fa-envelope-open-o"></i>
                                                     <?php foreach ($this->categories as $category): ?>
-                                                        <a href="<?php echo $category['permalink']; ?>" class="badge badge-info"><?php echo $category['name']; ?></a>
+                                                        <a href="<?php echo htmlspecialchars($category['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-info"><?php echo htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                                     <?php endforeach; ?>
                                                 </span>
                                                 <span>
                                                     <?php if (count($this->tags) > 0): ?>
                                                         <i class="fa fa-tags"></i>
                                                         <?php foreach ($this->tags as $tag): ?>
-                                                            <a href="<?php echo $tag['permalink']; ?>" class="badge badge-success"><?php echo $tag['name']; ?></a>
+                                                            <a href="<?php echo htmlspecialchars($tag['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-success"><?php echo htmlspecialchars($tag['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <i class="fa fa-tags"></i> 

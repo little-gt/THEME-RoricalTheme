@@ -84,6 +84,34 @@ $this->comments()->to($comments);
 
     <!-- 评论表单 -->
     <?php if ($this->allow('comment')): ?>
+    <?php 
+    // 检查是否允许未登录用户评论
+    $allowGuestComment = !isset($this->options->guestComment) || $this->options->guestComment === 'allow';
+    $showCommentForm = $this->user->hasLogin() || $allowGuestComment;
+    ?>
+    
+    <?php if (!$showCommentForm): ?>
+        <!-- 禁止访客评论的提示 -->
+        <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
+            <div class="container mt-5">
+                <div class="card bg-gradient-info border-0">
+                    <div class="p-5 text-center">
+                        <div class="icon icon-shape bg-white text-info rounded-circle mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
+                            <i class="ni ni-lock-circle-open" style="font-size: 40px; line-height: 80px;"></i>
+                        </div>
+                        <h3 class="text-white mb-4"><?php _e('需要登录才能评论'); ?></h3>
+                        <div class="text-white lead">
+                            <?php 
+                            $guestMsg = $this->options->guestCommentMsg ? $this->options->guestCommentMsg : '抱歉，本站仅允许登录用户发表评论。请先<a href="%loginUrl%" class="text-white" style="text-decoration: underline;">登录</a>您的账户。';
+                            $loginUrl = htmlspecialchars($this->options->adminUrl('login.php?referer=' . urlencode($this->permalink)), ENT_QUOTES, 'UTF-8');
+                            echo str_replace('%loginUrl%', $loginUrl, $guestMsg);
+                            ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php else: ?>
     <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
         <form method="post" action="<?php $this->commentUrl(); ?>" id="comment-form" role="form">
             <div class="container mt-5">
@@ -147,8 +175,10 @@ $this->comments()->to($comments);
             </div>
         </form>
     </div>
+    <?php endif; // 结束 showCommentForm 检查 ?>
 
     <!-- 独立评论区 Cookie 检查脚本 -->
+    <?php if ($showCommentForm && !$this->user->hasLogin()): ?>
     <script>
     (function() {
         /**
@@ -187,6 +217,7 @@ $this->comments()->to($comments);
         window.addEventListener('cookieConsentUpdated', checkCommentConsentState);
     })();
     </script>
+    <?php endif; ?>
     <?php endif; ?>
 
     <!-- 评论分页 -->

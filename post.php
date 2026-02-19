@@ -91,13 +91,13 @@
                                 <div class="card-profile-actions card-profile-stats d-flex justify-content-center">
                                     <?php if (count($this->tags) > 0): ?>
                                         <?php foreach ($this->tags as $tag): ?>
-                                            <a href="<?php echo $tag['permalink']; ?>" class="btn btn-sm btn-info mr-4"><?php echo $tag['name']; ?></a>
+                                            <a href="<?php echo htmlspecialchars($tag['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-info mr-4"><?php echo htmlspecialchars($tag['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                         <?php endforeach; ?>
                                     <?php else: ?>
                                         <a class="btn btn-sm btn-info mr-4">无标签..</a>
                                     <?php endif; ?>
                                     <?php foreach ($this->categories as $category): ?>
-                                        <a href="<?php echo $category['permalink']; ?>" class="btn btn-sm btn-default float-right"><?php echo $category['name']; ?></a>
+                                        <a href="<?php echo htmlspecialchars($category['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-default float-right"><?php echo htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                     <?php endforeach; ?>
                                 </div>
                             </div>

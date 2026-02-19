@@ -16,7 +16,7 @@
         ), '', ' - '); ?><?php $this->options->title(); ?></title>
     <!-- Analytics -->
     <script type="text/plain" data-consent-category="analytics">
-        <?php $this->options->Analytic() ?? '//Analytical script not deployed.' ?>
+        <?php if ($this->options->Analytic) { $this->options->Analytic(); } else { echo '//Analytical script not deployed.'; } ?>
     </script>
     <!-- Jquery -->
     <script src="<?php $this->options->themeUrl('./assets/js/jquery.min.js'); ?>"></script>
@@ -159,18 +159,25 @@
                         <?php endif; ?>
                     </ul>
                     <ul class="navbar-nav align-items-lg-center ml-lg-auto">
-                        <?php $icons = explode("\n", $this->options->navbarIcons); ?>
-                        <?php foreach ($icons as $icon): ?>
-                            <?php $icon = explode("$$", $icon); ?>
-                            <?php if (count($icon) === 3): ?>
+                        <?php 
+                        $navbarIconsText = $this->options->navbarIcons;
+                        if (!empty($navbarIconsText)) {
+                            $icons = explode("\n", $navbarIconsText);
+                            foreach ($icons as $icon): 
+                                $icon = array_map('trim', explode("$$", $icon));
+                                if (count($icon) === 3 && !empty($icon[0]) && !empty($icon[2])): 
+                        ?>
                                 <li class="nav-item d-none d-lg-block ml-lg-4">
-                                    <a class="nav-link nav-link-icon" href="<?php echo $icon[2]; ?>" target="_blank" data-toggle="tooltip" title="<?php echo $icon[1]; ?>">
-                                        <i class="<?php echo $icon[0]; ?>"></i>
-                                        <span class="nav-link-inner--text d-lg-none"><?php echo $icon[1]; ?></span>
+                                    <a class="nav-link nav-link-icon" href="<?php echo htmlspecialchars($icon[2], ENT_QUOTES, 'UTF-8'); ?>" target="_blank" data-toggle="tooltip" title="<?php echo htmlspecialchars($icon[1], ENT_QUOTES, 'UTF-8'); ?>">
+                                        <i class="<?php echo htmlspecialchars($icon[0], ENT_QUOTES, 'UTF-8'); ?>"></i>
+                                        <span class="nav-link-inner--text d-lg-none"><?php echo htmlspecialchars($icon[1], ENT_QUOTES, 'UTF-8'); ?></span>
                                     </a>
                                 </li>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+                        <?php 
+                                endif;
+                            endforeach;
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>
@@ -178,10 +185,26 @@
     </header>
 
     <div id="main">
+        <?php
+        // 安全获取文章头图
+        $pic = '';
+        if ($this->is('page') || $this->is('post')) {
+            if (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) {
+                $pic = $this->fields->pic;
+            } else {
+                $pic = $this->options->randompicUrl() . "?_=" . mt_rand(100000, 999999);
+            }
+        }
+        ?>
         <style>
             :root {
-                --main-bg-image: url(<?php echo $this->is('page') || $this->is('post') ? ($this->fields->pic ?: $this->options->randompicUrl() . "?_=" . mt_rand()) : $this->options->pcbackgroundUrl(); ?>) center center / cover no-repeat fixed;
-                --phone-bg-image: url(<?php echo $this->is('page') || $this->is('post') ? ($this->fields->pic ?: $this->options->randompicUrl() . "?_=" . mt_rand()) : $this->options->mobilebackgroundUrl(); ?>) center center / cover no-repeat fixed;
+                <?php if ($this->is('page') || $this->is('post')): ?>
+                --main-bg-image: url(<?php echo htmlspecialchars($pic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --phone-bg-image: url(<?php echo htmlspecialchars($pic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                <?php else: ?>
+                --main-bg-image: url(<?php echo htmlspecialchars($this->options->pcbackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --phone-bg-image: url(<?php echo htmlspecialchars($this->options->mobilebackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                <?php endif; ?>
             }
             .banner::before { background-image: url(<?php $this->options->themeUrl('./assets/css/ground.png'); ?>); }
             .shape-background {

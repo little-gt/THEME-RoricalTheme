@@ -20,10 +20,16 @@
         </h2>
         <?php if ($this->have()): ?>
             <?php while ($this->next()): ?>
+                <?php
+                // 安全获取文章头图
+                $archivePic = (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) 
+                    ? $this->fields->pic 
+                    : $this->options->randompicUrl();
+                ?>
                 <div class="row-grid justify-content-between mt-lg card card-lift--hover shadow border-0" style="margin:auto;">
                     <a href="<?php $this->permalink() ?>" title="<?php $this->title() ?>">
-                        <img src="<?php echo $this->fields->pic ?: $this->options->randompicUrl() ; ?>" 
-                             data-original="<?php echo $this->fields->pic ?: $this->options->randompicUrl() ; ?>" 
+                        <img src="<?php echo htmlspecialchars($archivePic, ENT_QUOTES, 'UTF-8'); ?>" 
+                             data-original="<?php echo htmlspecialchars($archivePic, ENT_QUOTES, 'UTF-8'); ?>" 
                              no-viewer class="card-img" alt="<?php $this->title(); ?>">
                     </a>
                     <div class="card shadow">
@@ -50,14 +56,14 @@
                                                 <span>
                                                     <i class="fa fa-envelope-open-o"></i> 
                                                     <?php foreach ($this->categories as $categories): ?>
-                                                        <a href="<?php echo $categories['permalink']; ?>" class="badge badge-info"><?php echo $categories['name']; ?></a>
+                                                        <a href="<?php echo htmlspecialchars($categories['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-info"><?php echo htmlspecialchars($categories['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                                     <?php endforeach; ?>
                                                 </span>
                                                 <span>
                                                     <i class="fa fa-tags"></i> 
                                                     <?php if (count($this->tags) > 0): ?>
                                                         <?php foreach ($this->tags as $tags): ?>
-                                                            <a href="<?php echo $tags['permalink']; ?>" class="badge badge-success"><?php echo $tags['name']; ?></a>
+                                                            <a href="<?php echo htmlspecialchars($tags['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-success"><?php echo htmlspecialchars($tags['name'], ENT_QUOTES, 'UTF-8'); ?></a>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <a class="badge badge-default text-white">无标签..</a>

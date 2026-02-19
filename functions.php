@@ -51,6 +51,39 @@ function themeConfig($form) {
     // 文章目录开关
     $toc = new Typecho_Widget_Helper_Form_Element_Radio('toc', ['able' => _t('开启'), 'disable' => _t('关闭')], 'disable', _t('文章目录默认开关'), _t('默认关闭'));
     $form->addInput($toc);
+    
+    // 隐私政策 URL
+    $privacyUrl = new Typecho_Widget_Helper_Form_Element_Text(
+        'privacyUrl', 
+        NULL, 
+        './privacy.html', 
+        _t('隐私政策链接'), 
+        _t('填入隐私政策页面 URL，可以是相对路径（如 ./privacy.html）或完整 URL')
+    );
+    $form->addInput($privacyUrl);
+    
+    // 未登录用户评论控制
+    $guestComment = new Typecho_Widget_Helper_Form_Element_Radio(
+        'guestComment', 
+        [
+            'allow' => _t('允许未登录用户评论'),
+            'deny' => _t('禁止未登录用户评论')
+        ], 
+        'allow', 
+        _t('访客评论设置'), 
+        _t('控制未登录用户是否可以发表评论')
+    );
+    $form->addInput($guestComment);
+    
+    // 禁止评论时的提示信息
+    $guestCommentMsg = new Typecho_Widget_Helper_Form_Element_Textarea(
+        'guestCommentMsg', 
+        NULL, 
+        _t('抱歉，本站仅允许登录用户发表评论。请先<a href="%loginUrl%">登录</a>您的账户。'), 
+        _t('禁止访客评论提示'), 
+        _t('当禁止未登录用户评论时显示的提示信息。可使用 %loginUrl% 作为登录链接占位符。')
+    );
+    $form->addInput($guestCommentMsg);
 }
 
 /**
@@ -61,9 +94,16 @@ function themeConfig($form) {
  * @param string $class CSS class
  */
 function get_custom_gravatar($mail, $size = 40, $author = '', $class = 'rounded-circle') {
-    $url = "https://cdn.sep.cc/avatar/" . md5(strtolower(trim($mail)));
+    $mail = trim($mail);
+    if (empty($mail)) {
+        $mail = 'default@example.com';
+    }
+    $size = max(1, min(2048, intval($size)));
+    $url = "https://cdn.sep.cc/avatar/" . md5(strtolower($mail));
     $url .= "?s=" . $size;
-    echo '<img src="' . $url . '" class="' . $class . '" alt="' . $author . '">';
+    $author = htmlspecialchars($author, ENT_QUOTES, 'UTF-8');
+    $class = htmlspecialchars($class, ENT_QUOTES, 'UTF-8');
+    echo '<img src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" class="' . $class . '" alt="' . $author . '">';
 }
 
 /**
@@ -125,28 +165,49 @@ function getCatalog() {
  * @param Widget_Archive $archive 文章对象
  */
 function get_post_view($archive) {
-    $cid = $archive->cid;
+    $cid = intval($archive->cid);
+    if ($cid <= 0) {
+        echo 0;
+        return;
+    }
+    
     $db = Typecho_Db::get();
     $prefix = $db->getPrefix();
 
-    // Note: This check only verifies the first row. Assumes all rows have the same structure.
-    if (!array_key_exists('views', $db->fetchRow($db->select()->from('table.contents')))) {
-        $db->query("ALTER TABLE `{$prefix}contents` ADD `views` INT(10) DEFAULT 0;");
-        echo 0; // Return 0 for the first time.
-        return;
+    // 检查 views 列是否存在
+    $checkRow = $db->fetchRow($db->select()->from('table.contents')->limit(1));
+    if ($checkRow && !array_key_exists('views', $checkRow)) {
+        try {
+            $db->query("ALTER TABLE `{$prefix}contents` ADD `views` INT(10) UNSIGNED DEFAULT 0;");
+        } catch (Exception $e) {
+            echo 0;
+            return;
+        }
     }
 
     $row = $db->fetchRow($db->select('views')->from('table.contents')->where('cid = ?', $cid));
+    if (!$row || !isset($row['views'])) {
+        echo 0;
+        return;
+    }
+    
+    $currentViews = intval($row['views']);
+    
     if ($archive->is('single')) {
         $views = Typecho_Cookie::get('extend_contents_views');
-        $viewed_cids = $views ? explode(',', $views) : [];
-        if (!in_array($cid, $viewed_cids)) {
-            $db->query($db->update('table.contents')->rows(['views' => (int)$row['views'] + 1])->where('cid = ?', $cid));
-            $viewed_cids[] = $cid;
-            Typecho_Cookie::set('extend_contents_views', implode(',', $viewed_cids));
+        $viewed_cids = $views ? array_filter(array_map('intval', explode(',', $views))) : [];
+        if (!in_array($cid, $viewed_cids, true)) {
+            try {
+                $db->query($db->update('table.contents')->rows(['views' => $currentViews + 1])->where('cid = ?', $cid));
+                $viewed_cids[] = $cid;
+                Typecho_Cookie::set('extend_contents_views', implode(',', $viewed_cids));
+                $currentViews++;
+            } catch (Exception $e) {
+                // 静默失败，显示当前计数
+            }
         }
     }
-    echo $row['views'];
+    echo $currentViews;
 }
 
 /**
@@ -154,8 +215,20 @@ function get_post_view($archive) {
  * @param int $cid 文章 ID
  */
 function art_count($cid) {
+    $cid = intval($cid);
+    if ($cid <= 0) {
+        echo 0;
+        return;
+    }
+    
     $db = Typecho_Db::get();
     $row = $db->fetchRow($db->select('text')->from('table.contents')->where('cid = ?', $cid));
+    
+    if (!$row || !isset($row['text'])) {
+        echo 0;
+        return;
+    }
+    
     $text = preg_replace("/[^\x{4e00}-\x{9fa5}]/u", "", $row['text']);
     echo mb_strlen($text, 'UTF-8');
 }
@@ -166,7 +239,40 @@ function art_count($cid) {
  */
 function themeInit($archive) {
     Helper::options()->commentsMaxNestingLevels = 999;
-    if ($archive->is('single')) {
+    
+    // 后端校验：检查访客评论权限
+    if ($archive->is('single') || $archive->is('page')) {
+        // 检查是否是评论提交请求
+        $request = $archive->request;
+        if ($request->isPost() && $request->is('do=comment')) {
+            $user = Typecho_Widget::widget('Widget_User');
+            $options = Helper::options();
+            
+            // 如果设置为禁止访客评论，且用户未登录
+            if (isset($options->guestComment) && $options->guestComment === 'deny' && !$user->hasLogin()) {
+                // 返回 403 错误并终止
+                $archive->response->setStatus(403);
+                $errorMsg = $options->guestCommentMsg ? $options->guestCommentMsg : '抱歉，本站仅允许登录用户发表评论。';
+                // 移除 HTML 标签用于纯文本错误消息
+                $errorMsg = strip_tags(str_replace('%loginUrl%', $options->adminUrl('login.php'), $errorMsg));
+                
+                // 如果是 AJAX 请求，返回 JSON
+                if ($request->isAjax()) {
+                    header('Content-Type: application/json; charset=UTF-8');
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $errorMsg,
+                        'code' => 403
+                    ]);
+                    exit;
+                }
+                
+                // 普通请求返回错误页面
+                throw new Typecho_Widget_Exception($errorMsg, 403);
+            }
+        }
+        
+        // 生成文章目录
         $archive->content = createCatalog($archive->content);
     }
 }
@@ -177,13 +283,20 @@ function themeInit($archive) {
  * @return array|string
  */
 function getPermalinkFromCoid($coid) {
+    $coid = intval($coid);
+    if ($coid <= 0) {
+        return 'Invalid comment ID!';
+    }
+    
     $db = Typecho_Db::get();
     $options = Typecho_Widget::widget('Widget_Options');
     $row = $db->fetchRow($db->select('cid', 'type', 'author', 'text')->from('table.comments')->where('coid = ? AND status = ?', $coid, 'approved'));
 
-    if (empty($row)) return 'Comment not found!';
+    if (empty($row) || !isset($row['cid'])) {
+        return 'Comment not found!';
+    }
 
-    $cid = $row['cid'];
+    $cid = intval($row['cid']);
     $select = $db->select('coid', 'parent', 'type')->from('table.comments')->where('cid = ? AND status = ?', $cid, 'approved')->order('coid');
     
     if ($options->commentsShowCommentOnly) {
@@ -198,18 +311,24 @@ function getPermalinkFromCoid($coid) {
     $parents = array_column($comments, 'parent', 'coid');
     $count = 0;
     $i = $coid;
-    while ($i != 0 && isset($parents[$i])) {
-        $i = $parents[$i];
+    $maxDepth = 100; // 防止无限循环
+    while ($i != 0 && isset($parents[$i]) && $maxDepth-- > 0) {
+        $i = intval($parents[$i]);
         if ($i == 0) $count++;
     }
 
-    $content = Typecho_Widget::widget('Widget_Abstract_Contents')->push($db->fetchRow($db->select()->from('table.contents')->where('cid = ?', $cid)));
-    $permalink = rtrim($content['permalink'], '/');
-    $page_suffix = $options->commentsPageBreak ? '/comment-page-' . ceil($count / $options->commentsPageSize) : (substr($permalink, -5) === '.html' ? '' : '/');
+    $contentRow = $db->fetchRow($db->select()->from('table.contents')->where('cid = ?', $cid));
+    if (!$contentRow) {
+        return 'Content not found!';
+    }
+    
+    $content = Typecho_Widget::widget('Widget_Abstract_Contents')->push($contentRow);
+    $permalink = isset($content['permalink']) ? rtrim($content['permalink'], '/') : '';
+    $page_suffix = $options->commentsPageBreak ? '/comment-page-' . ceil($count / max(1, $options->commentsPageSize)) : (substr($permalink, -5) === '.html' ? '' : '/');
 
     return [
-        'author' => $row['author'],
-        'text' => $row['text'],
+        'author' => isset($row['author']) ? $row['author'] : '',
+        'text' => isset($row['text']) ? $row['text'] : '',
         'href' => "{$permalink}{$page_suffix}#{$row['type']}-{$coid}"
     ];
 }
@@ -227,7 +346,12 @@ function thePrev($widget, $randompicUrl) {
         ->order('table.contents.created', Typecho_Db::SORT_DESC)
         ->limit(1));
 
-    echo generatePostLink($content, $widget, $randompicUrl, 'prev');
+    if ($content) {
+        echo generatePostLink($content, $widget, $randompicUrl, 'prev');
+    } else {
+        $safeUrl = htmlspecialchars($randompicUrl, ENT_QUOTES, 'UTF-8');
+        echo "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$safeUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
+    }
 }
 
 /**
@@ -243,24 +367,45 @@ function theNext($widget, $randompicUrl) {
         ->order('table.contents.created', Typecho_Db::SORT_ASC)
         ->limit(1));
 
-    echo generatePostLink($content, $widget, $randompicUrl, 'next');
+    if ($content) {
+        echo generatePostLink($content, $widget, $randompicUrl, 'next');
+    } else {
+        $safeUrl = htmlspecialchars($randompicUrl, ENT_QUOTES, 'UTF-8');
+        echo "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$safeUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
+    }
 }
 
 /**
  * 生成上一篇/下一篇链接 HTML
  */
 function generatePostLink($content, $widget, $randompicUrl, $direction) {
-    if ($content) {
-        $post = Typecho_Widget::widget('Widget_Archive@temp');
-        $db = Typecho_Db::get();
-        $sql = $db->select()->from('table.contents')->where('cid = ?', $content['cid']);
-        $db->fetchRow($sql, array($post, 'push'));
-        $pic = $post->fields->pic ?: $randompicUrl . "?_=" . mt_rand();
-        $icon = $direction === 'prev' ? '<i class="ni ni-bold-left"></i>' : '<i class="ni ni-bold-right"></i>';
-        $layout = $direction === 'prev' ? "{$icon}<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$post->title}</h2>" : "<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$post->title}</h2>{$icon}";
-        return "<a class=\"carousel\" href=\"{$post->permalink}\" title=\"{$post->title}\"><div style=\"background-image:url({$pic});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\">{$layout}</div></a>";
+    if (!$content) {
+        return "";
     }
-    return "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$randompicUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
+    
+    $post = Typecho_Widget::widget('Widget_Archive@temp');
+    $db = Typecho_Db::get();
+    $sql = $db->select()->from('table.contents')->where('cid = ?', $content['cid']);
+    $db->fetchRow($sql, array($post, 'push'));
+    
+    // 安全获取文章头图
+    $pic = '';
+    if (isset($post->fields) && isset($post->fields->pic) && !empty($post->fields->pic)) {
+        $pic = $post->fields->pic;
+    } else {
+        $pic = $randompicUrl . "?_=" . mt_rand(100000, 999999);
+    }
+    
+    $safePic = htmlspecialchars($pic, ENT_QUOTES, 'UTF-8');
+    $safePermalink = htmlspecialchars($post->permalink, ENT_QUOTES, 'UTF-8');
+    $safeTitle = htmlspecialchars($post->title, ENT_QUOTES, 'UTF-8');
+    
+    $icon = $direction === 'prev' ? '<i class="ni ni-bold-left"></i>' : '<i class="ni ni-bold-right"></i>';
+    $layout = $direction === 'prev' 
+        ? "{$icon}<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$safeTitle}</h2>" 
+        : "<h2 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">{$safeTitle}</h2>{$icon}";
+    
+    return "<a class=\"carousel\" href=\"{$safePermalink}\" title=\"{$safeTitle}\"><div style=\"background-image:url({$safePic});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\">{$layout}</div></a>";
 }
 
 /**
@@ -271,7 +416,7 @@ class Widget_Comments_Archive extends Widget_Abstract_Comments
     private $_currentPage = 1;
     private $_total = 0;
     private $_threadedComments = [];
-    private $_singleCommentOptions;
+    private $_singleCommentOptions = null;
 
     public function __construct($request, $response, $params = NULL)
     {
@@ -483,12 +628,12 @@ class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_Page
 
     public function __construct($total, $currentPage, $pageSize, $pageTemplate, $anchor = NULL)
     {
-        $this->_total = intval($total);
-        $this->_pageSize = intval($pageSize);
-        $this->_currentPage = intval($currentPage);
-        $this->_pageTemplate = $pageTemplate;
-        $this->_anchor = $anchor ? '#' . $anchor : '';
-        $this->_totalPage = ceil($this->_total / $this->_pageSize);
+        $this->_total = max(0, intval($total));
+        $this->_pageSize = max(1, intval($pageSize));
+        $this->_currentPage = max(1, intval($currentPage));
+        $this->_pageTemplate = strval($pageTemplate);
+        $this->_anchor = $anchor ? '#' . preg_replace('/[^a-zA-Z0-9_-]/', '', $anchor) : '';
+        $this->_totalPage = max(1, ceil($this->_total / $this->_pageSize));
 
         if ($this->_currentPage < 1) {
             $this->_currentPage = 1;
@@ -499,9 +644,6 @@ class Typecho_Widget_Helper_PageNavigator_Box extends Typecho_Widget_Helper_Page
         // Normalize pageTemplate: replace {page} or {X} with {commentPage}
         $this->_pageTemplate = str_replace('{page}', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
         $this->_pageTemplate = preg_replace('/\{\d+\}/', '{' . $this->_pageHolder . '}', $this->_pageTemplate);
-
-        // Debug: Log the pageTemplate
-        error_log('PageNavigator Template: ' . $this->_pageTemplate);
 
         // Call parent constructor with 4 arguments for older Typecho compatibility
         parent::__construct($this->_total, $this->_currentPage, $this->_pageSize, $this->_pageTemplate);
@@ -576,8 +718,22 @@ function themeFields(Typecho_Widget_Helper_Layout $layout) {
  * 清理 URL 中的查询参数
  */
 function clear_urlcan($url) {
+    if (empty($url)) {
+        return '';
+    }
     $parsed = parse_url($url);
-    return ($parsed['scheme'] ?? 'http') . '://' . $parsed['host'] . ($parsed['path'] ?? '');
+    if (!$parsed) {
+        return '';
+    }
+    $scheme = isset($parsed['scheme']) ? $parsed['scheme'] : 'http';
+    $host = isset($parsed['host']) ? $parsed['host'] : '';
+    $path = isset($parsed['path']) ? $parsed['path'] : '';
+    
+    if (empty($host)) {
+        return '';
+    }
+    
+    return $scheme . '://' . $host . $path;
 }
 
 /**

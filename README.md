@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.5-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![项目版本](https://img.shields.io/badge/版本-1.2.6-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 [![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
@@ -30,23 +30,31 @@
 | :-- | :-- |
 | **轻快交互** | PowerMode 打字特效、鼠标点击涟漪、AJAX 评论与搜索 |
 | **文章增强** | 自动 TOC 目录、阅读统计、字数统计、评论计数 |
-| **兼容优化** | 完全支持 Typecho 1.2.1 / PHP 8.X / MySQL 8.X |
+| **兼容优化** | 完全支持 Typecho 1.2.1-1.3.0 / PHP 7.4-8.3 / MySQL 8.X-9.X |
 | **高度自定义** | 独立页面图标与配色、自定义导航栏样式、双端背景、LOGO 设置 |
 | **现代化设计** | 基于 Argon Design System 与 Bootstrap 4，响应式支持多端展示 |
 | **归属地展示** | 评论区 IP 归属展示（依赖 [XQLocation](https://www.toubiec.cn/1194.html)） |
 | **Cookie合规** | 支持 GDPR/最新2026年执行的中国网络安全规范的 Cookie 同意模式 |
+| **评论管理** | 支持控制未登录用户评论权限，自定义提示信息 |
+| **隐私政策** | 支持自定义隐私政策页面 URL |
 
 ---
 
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
+- 增加了 **自定义隐私政策 URL** 配置选项，支持相对路径和完整 URL
+- 增加了 **访客评论控制** 功能，可以在主题设置中禁止未登录用户发表评论
+- 实现了 **双重评论权限验证**（前端 + 后端），防止恶意绕过提交
+- 支持 **自定义访客评论提示信息**，可以自定义禁止评论时的显示内容
+- 完全符合 **PHP 8.3 严格模式**，增强了代码安全性和稳定性
+- 全面加强了 **XSS 防护**，所有输出均经过 htmlspecialchars 转义
+- 增强了 **空值检查和类型安全**，防止未定义索引错误
+- 修复了 **动态属性访问** 问题，兼容 PHP 8.2+ 严格模式
+- 完成了对 **PHP 7.4 到 PHP 8.3** 的全面兼容性验证和优化
+- 修复了 **PHP 短标签**问题，确保所有 PHP 标签使用 `<?php` 而非 `<?`
 - 支持了 Typecho 1.3.0 版本
-- 更新了 Cookie 管理器 的 JavaScript 逻辑，适配更多情况。
-- 修复了 Typecho 1.3.0 版本下，独立页面自定义属性不生效问题。
-- 修复了 评论区 Cookie 管理加载异常不显示的问题。
-- 修复了 资源加载逻辑，修复了字体在移动端浏览器不加载的问题。
-- 统一了 资源加载风格。
+- 修复了 Typecho 1.3.0 版本下，独立页面自定义属性不生效问题
 
 ### 🔮 未来规划
 - 私密评论支持  
@@ -149,6 +157,47 @@
     myFunction.init();
 </script>
 ```
+
+---
+
+## 🎯 主题配置功能
+
+### 🔒 评论权限控制
+
+在 Typecho 后台 → 控制台 → 外观 → 主题设置 → **访客评论设置**：
+
+- **允许未登录用户评论**（默认）：所有访客都可以发表评论
+- **禁止未登录用户评论**：只有登录用户才能评论
+
+**安全特性：**
+- ✅ 前端表单控制 - 未登录用户看不到评论表单
+- ✅ 后端权限验证 - 服务器端二次校验，防止绕过前端提交
+- ✅ AJAX 请求保护 - 返回 JSON 错误响应
+- ✅ 403 状态码 - 符合 HTTP 标准的权限拒绝
+
+#### 自定义禁止评论提示
+
+在 **禁止访客评论提示** 文本框中，你可以自定义提示信息。支持使用占位符：
+
+- `%loginUrl%` - 会自动替换为登录页面链接
+
+**示例：**
+```
+抱歉，本站仅允许登录用户发表评论。请先<a href="%loginUrl%" class="text-white" style="text-decoration: underline;">登录</a>您的账户。
+```
+
+### 🔗 自定义隐私政策链接
+
+在主题设置 → **隐私政策链接** 中，你可以设置隐私政策页面的 URL：
+
+**支持的格式：**
+- 相对路径：`./privacy.html` 或 `/privacy.html`
+- 完整 URL：`https://example.com/privacy`
+- 独立页面：创建一个名为"隐私政策"的独立页面，然后填入其 URL
+
+该链接会在以下位置显示：
+- Cookie 同意横幅
+- Cookie 设置弹窗
 
 ---
 

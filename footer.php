@@ -202,7 +202,15 @@
 <!-- 1. Main Consent Banner (Initially Visible) -->
 <div id="cookie-consent-banner" class="cookie-banner">
     <div class="cookie-banner-content">
-        <p>欢迎来到「<?php $this->options->title(); ?>」。我们使用 Cookie 来优化您的体验、提供安全保障并分析网站流量。您可以选择接受所有 Cookie，或自定义您的设置。您可以阅读<a href="<?php $this->options->siteUrl('./privacy.html'); ?>">隐私政策</a>了解更多。</p>
+        <?php 
+        $privacyUrl = $this->options->privacyUrl ? $this->options->privacyUrl : './privacy.html';
+        // 如果是相对路径，转换为完整 URL
+        if (strpos($privacyUrl, 'http') !== 0 && strpos($privacyUrl, '//') !== 0) {
+            $privacyUrl = $this->options->siteUrl($privacyUrl);
+        }
+        $safePrivacyUrl = htmlspecialchars($privacyUrl, ENT_QUOTES, 'UTF-8');
+        ?>
+        <p>欢迎来到「<?php $this->options->title(); ?>」。我们使用 Cookie 来优化您的体验、提供安全保障并分析网站流量。您可以选择接受所有 Cookie，或自定义您的设置。您可以阅读<a href="<?php echo $safePrivacyUrl; ?>">隐私政策</a>了解更多。</p>
         <div class="cookie-banner-buttons">
             <button id="cookie-customize-btn">自定义设置</button>
             <button id="cookie-accept-all-btn">接受所有</button>
@@ -217,7 +225,14 @@
             <button id="cookie-modal-close-btn" class="cookie-modal-close">&times;</button>
         </div>
         <div class="cookie-modal-body">
-            <p>为了网站的正常运行和安全，某些 Cookie 是必需的。对于其他类型的 Cookie，您可根据需要，选择是否启用。您的选择将被保存，并且可以随时通过页脚的 Cookie 图标进行修改。您可以阅读<a href="<?php $this->options->siteUrl('./privacy.html'); ?>">隐私政策</a>了解更多。</p>
+            <?php 
+            $privacyUrl = $this->options->privacyUrl ? $this->options->privacyUrl : './privacy.html';
+            if (strpos($privacyUrl, 'http') !== 0 && strpos($privacyUrl, '//') !== 0) {
+                $privacyUrl = $this->options->siteUrl($privacyUrl);
+            }
+            $safePrivacyUrl = htmlspecialchars($privacyUrl, ENT_QUOTES, 'UTF-8');
+            ?>
+            <p>为了网站的正常运行和安全，某些 Cookie 是必需的。对于其他类型的 Cookie，您可根据需要，选择是否启用。您的选择将被保存，并且可以随时通过页脚的 Cookie 图标进行修改。您可以阅读<a href="<?php echo $safePrivacyUrl; ?>">隐私政策</a>了解更多。</p>
             <!-- Strictly Necessary Cookies -->
             <div class="cookie-category">
                 <div class="cookie-category-header">

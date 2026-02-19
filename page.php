@@ -44,15 +44,15 @@
               </div>
               <div class="col-lg-6 text-lg-right align-self-lg-center">
                 <div class="card-profile-actions card-profile-stats d-flex justify-content-center">
-                	<? if (count($this->tags)>0): ?>
+                	<?php if (count($this->tags)>0): ?>
         			<?php foreach( $this->tags as $tags): ?>
-        			<a href="<? print($tags['permalink']) ?>" class="btn btn-sm btn-info mr-4"><? print($tags['name']) ?></a>
+        			<a href="<?php echo htmlspecialchars($tags['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-info mr-4"><?php echo htmlspecialchars($tags['name'], ENT_QUOTES, 'UTF-8'); ?></a>
         			<?php endforeach; ?>
         			<?php else: ?>
         			<a class="btn btn-sm btn-info mr-4">无标签..</a>
         			<?php endif; ?>
         			<?php foreach( $this->categories as $categories): ?>
-        			<a href="<? echo $categories['permalink']; ?>" class="btn btn-sm btn-default float-right"><? echo $categories['name']; ?></a	>
+        			<a href="<?php echo htmlspecialchars($categories['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-sm btn-default float-right"><?php echo htmlspecialchars($categories['name'], ENT_QUOTES, 'UTF-8'); ?></a>
         			<?php endforeach;?>
                 </div>
               </div>
