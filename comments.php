@@ -23,63 +23,87 @@ $this->comments()->to($comments);
         </div>
     </div>
 
-    <!-- 嵌套评论函数 -->
-    <?php function threadedComments($comments, $options) {
-        $commentClass = $comments->authorId ? ($comments->authorId == $comments->ownerId ? ' comment-by-author' : ' comment-by-user') : '';
-        $commentLevelClass = $comments->levels > 0 ? ' comment-child' : ' comment-parent';
-    ?>
-        <div id="<?php echo $comments->theId; ?>" 
-             class="card border mt-2<?php echo $commentLevelClass . ($comments->levels > 0 ? $comments->levelsAlt(' comment-level-odd', ' comment-level-even') : '') . $comments->alt(' comment-odd', ' comment-even') . $commentClass; ?>">
-            <div class="card-body">
-                <div class="d-flex px-3">
-                    <div>
-                        <a class="card-profile-image bg-gradient-success rounded-circle text-white">
-                            <?php get_custom_gravatar($comments->mail, 40, $comments->author); ?>
-                        </a>
-                    </div>
-                    <div class="pl-4" style="width:90%;">
-                        <h5 class="title text-success breakword"><?php $comments->author(); ?></h5>
-                        <a class="text-success breakword">
-                            <span class="badge badge-info">
-                                <i class="fa fa-globe" aria-hidden="true"></i>
-                                <?php
-                                    if (class_exists('XQLocation_Plugin') && method_exists('XQLocation_Plugin', 'render')) {
-                                        XQLocation_Plugin::render($comments->ip);
-                                    } else {
-                                        echo '尚未进行配置';
-                                    }
-                                ?>
-                            </span>
-                            <span class="badge badge-success">
-                                <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                <?php $comments->date('Y F jS'); ?>
-                            </span>
-                        </a>
-                        <?php if (!$comments->parent): ?>
-                            <?php $comments->reply('<span class="badge badge-primary"><i class="fa fa-reply" aria-hidden="true"></i> 回复</span>'); ?>
-                        <?php endif; ?>
-                        <p class="breakword"><?php $comments->content(); ?></p>
-                        <?php if ($comments->status == 'waiting'): ?>
-                            <span class="badge badge-pill badge-default text-white">您的评论当前仅您可见</span>
-                        <?php endif; ?>
-                    </div>
-                </div>
-                <?php if ($comments->children): ?>
-                    <?php if ($comments->levels < 1): ?>
-                        <?php $comments->threadedComments($options); ?>
-                        </div></div>
-                    <?php else: ?>
-                        </div></div>
-                        <?php $comments->threadedComments($options); ?>
-                    <?php endif; ?>
-                <?php else: ?>
-                    </div></div>
-                <?php endif; ?>
-    <?php } ?>
-
     <!-- 评论列表 -->
     <div id="comment-refresh">
-        <?php $comments->listComments(); ?>
+        <?php 
+        // 定义评论渲染回调函数
+        function threadedComments($comments, $options) {
+            $commentClass = $comments->authorId ? ($comments->authorId == $comments->ownerId ? ' comment-by-author' : ' comment-by-user') : '';
+            $commentLevelClass = $comments->levels > 0 ? ' comment-child' : ' comment-parent';
+        ?>
+            <div id="<?php echo $comments->theId; ?>" 
+                 class="card border shadow-none rounded mt-3 mb-2<?php echo $commentLevelClass . ($comments->levels > 0 ? $comments->levelsAlt(' comment-level-odd', ' comment-level-even') : '') . $comments->alt(' comment-odd', ' comment-even') . $commentClass; ?>"
+                 style="background-color: #ffffff;">
+                <div class="card-body py-4">
+                    <div class="d-flex flex-row align-items-start px-2 px-md-3">
+                        <div class="flex-shrink-0">
+                            <a class="card-profile-image bg-gradient-success rounded-circle text-white d-inline-block">
+                                <?php 
+                                if (function_exists('get_custom_gravatar')) {
+                                    get_custom_gravatar($comments->mail, 40, $comments->author);
+                                } else {
+                                    // 降级方案：使用默认 Gravatar
+                                    $gravatarUrl = 'https://cdn.sep.cc/avatar/' . md5(strtolower($comments->mail)) . '?s=40';
+                                    echo '<img src="' . htmlspecialchars($gravatarUrl) . '" class="rounded-circle" alt="' . htmlspecialchars($comments->author) . '" width="40" height="40">';
+                                }
+                                ?>
+                            </a>
+                        </div>
+                        <div class="flex-grow-1 pl-3 pl-md-4" style="min-width: 0;">
+                            <h5 class="title text-success breakword mb-2"><?php $comments->author(); ?></h5>
+                            <div class="d-flex flex-wrap align-items-center mb-3">
+                                <span class="badge badge-info mr-2 mb-1">
+                                    <i class="fa fa-globe" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline ml-1">
+                                        <?php
+                                            if (class_exists('XQLocation_Plugin') && method_exists('XQLocation_Plugin', 'render')) {
+                                                XQLocation_Plugin::render($comments->ip);
+                                            } else {
+                                                echo '尚未进行配置';
+                                            }
+                                        ?>
+                                    </span>
+                                </span>
+                                <span class="badge badge-success mr-2 mb-1">
+                                    <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline ml-1">
+                                        <?php $comments->date('Y F jS'); ?>
+                                    </span>
+                                </span>
+                                <?php if (!$comments->parent): ?>
+                                    <?php $comments->reply('<span class="badge badge-primary mb-1"><i class="fa fa-reply" aria-hidden="true"></i> <span class="d-none d-sm-inline">回复</span></span>'); ?>
+                                <?php endif; ?>
+                            </div>
+                            <p class="breakword mb-2" style="word-wrap: break-word; overflow-wrap: break-word;">
+                                <?php $comments->content(); ?>
+                            </p>
+                            <?php if ($comments->status == 'waiting'): ?>
+                                <span class="badge badge-pill badge-default text-white">您的评论当前仅您可见</span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <?php if ($comments->children): ?>
+                        <?php if ($comments->levels < 1): ?>
+                            <?php $comments->threadedComments($options); ?>
+                            </div></div>
+                        <?php else: ?>
+                            </div></div>
+                            <?php $comments->threadedComments($options); ?>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        </div></div>
+                    <?php endif; ?>
+        <?php 
+        }
+        
+        // 渲染评论列表，传递选项
+        $comments->listComments(array(
+            'before'        => '',
+            'after'         => '',
+            'avatarSize'    => 40,
+            'replyWord'     => '回复'
+        )); 
+        ?>
     </div>
 
     <!-- 评论表单 -->
