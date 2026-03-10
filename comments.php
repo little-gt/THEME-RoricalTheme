@@ -206,7 +206,9 @@ $showCommentForm = $this->user->hasLogin() || $allowGuestComment;
                     </div>
                     <h3 class="text-white mb-4"><?php _e('需要登录才能评论'); ?></h3>
                     <div class="text-white lead">
-                        <?php  $this->options->guestCommentMsg(); ?>
+                        <?php 
+                        echo str_replace('%loginUrl%', $this->options->adminUrl, $this->options->guestCommentMsg);
+                        ?>
                     </div>
                 </div>
             </div>

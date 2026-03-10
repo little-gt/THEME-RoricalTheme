@@ -125,7 +125,7 @@ function get_custom_gravatar($mail, $size = 40, $author = '', $class = 'rounded-
     $url .= "?s=" . $size;
     $author = htmlspecialchars($author, ENT_QUOTES, 'UTF-8');
     $class = htmlspecialchars($class, ENT_QUOTES, 'UTF-8');
-    echo '<img src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" class="' . $class . '" alt="' . $author . '">';
+    echo '<img src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" class="' . $class . '" alt="' . $author . '" width="' . $size . '" height="' . $size . '">';
 }
 
 /**
@@ -616,6 +616,71 @@ class Widget_Comments_Archive extends Widget_Abstract_Comments
 
         $this->row = $tmp;
         $this->sequence--;
+    }
+
+    public function threadedCommentsCallback()
+    {
+        $commentClass = $this->authorId ? ($this->authorId == $this->ownerId ? ' comment-by-author' : ' comment-by-user') : '';
+        $commentLevelClass = $this->levels > 0 ? ' comment-child' : ' comment-parent';
+        
+        echo '<div id="' . $this->theId . '" ';
+        echo 'class="card border mt-2' . $commentLevelClass . ($this->levels > 0 ? $this->levelsAlt(' comment-level-odd', ' comment-level-even') : '') . $this->alt(' comment-odd', ' comment-even') . $commentClass . '">';
+        echo '<div class="card-body">';
+        echo '<div class="d-flex px-3">';
+        echo '<div>';
+        echo '<a class="card-profile-image bg-gradient-success rounded-circle text-white">';
+        
+        // 调用自定义头像函数
+        if (function_exists('get_custom_gravatar')) {
+            get_custom_gravatar($this->mail, 40, $this->author);
+        }
+        
+        echo '</a>';
+        echo '</div>';
+        echo '<div class="pl-4" style="width:90%;">';
+        echo '<h5 class="title text-success breakword">' . $this->author . '</h5>';
+        echo '<a class="text-success breakword">';
+        echo '<span class="badge badge-info">';
+        echo '<i class="fa fa-globe" aria-hidden="true"></i> ';
+        
+        // 位置信息
+        if (class_exists('XQLocation_Plugin') && method_exists('XQLocation_Plugin', 'render')) {
+            XQLocation_Plugin::render($this->ip);
+        } else {
+            echo '尚未进行配置';
+        }
+        
+        echo '</span> ';
+        echo '<span class="badge badge-success">';
+        echo '<i class="fa fa-clock-o" aria-hidden="true"></i> ';
+        echo $this->date('Y F jS');
+        echo '</span>';
+        echo '</a>';
+        
+        if (!$this->parent) {
+            echo $this->reply('<span class="badge badge-primary"><i class="fa fa-reply" aria-hidden="true"></i> 回复</span>');
+        }
+        
+        echo '<p class="breakword">' . $this->content . '</p>';
+        
+        if ($this->status == 'waiting') {
+            echo '<span class="badge badge-pill badge-default text-white">您的评论当前仅您可见</span>';
+        }
+        
+        echo '</div>';
+        echo '</div>';
+        
+        if ($this->children) {
+            if ($this->levels < 1) {
+                $this->threadedComments();
+                echo '</div></div>';
+            } else {
+                echo '</div></div>';
+                $this->threadedComments();
+            }
+        } else {
+            echo '</div></div>';
+        }
     }
 
     public function listComments($options = NULL)
