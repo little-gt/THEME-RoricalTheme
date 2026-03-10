@@ -21,7 +21,19 @@ function getPrivacyUrl($options) {
     <div class="container align-items-center justify-content-md-between">
         <div class="row">
             <div class="col-md-6">
-                Copyright © <?php echo date('Y'); ?> <?php $this->options->title(); ?>.
+                <div class="footer-copyright">
+                    Copyright © <?php echo date('Y'); ?> <?php $this->options->title(); ?>.
+                    <?php if ($this->options->icpNumber): ?>
+                        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian-link">
+                            <?php echo htmlspecialchars($this->options->icpNumber); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($this->options->policeNumber): ?>
+                        <a href="https://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian-link">
+                            <?php echo htmlspecialchars($this->options->policeNumber); ?>
+                        </a>
+                    <?php endif; ?>
+                </div>
             </div>
             <div class="col-md-6">
                 <ul class="nav nav-footer justify-content-end">
@@ -39,6 +51,33 @@ function getPrivacyUrl($options) {
         </div>
     </div>
 </footer>
+<style>
+    .footer-copyright {
+        font-size: 0.875rem;
+        color: #8898aa;
+        line-height: 1.5;
+    }
+    .footer-beian-link {
+        margin-left: 10px;
+        color: #8898aa;
+        text-decoration: none;
+        transition: color 0.2s ease-in-out;
+    }
+    .footer-beian-link:hover {
+        color: #5e72e4;
+        text-decoration: none;
+    }
+    @media (max-width: 767px) {
+        .footer-copyright {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .footer-beian-link {
+            display: inline-block;
+            margin: 5px 10px 0 0;
+        }
+    }
+</style>
 
 <?php $this->footer(); ?>
 
@@ -233,7 +272,6 @@ function getPrivacyUrl($options) {
             <button id="cookie-modal-close-btn" class="cookie-modal-close">&times;</button>
         </div>
         <div class="cookie-modal-body">
-            <?php $safePrivacyUrl = getPrivacyUrl($this->options); ?>
             <p>为了网站的正常运行和安全，某些 Cookie 是必需的。对于其他类型的 Cookie，您可根据需要，选择是否启用。您的选择将被保存，并且可以随时通过页脚的 Cookie 图标进行修改。您可以阅读<a href="<?php echo $safePrivacyUrl; ?>">隐私政策</a>了解更多。</p>
             <!-- Strictly Necessary Cookies -->
             <div class="cookie-category">

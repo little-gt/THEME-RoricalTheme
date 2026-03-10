@@ -86,6 +86,26 @@ function themeConfig($form) {
         _t('当禁止未登录用户评论时显示的提示信息。可使用 %loginUrl% 作为登录链接占位符。')
     );
     $form->addInput($guestCommentMsg);
+    
+    // ICP 备案信息
+    $icpNumber = new Typecho_Widget_Helper_Form_Element_Text(
+        'icpNumber', 
+        NULL, 
+        NULL, 
+        _t('ICP 备案号'), 
+        _t('填入网站的 ICP 备案号，如：京ICP备12345678号')
+    );
+    $form->addInput($icpNumber);
+    
+    // 公安备案信息
+    $policeNumber = new Typecho_Widget_Helper_Form_Element_Text(
+        'policeNumber', 
+        NULL, 
+        NULL, 
+        _t('公安备案号'), 
+        _t('填入网站的公安备案号，如：京公网安备1234567890号')
+    );
+    $form->addInput($policeNumber);
 }
 
 /**

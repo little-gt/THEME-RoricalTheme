@@ -4,11 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.7-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
-[![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
-[![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
-[![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
-[![作者信息](https://img.shields.io/badge/作者-GARFIELDTOM-6f42c1?style=flat-square&logo=github)](https://garfieldtom.cool/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.7-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
