@@ -24,6 +24,7 @@ function getPrivacyUrl($options) {
                 <div class="footer-copyright">
                     Copyright © <?php echo date('Y'); ?> <?php $this->options->title(); ?>.
                     <?php if ($this->options->icpNumber): ?>
+                        <br>
                         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian-link">
                             <?php echo htmlspecialchars($this->options->icpNumber); ?>
                         </a>

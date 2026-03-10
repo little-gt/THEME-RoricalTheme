@@ -13,7 +13,7 @@ function themeConfig($form) {
     $form->addInput($logoUrl);
 
     // 用户头像
-    $defaultAvatar = 'https://cdn.sep.cc/avatar/';
+    $defaultAvatar = 'https://cdn.garfieldtom.cool/img/wldairy/avatar/music.jpg';
     $AvatarUrl = new Typecho_Widget_Helper_Form_Element_Text('AvatarUrl', NULL, $defaultAvatar, _t('用户头像'), _t('填入图片 URL 地址，用于站点头像'));
     $form->addInput($AvatarUrl);
 
@@ -43,7 +43,7 @@ function themeConfig($form) {
     $form->addInput($Analytic);
 
     // 导航栏图标
-    $navbarIcons = new Typecho_Widget_Helper_Form_Element_Textarea('navbarIcons', NULL, _t('fa fa-github$$Github$$https://github.com/Liupaperbox/'), _t('导航栏图标'), _t('格式：图标class$$文字$$链接，一行一个'));
+    $navbarIcons = new Typecho_Widget_Helper_Form_Element_Textarea('navbarIcons', NULL, _t('fa fa-github$$Github$$https://github.com/little-gt/THEME-RoricalTheme'), _t('导航栏图标'), _t('格式：图标class$$文字$$链接，一行一个'));
     $form->addInput($navbarIcons);
 
     // 导航栏样式
@@ -513,17 +513,21 @@ class Widget_Comments_Archive extends Widget_Abstract_Comments
 
         $select = $this->select()
             ->where('cid = ?', $this->parameter->parentId)
-            ->where(
-                'status = ? OR (author = ? AND mail = ? AND status = ?)',
-                'approved',
+            ->where('status = ?', 'approved')
+            ->order('coid', 'ASC');
+
+        // 如果用户已登录或有记住的用户信息，也显示待审核的评论
+        if ($commentsAuthor && $commentsMail) {
+            $select->orWhere(
+                'author = ? AND mail = ? AND status = ?',
                 $commentsAuthor,
                 $commentsMail,
                 'waiting'
-            )
-            ->order('coid', 'ASC');
+            );
+        }
 
         if ($this->options->commentsShowCommentOnly) {
-            $select->where('type = ?', 'comment');
+            $select->andWhere('type = ?', 'comment');
         }
 
         $this->db->fetchAll($select, [$this, 'push']);

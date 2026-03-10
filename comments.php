@@ -83,138 +83,136 @@ $this->comments()->to($comments);
     </div>
 
     <!-- 评论表单 -->
-    <?php if ($this->allow('comment')): ?>
-    <?php 
-    // 检查是否允许未登录用户评论
-    $allowGuestComment = !isset($this->options->guestComment) || $this->options->guestComment === 'allow';
-    $showCommentForm = $this->user->hasLogin() || $allowGuestComment;
-    ?>
-    
-    <?php if (!$showCommentForm): ?>
-        <!-- 禁止访客评论的提示 -->
-        <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
-            <div class="container mt-5">
-                <div class="card bg-gradient-info border-0">
-                    <div class="p-5 text-center">
-                        <div class="icon icon-shape bg-white text-info rounded-circle mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
-                            <i class="ni ni-lock-circle-open" style="font-size: 40px; line-height: 80px;"></i>
+<?php 
+// 检查是否允许未登录用户评论
+$allowGuestComment = !isset($this->options->guestComment) || $this->options->guestComment === 'allow';
+$showCommentForm = $this->user->hasLogin() || $allowGuestComment;
+?>
+
+<?php if ($this->allow('comment') && $showCommentForm): ?>
+<div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
+    <form method="post" action="<?php $this->commentUrl(); ?>" id="comment-form" role="form">
+        <div class="container mt-5">
+            <div class="card bg-gradient-warning border-0">
+                <div class="p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 class="text-white"><?php _e('添加新评论'); ?></h3>
+                            <?php if ($this->user->hasLogin()): ?>
+                                <!-- Cookie同意提醒 -->
+                                <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                    <p class="text-white" style="margin: 0;">您好，<?php echo $this->user->screenName(); ?>。您已经登录「<?php $this->options->title(); ?>」，即视为您同意了评论区相关功能的功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
+                                </div>
+                                <div id="comment-user-details"></div>
+                                <!-- 评论内容输入框 -->
+                                <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required
+                                          placeholder="<?php echo $this->user->screenName(); ?>? 写点什么吧..."></textarea>
+                            <?php else: ?>
+                                <!-- Cookie同意提醒 -->
+                                <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                                    <p class="text-white" style="margin: 0;">为了记住您的昵称、邮箱等信息以便下次评论，请启用功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
+                                </div>
+                                <!-- 评论用户信息区 -->
+                                <div id="comment-user-details">
+                                    <div class="row lead text-white mt-3">
+                                        <div class="col-md-4">
+                                            <div class="form-group input-group input-group-alternative">
+                                                <div class="input-group-prepend">
+                                                    <span class="input-group-text" style="padding: .4rem .5rem;">
+                                                        <div id="author-head" class="icon-shape rounded-circle text-white gravatar" style="width: 2rem; height: 2rem;"></div>
+                                                    </span>
+                                                </div>
+                                                <input class="form-control form-control-alternative" name="author" id="author" required value="<?php $this->remember('author'); ?>" placeholder="昵称">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="email" name="mail" id="mail" placeholder="邮箱" value="<?php $this->remember('mail'); ?>"  class="form-control form-control-alternative" required/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="url" name="url" id="url" value="<?php $this->remember('url'); ?>" placeholder="网站" class="form-control form-control-alternative"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 评论内容输入框 -->
+                                <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required placeholder="写点什么吧..."></textarea>
+                            <?php endif; ?>
                         </div>
-                        <h3 class="text-white mb-4"><?php _e('需要登录才能评论'); ?></h3>
-                        <div class="text-white lead">
-                            <?php  $this->options->guestCommentMsg(); ?>
+                        <div class="col-lg-3 ml-lg-auto mt-3">
+                            <button class="btn btn-lg btn-block btn-white" type="submit" id="add-comment-button">提交！</button>
+                            <div class="cancel-comment-reply mt-5 align-items-center">
+                                <?php $comments->cancelReply('取消回复', 'btn btn-danger'); ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    <?php else: ?>
+    </form>
+</div>
+
+<!-- 独立评论区 Cookie 检查脚本 -->
+<?php if ($showCommentForm && !$this->user->hasLogin()): ?>
+<script>
+(function() {
+    /**
+     * 主动检查并更新评论区 UI 状态
+     * 此函数不依赖外部庞大的 JS 库，确保加载即运行
+     */
+    function checkCommentConsentState() {
+        const COOKIE_KEY = 'cookie_consent_settings';
+        const userDetails = document.getElementById('comment-user-details');
+        const consentPrompt = document.getElementById('comment-consent-prompt');
+
+        // 防报错，如果元素不存在，直接返回
+        if (!userDetails || !consentPrompt) return;
+
+        // 读取本地存储，默认为拒绝(false)
+        let settings = { functional: false };
+        try {
+            const saved = localStorage.getItem(COOKIE_KEY);
+            if (saved) settings = JSON.parse(saved);
+        } catch (e) { console.error('Cookie settings parse error', e); }
+
+        // 根据状态切换显示
+        if (settings.functional) {
+            userDetails.style.display = 'block';
+            consentPrompt.style.display = 'none';
+        } else {
+            userDetails.style.display = 'none';
+            consentPrompt.style.display = 'block';
+        }
+    }
+
+    // 立即执行一次 处理首次加载/PJAX重载
+    checkCommentConsentState();
+
+    // 监听全局自定义事件 处理用户在不刷新页面的情况下修改了 Cookie 设置
+    window.addEventListener('cookieConsentUpdated', checkCommentConsentState);
+})();
+</script>
+<?php endif; ?>
+<?php elseif ($this->allow('comment') && !$showCommentForm): ?>
+    <!-- 禁止访客评论的提示 -->
     <div id="<?php $this->respondId(); ?>" class="py-3 comment-text">
-        <form method="post" action="<?php $this->commentUrl(); ?>" id="comment-form" role="form">
-            <div class="container mt-5">
-                <div class="card bg-gradient-warning border-0">
-                    <div class="p-5">
-                        <div class="row align-items-center">
-                            <div class="col-lg-8">
-                                <h3 class="text-white"><?php _e('添加新评论'); ?></h3>
-                                <?php if ($this->user->hasLogin()): ?>
-                                    <!-- Cookie同意提醒 -->
-                                    <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                                        <p class="text-white" style="margin: 0;">您好，<?php echo $this->user->screenName(); ?>。您已经登录「<?php $this->options->title(); ?>」，即视为您同意了评论区相关功能的功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
-                                    </div>
-                                    <div id="comment-user-details"></div>
-                                    <!-- 评论内容输入框 -->
-                                    <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required
-                                              placeholder="<?php echo $this->user->screenName(); ?>? 写点什么吧..."></textarea>
-                                <?php else: ?>
-                                    <!-- Cookie同意提醒 -->
-                                    <div id="comment-consent-prompt" style="display: none; background-color: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                                        <p class="text-white" style="margin: 0;">为了记住您的昵称、邮箱等信息以便下次评论，请启用功能性 Cookie。您可以点击左下角的 Cookie 图标来管理您的设置。</p>
-                                    </div>
-                                    <!-- 评论用户信息区 -->
-                                    <div id="comment-user-details">
-                                        <div class="row lead text-white mt-3">
-                                            <div class="col-md-4">
-                                                <div class="form-group input-group input-group-alternative">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text" style="padding: .4rem .5rem;">
-                                                            <div id="author-head" class="icon-shape rounded-circle text-white gravatar" style="width: 2rem; height: 2rem;"></div>
-                                                        </span>
-                                                    </div>
-                                                    <input class="form-control form-control-alternative" name="author" id="author" required value="<?php $this->remember('author'); ?>" placeholder="昵称">
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input type="email" name="mail" id="mail" placeholder="邮箱" value="<?php $this->remember('mail'); ?>"  class="form-control form-control-alternative" required/>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <input type="url" name="url" id="url" value="<?php $this->remember('url'); ?>" placeholder="网站" class="form-control form-control-alternative"/>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- 评论内容输入框 -->
-                                    <textarea class="form-control form-control-alternative" name="text" id="textarea" rows="8" required placeholder="写点什么吧..."></textarea>
-                                <?php endif; ?>
-                            </div>
-                            <div class="col-lg-3 ml-lg-auto mt-3">
-                                <button class="btn btn-lg btn-block btn-white" type="submit" id="add-comment-button">提交！</button>
-                                <div class="cancel-comment-reply mt-5 align-items-center">
-                                    <?php $comments->cancelReply('取消回复', 'btn btn-danger'); ?>
-                                </div>
-                            </div>
-                        </div>
+        <div class="container mt-5">
+            <div class="card bg-gradient-info border-0">
+                <div class="p-5 text-center">
+                    <div class="icon icon-shape bg-white text-info rounded-circle mb-4" style="width: 80px; height: 80px; margin: 0 auto;">
+                        <i class="ni ni-lock-circle-open" style="font-size: 40px; line-height: 80px;"></i>
+                    </div>
+                    <h3 class="text-white mb-4"><?php _e('需要登录才能评论'); ?></h3>
+                    <div class="text-white lead">
+                        <?php  $this->options->guestCommentMsg(); ?>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
-    <?php endif; // 结束 showCommentForm 检查 ?>
-
-    <!-- 独立评论区 Cookie 检查脚本 -->
-    <?php if ($showCommentForm && !$this->user->hasLogin()): ?>
-    <script>
-    (function() {
-        /**
-         * 主动检查并更新评论区 UI 状态
-         * 此函数不依赖外部庞大的 JS 库，确保加载即运行
-         */
-        function checkCommentConsentState() {
-            const COOKIE_KEY = 'cookie_consent_settings';
-            const userDetails = document.getElementById('comment-user-details');
-            const consentPrompt = document.getElementById('comment-consent-prompt');
-
-            // 防报错，如果元素不存在，直接返回
-            if (!userDetails || !consentPrompt) return;
-
-            // 读取本地存储，默认为拒绝(false)
-            let settings = { functional: false };
-            try {
-                const saved = localStorage.getItem(COOKIE_KEY);
-                if (saved) settings = JSON.parse(saved);
-            } catch (e) { console.error('Cookie settings parse error', e); }
-
-            // 根据状态切换显示
-            if (settings.functional) {
-                userDetails.style.display = 'block';
-                consentPrompt.style.display = 'none';
-            } else {
-                userDetails.style.display = 'none';
-                consentPrompt.style.display = 'block';
-            }
-        }
-
-        // 立即执行一次 处理首次加载/PJAX重载
-        checkCommentConsentState();
-
-        // 监听全局自定义事件 处理用户在不刷新页面的情况下修改了 Cookie 设置
-        window.addEventListener('cookieConsentUpdated', checkCommentConsentState);
-    })();
-    </script>
-    <?php endif; ?>
-    <?php endif; ?>
+<?php endif; ?>
 
     <!-- 评论分页 -->
     <div id="comments">
