@@ -18,14 +18,16 @@ function themeConfig($form) {
     $form->addInput($AvatarUrl);
 
     // 背景图片
-    $defaultBackground = 'https://cdn.garfieldtom.cool/homepage/img/background.jpg';
-    $pcbackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('pcbackgroundUrl', NULL, $defaultBackground, _t('电脑主页背景'), _t('填入电脑背景图片 URL'));
-    $mobilebackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('mobilebackgroundUrl', NULL, $defaultBackground, _t('手机主页背景'), _t('填入手机背景图片 URL'));
+    $defaultPcBackground = 'https://cdn.garfieldtom.cool/img/wldairy/poster/horizontal/%E9%81%87%E8%A7%81%E4%BD%A0%E7%9A%84%E7%8C%AB_%E6%B6%88%E9%98%B2%E7%AB%99.jpg';
+    $defaultMobileBackground = 'https://cdn.garfieldtom.cool/img/wldairy/poster/vertical/%E9%81%87%E8%A7%81%E4%BD%A0%E7%9A%84%E7%8C%AB_%E7%AB%96%E5%B1%8F_%E4%B8%8D%E6%98%AF%E5%90%A7.jpg';
+    $pcbackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('pcbackgroundUrl', NULL, $defaultPcBackground, _t('电脑主页背景'), _t('填入电脑背景图片 URL'));
+    $mobilebackgroundUrl = new Typecho_Widget_Helper_Form_Element_Text('mobilebackgroundUrl', NULL, $defaultMobileBackground, _t('手机主页背景'), _t('填入手机背景图片 URL'));
     $form->addInput($pcbackgroundUrl);
     $form->addInput($mobilebackgroundUrl);
 
     // 随机图片
-    $randompicUrl = new Typecho_Widget_Helper_Form_Element_Text('randompicUrl', NULL, $defaultBackground, _t('随机图片'), _t('填入图片 URL，用于文章默认头图'));
+    $defaultRandomPic = 'https://t.alcy.cc/fj';
+    $randompicUrl = new Typecho_Widget_Helper_Form_Element_Text('randompicUrl', NULL, $defaultRandomPic, _t('随机图片'), _t('填入图片 URL，用于文章默认头图'));
     $form->addInput($randompicUrl);
 
     // PowerMode 打字特效

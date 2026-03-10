@@ -101,11 +101,7 @@ $this->comments()->to($comments);
                         </div>
                         <h3 class="text-white mb-4"><?php _e('需要登录才能评论'); ?></h3>
                         <div class="text-white lead">
-                            <?php 
-                            $guestMsg = $this->options->guestCommentMsg ? $this->options->guestCommentMsg : '抱歉，本站仅允许登录用户发表评论。请先<a href="%loginUrl%" class="text-white" style="text-decoration: underline;">登录</a>您的账户。';
-                            $loginUrl = htmlspecialchars($this->options->adminUrl('login.php?referer=' . urlencode($this->permalink)), ENT_QUOTES, 'UTF-8');
-                            echo str_replace('%loginUrl%', $loginUrl, $guestMsg);
-                            ?>
+                            <?php  $this->options->guestCommentMsg(); ?>
                         </div>
                     </div>
                 </div>

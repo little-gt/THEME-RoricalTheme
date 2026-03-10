@@ -4,7 +4,7 @@
  *
  * @package Rorical Theme
  * @author Rorical & little-gt
- * @version 1.2.6
+ * @version 1.2.7
  * @link https://www.garfieldtom.cool/
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
@@ -63,7 +63,7 @@ $this->need('header.php');
             // 安全获取文章头图
             $postPic = (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) 
                 ? $this->fields->pic 
-                : $this->options->randompicUrl();
+                : $this->options->randompicUrl."?random=".mt_rand(100000, 999999);
             ?>
             <div class="row-grid justify-content-between mt-lg card card-lift--hover shadow border-0" style="margin:auto;">
                 <a href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">

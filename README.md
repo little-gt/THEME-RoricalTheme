@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![项目版本](https://img.shields.io/badge/版本-1.2.6-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
+[![项目版本](https://img.shields.io/badge/版本-1.2.7-007EC6?style=flat-square)](https://github.com/little-gt/THEME-RoricalTheme/)
 [![许可证: GPL v3](https://img.shields.io/badge/许可证-GPLv3-blue?style=flat-square)](https://www.gnu.org/licenses/gpl-3.0.html)
 [![Argon 版本](https://img.shields.io/badge/设计支持-Argon-orange?style=flat-square&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 [![Typecho 版本](https://img.shields.io/badge/Typecho-1.2%2B-orange?style=flat-square&logo=typecho)](https://typecho.org/)
@@ -43,24 +43,8 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- 增加了 **自定义隐私政策 URL** 配置选项，支持相对路径和完整 URL
-- 增加了 **访客评论控制** 功能，可以在主题设置中禁止未登录用户发表评论
-- 实现了 **双重评论权限验证**（前端 + 后端），防止恶意绕过提交
-- 支持 **自定义访客评论提示信息**，可以自定义禁止评论时的显示内容
-- 完全符合 **PHP 8.3 严格模式**，增强了代码安全性和稳定性
-- 全面加强了 **XSS 防护**，所有输出均经过 htmlspecialchars 转义
-- 增强了 **空值检查和类型安全**，防止未定义索引错误
-- 修复了 **动态属性访问** 问题，兼容 PHP 8.2+ 严格模式
-- 完成了对 **PHP 7.4 到 PHP 8.3** 的全面兼容性验证和优化
-- 修复了 **PHP 短标签**问题，确保所有 PHP 标签使用 `<?php` 而非 `<?`
-- 支持了 Typecho 1.3.0 版本
-- 修复了 Typecho 1.3.0 版本下，独立页面自定义属性不生效问题
-
-### 🔮 未来规划
-- 私密评论支持  
-- 管理员标识显示  
-- 灯箱组件重构  
-- 更强的移动端适配与动画控制  
+- 修复了一些已知问题；
+- 修正了已经废弃的CDN资源。
 
 ---
 

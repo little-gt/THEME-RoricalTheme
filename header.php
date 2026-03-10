@@ -187,20 +187,20 @@
     <div id="main">
         <?php
         // 安全获取文章头图
-        $pic = '';
+        $headerPic = '';
         if ($this->is('page') || $this->is('post')) {
             if (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) {
-                $pic = $this->fields->pic;
+                $headerPic = $this->fields->pic;
             } else {
-                $pic = $this->options->randompicUrl() . "?_=" . mt_rand(100000, 999999);
+                $headerPic = $this->options->randompicUrl."?random=".mt_rand(100000, 999999);
             }
         }
         ?>
         <style>
             :root {
                 <?php if ($this->is('page') || $this->is('post')): ?>
-                --main-bg-image: url(<?php echo htmlspecialchars($pic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                --phone-bg-image: url(<?php echo htmlspecialchars($pic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --main-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --phone-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
                 <?php else: ?>
                 --main-bg-image: url(<?php echo htmlspecialchars($this->options->pcbackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
                 --phone-bg-image: url(<?php echo htmlspecialchars($this->options->mobilebackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;

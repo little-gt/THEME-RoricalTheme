@@ -10,10 +10,8 @@
 
 | Version | Status |
 | :------ | :----- |
-| **1.2.6**   | ✅ Latest        |
-| **1.2.5**   | ✅ Supported     |
-| **1.2.4**   | ✅ Supported     |
-| **＜ 1.2.3** | ❌ Out of Scope     |
+| **1.2.7**   | ✅ Latest        |
+| **＜ 1.2.7** | ❌ Out of Scope     |
 
 ---
 
