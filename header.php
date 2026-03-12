@@ -4,8 +4,7 @@
 <head>
     <meta charset="<?php $this->options->charset(); ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="renderer" content="webkit">
-    <meta charset="UTF-8" />
+    <meta name="renderer" content="webkit" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link href="<?php $this->options->siteUrl('/favicon.ico') ?>" rel="icon" type="image/png" />
     <title><?php $this->archiveTitle(array(

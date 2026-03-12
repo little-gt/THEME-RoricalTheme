@@ -4,7 +4,7 @@
  *
  * @package Rorical Theme
  * @author Rorical & little-gt
- * @version 1.2.7
+ * @version 1.2.8
  * @link https://www.garfieldtom.cool/
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;

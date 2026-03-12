@@ -90,7 +90,7 @@
             <div class="col-lg-8 text-center">
                 <?php $this->pageNav('<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>', 1, '...', [
                     'wrapTag'      => 'ul',
-                    'wrapClass'    => 'pagination agination-lg justify-content-center',
+                    'wrapClass'    => 'pagination pagination-lg justify-content-center',
                     'itemTag'      => 'li',
                     'textTag'      => 'a',
                     'currentClass' => 'page-item active',
