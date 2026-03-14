@@ -201,8 +201,8 @@
                 --main-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
                 --phone-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
                 <?php else: ?>
-                --main-bg-image: url(<?php echo htmlspecialchars($this->options->pcbackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                --phone-bg-image: url(<?php echo htmlspecialchars($this->options->mobilebackgroundUrl(), ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --main-bg-image: url(<?php echo htmlspecialchars($this->options->pcbackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
+                --phone-bg-image: url(<?php echo htmlspecialchars($this->options->mobilebackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
                 <?php endif; ?>
             }
             .banner::before { background-image: url(<?php $this->options->themeUrl('./assets/css/ground.png'); ?>); }
