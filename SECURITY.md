@@ -10,7 +10,7 @@
 
 | Version | Status |
 | :------ | :----- |
-| **1.2.7**   | ✅ Latest        |
+| **1.2.8**   | ✅ Latest        |
 | **＜ 1.2.7** | ❌ Out of Scope     |
 
 ---

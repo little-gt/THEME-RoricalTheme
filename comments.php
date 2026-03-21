@@ -23,6 +23,16 @@ $this->comments()->to($comments);
         </div>
     </div>
 
+    <!-- 插件状态提示（仅管理员可见） -->
+    <?php if ($this->user->hasLogin() && $this->user->pass('administrator', true)): ?>
+        <?php if (!class_exists('XQLocation_Plugin')): ?>
+            <div class="alert alert-warning" role="alert">
+                <strong>未安装 IP 归属地显示插件</strong><br>
+                评论区的 IP 归属地功能需要安装 <a href="https://www.toubiec.cn/1194.html" target="_blank">XQLocation 插件</a>。当前提示，仅您可见。
+            </div>
+        <?php endif; ?>
+    <?php endif; ?>
+
     <!-- 评论列表 -->
     <div id="comment-refresh">
         <?php 
@@ -54,24 +64,24 @@ $this->comments()->to($comments);
                             <div class="d-flex flex-wrap align-items-center mb-3">
                                 <span class="badge badge-info mr-2 mb-1">
                                     <i class="fa fa-globe" aria-hidden="true"></i>
-                                    <span class="d-none d-sm-inline ml-1">
+                                    <span class="ml-1">
                                         <?php
                                             if (class_exists('XQLocation_Plugin') && method_exists('XQLocation_Plugin', 'render')) {
                                                 XQLocation_Plugin::render($comments->ip);
                                             } else {
-                                                echo '尚未进行配置';
+                                                echo '未知';
                                             }
                                         ?>
                                     </span>
                                 </span>
                                 <span class="badge badge-success mr-2 mb-1">
                                     <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                    <span class="d-none d-sm-inline ml-1">
+                                    <span class="ml-1">
                                         <?php $comments->date('Y F jS'); ?>
                                     </span>
                                 </span>
                                 <?php if (!$comments->parent): ?>
-                                    <?php $comments->reply('<span class="badge badge-primary mb-1"><i class="fa fa-reply" aria-hidden="true"></i> <span class="d-none d-sm-inline">回复</span></span>'); ?>
+                                    <?php $comments->reply('<span class="badge badge-primary mb-1"><i class="fa fa-reply" aria-hidden="true"></i> <span>回复</span></span>'); ?>
                                 <?php endif; ?>
                             </div>
                             <p class="breakword mb-2" style="word-wrap: break-word; overflow-wrap: break-word;">
@@ -167,8 +177,27 @@ $showCommentForm = $this->user->hasLogin() || $allowGuestComment;
                         </div>
                         <div class="col-lg-3 ml-lg-auto mt-3">
                             <button class="btn btn-lg btn-block btn-white" type="submit" id="add-comment-button">提交！</button>
-                            <div class="cancel-comment-reply mt-5 align-items-center">
-                                <?php $comments->cancelReply('取消回复', 'btn btn-danger'); ?>
+                            <div class="mt-3 align-items-center">
+                                <style>
+                                    #cancel-comment-reply-link {
+                                        display: inline-block;
+                                        padding: 0.625rem 1.25rem;
+                                        font-size: 0.875rem;
+                                        line-height: 1.5;
+                                        border-radius: 0.375rem;
+                                        border: 1px solid #f5365c;
+                                        color: #fff;
+                                        background-color: #f5365c;
+                                        text-decoration: none;
+                                        transition: all 0.15s ease;
+                                    }
+                                    #cancel-comment-reply-link:hover {
+                                        background-color: #ec0c38;
+                                        border-color: #ec0c38;
+                                        color: #fff;
+                                    }
+                                </style>
+                                <?php $comments->cancelReply('取消回复', ''); ?>
                             </div>
                         </div>
                     </div>

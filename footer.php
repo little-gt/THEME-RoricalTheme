@@ -1,20 +1,5 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 
-<?php
-/**
- * 获取隐私政策 URL
- * @param object $options Typecho 配置对象
- * @return string 处理后的隐私政策 URL
- */
-function getPrivacyUrl($options) {
-    $privacyUrl = $options->privacyUrl ? $options->privacyUrl : './privacy.html';
-    // 如果是相对路径，转换为完整 URL
-    if (strpos($privacyUrl, 'http') !== 0 && strpos($privacyUrl, '//') !== 0) {
-        $privacyUrl = $options->siteUrl($privacyUrl);
-    }
-    return htmlspecialchars($privacyUrl, ENT_QUOTES, 'UTF-8');
-}
-?>
 </div>
 
 <footer class="footer shadow bg-white">
@@ -108,11 +93,7 @@ function getPrivacyUrl($options) {
             processHtmlClass: 'tex2jax_process',
             renderActions: {
                 addMenu: [0, '', '']
-            },
-            messageStyle: 'none'
-        },
-        loader: {
-            load: ['[tex]/ams', '[tex]/autoload']
+            }
         }
     };
 </script>
@@ -135,7 +116,6 @@ function getPrivacyUrl($options) {
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([document.getElementById('main')]).catch(err => console.error(err));
             }
-            window.onload();
         } catch (e) {
             console.error(e);
         }
@@ -213,8 +193,10 @@ function getPrivacyUrl($options) {
 
     function changeFrameHeight() {
         var ifm = document.getElementById("Adaptiveiframepage");
-        ifm.height = document.documentElement.clientHeight;
-        ifm.width = document.body.clientWidth;
+        if (ifm) {
+            ifm.height = document.documentElement.clientHeight;
+            ifm.width = document.body.clientWidth;
+        }
     }
 
     window.onresize = function () {
@@ -247,6 +229,8 @@ function getPrivacyUrl($options) {
     <canvas id="clickcanvas"></canvas>
     <script src="<?php $this->options->themeUrl('./assets/js/click.js'); ?>"></script>
 <?php endif; ?>
+
+<?php $safePrivacyUrl = getPrivacyUrl(); ?>
 
 <a href="javascript:$('html,body').animate({ scrollTop: 0 }, 500)">
     <button id="upbtn" class="btn btn-icon-only rounded-circle btn-info up-btn">

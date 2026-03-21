@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![Rorical](https://img.shields.io/badge/版本-1.2.8--DEV-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.8-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
@@ -39,12 +39,11 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- 修复了一些已知问题，优化了一些功能；
-- 修复了因为CDN资源变更导致的，默认配置不可用问题；
-- 修复了未登录用户无法查看评论的问题；
-- 修复了特殊情况下评论区头像大小不一致的问题；
-- 添加了ICP备案以及网安备案号的显示功能；
-- 优化了主题配置的设计，提供了更灵活的自定义选项。
+- 修复了一些已知问题；
+- 修复了一些PJAX相关问题；
+- 修复了一些MathJax相关问题；
+- 优化了隐私政策获取的方式；
+- 优化了评论区标签移动端显示。
 
 ### ⚠️ 重要变更
 - **评论系统简化**：出于兼容性和稳定性考虑，移除了复杂的嵌套评论功能。现采用扁平化评论结构，所有评论按时间顺序显示。此调整：

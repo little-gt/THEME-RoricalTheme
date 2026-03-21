@@ -553,6 +553,20 @@ function clear_urlcan($url) {
 }
 
 /**
+ * 获取隐私政策 URL
+ * @return string 处理后的隐私政策 URL
+ */
+function getPrivacyUrl() {
+    $options = Helper::options();
+    $privacyUrl = $options->privacyUrl ? $options->privacyUrl : './privacy.html';
+    if (strpos($privacyUrl, 'http') !== 0 && strpos($privacyUrl, '//') !== 0) {
+        $siteUrl = $options->siteUrl;
+        $privacyUrl = rtrim($siteUrl, '/') . '/' . ltrim($privacyUrl, './');
+    }
+    return htmlspecialchars($privacyUrl, ENT_QUOTES, 'UTF-8');
+}
+
+/**
  * 文章标题显示插件（内置于主题）
  */
 class Titleshow_Plugin implements Typecho_Plugin_Interface {
