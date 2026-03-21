@@ -8,11 +8,11 @@
 
 主题预览：
 
-![预览1](screenshot/MARKDOWN_2025-11-26_002123_964.png)
+![预览1](screenshot/图片1.jpg)
 
-![预览2](screenshot/MARKDOWN_2025-11-26_002203_506.png)
+![预览2](screenshot/图片2.jpg)
 
-![预览3](screenshot/MARKDOWN_2025-11-26_002210_813.png)
+![预览3](screenshot/图片3.jpg)
 
 参与讨论：
 
