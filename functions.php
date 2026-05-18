@@ -404,8 +404,8 @@ function generatePostLink($content, $widget, $randompicUrl, $direction) {
     if (!$content) {
         return "";
     }
-    
-    $post = Typecho_Widget::widget('Widget_Archive@temp');
+
+    $post = Typecho_Widget::widget('Widget_Abstract_Contents@temp');
     $db = Typecho_Db::get();
     $sql = $db->select()->from('table.contents')->where('cid = ?', $content['cid']);
     $db->fetchRow($sql, array($post, 'push'));

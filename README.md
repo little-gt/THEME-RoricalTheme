@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![Rorical](https://img.shields.io/badge/版本-1.2.8-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.9-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
@@ -42,6 +42,7 @@
 - 修复了一些已知问题；
 - 修复了一些PJAX相关问题；
 - 修复了一些MathJax相关问题；
+- 修复了预览文章时提示 archive type 错误的问题；
 - 优化了隐私政策获取的方式；
 - 优化了评论区标签移动端显示。
 
