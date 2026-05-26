@@ -10,8 +10,9 @@
 
 | Version | Status |
 | :------ | :----- |
-| **1.2.9**   | ✅ Latest        |
-| **＜ 1.2.7** | ❌ Out of Scope     |
+| **1.2.10**          | ✅ Latest           |
+| **大于等于 1.2.7**   | ✅ Supported        |
+| **低于版本 1.2.7**   | ❌ Out of Scope     |
 
 ---
 
@@ -36,7 +37,7 @@
 
 为加快问题定位、复现与修复，建议在您的报告中尽可能包含以下信息：
 
-* 影响版本（如：`v1.2.5` 或 commit hash）
+* 影响版本（如：`v1.2.10` 或 commit hash）
 * 环境信息：Typecho / PHP / MySQL / 浏览器 / OS 等
 * 漏洞类型（XSS / SQL Injection / Privilege Escalation / CSRF / Info Leak 等）
 * 清晰的复现步骤（step-by-step）

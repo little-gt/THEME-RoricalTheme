@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![Rorical](https://img.shields.io/badge/版本-1.2.9-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.10-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
@@ -39,12 +39,16 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- 修复了一些已知问题；
-- 修复了一些PJAX相关问题；
-- 修复了一些MathJax相关问题；
-- 修复了预览文章时提示 archive type 错误的问题；
-- 优化了隐私政策获取的方式；
-- 优化了评论区标签移动端显示。
+- **✅ 修复 friends.php 自定义模板识别问题**：完善了独立页面模板的元数据声明，确保在 Typecho 1.2.1-1.3.0 版本中能正确识别和选择"友情链接"模板。
+- **🔒 增强 friends.php 页面安全性**：
+  - 添加评论显示条件检查（防止密码保护页面错误加载评论区）
+  - 修复 XSS 跨站脚本攻击漏洞（友情链接数据现在会进行 HTML 转义）
+  - 添加 `rel="noopener noreferrer"` 属性防止反向标签钓鱼攻击
+- **🎨 优化代码质量**：
+  - 修复 CSS 类名拼写错误（`containter` → `container`）
+  - 改进 JavaScript 代码结构，使用语义化变量名
+  - 统一图片懒加载处理逻辑（与 post.php/page.php 保持一致）
+- **📝 完善自定义模板文档**：在 friends.php 文件头部添加详细的使用说明和友链 HTML 格式示例。
 
 ### ⚠️ 重要变更
 - **评论系统简化**：出于兼容性和稳定性考虑，移除了复杂的嵌套评论功能。现采用扁平化评论结构，所有评论按时间顺序显示。此调整：
@@ -68,11 +72,11 @@
 
 2. **启用主题**
 
-   * 登录 Typecho 后台 → 外观 → 启用 “Rorical Theme”
+   * 登录 Typecho 后台 → 外观 → 启用 “Rorical Theme”，并且配置 Rorical Theme 主题的自定义选项。
 
 3. **依赖插件**
 
-   * 安装 [XQLocation](https://www.toubiec.cn/1194.html) 插件以启用 IP 归属显示功能
+   * 安装 [XQLocation](https://www.toubiec.cn/1194.html) 插件以启用 IP 归属显示功能。
 
 ---
 
@@ -105,6 +109,58 @@
 请访问 Creative Tim 的 Argon 前端框架的 ICONS 参考值文档，复制文档中对应的值。
 
 [Argon Icons Reference](https://demos.creative-tim.com/argon-design-system/docs/foundation/icons.html)
+
+---
+
+## 🔗 友情链接页面配置
+
+> 使用 `friends.php` 自定义模板创建精美的友情链接展示页面。
+
+### 📝 创建步骤
+
+1. **创建独立页面**
+   - 登录 Typecho 后台 → 管理 → 独立页面 → 新建页面
+
+2. **选择自定义模板**
+   - 在页面编辑器右侧（或底部）找到"高级选项"
+   - 在"自定义模板"下拉框中选择 **"友情链接"**
+
+3. **添加友链内容**
+   - 在页面内容区域使用以下 HTML 格式添加友链数据：
+
+```html
+<div id="list">
+    <ul>
+        <li class="title">网站名称</li>
+        <li class="url">https://example.com</li>
+        <li class="img">https://example.com/logo.png</li>
+        <li class="dec">网站描述文字</li>
+    </ul>
+    <!-- 可以添加多个 <ul> 块来展示多个友链 -->
+</div>
+```
+
+### 📋 字段说明
+
+| 字段 | 必填 | 说明 |
+|:-----|:----:|:-----|
+| `li.title` | 是 | 友链网站名称 |
+| `li.url` | 是 | 友链网站地址（支持 http/https） |
+| `li.img` | 否 | 网站 Logo 或头像图片 URL（留空则使用随机图片） |
+| `li.dec` | 否 | 网站简短描述（建议 20 字以内） |
+
+### 🎨 显示效果
+
+- 自动以卡片式布局展示（每行 4 个，响应式适配）
+- 支持 Logo 圆形头像展示
+- 鼠标悬停卡片上浮效果
+- 点击在新标签页打开友链网站
+
+### ⚠️ 注意事项
+
+- **安全性**：所有字段内容会自动进行 XSS 过滤，防止恶意代码注入
+- **图片优化**：建议使用正方形图片（推荐 200x200px），自动居中裁剪
+- **性能**：页面会自动应用图片懒加载，提升访问速度
 
 ---
 
@@ -205,11 +261,11 @@
 
 ## 🧱 使用的组件
 
-| 组件       | 描述                             |
-| :------- | :----------------------------- |
-| **框架**   | Bootstrap 4, jQuery 3.3.1      |
+| 组件         | 描述                             |
+| :---------- | :----------------------------- |
+| **框架**     | Bootstrap 4, jQuery 3.3.1       |
 | **设计系统** | Argon Design System            |
-| **图标库**  | Nucleo Icons, Font Awesome 4.7 |
+| **图标库**   | Nucleo Icons, Font Awesome 4.7  |
 | **异步交互** | PJAX                           |
 | **渲染优化** | Lazyload.js                    |
 
@@ -217,10 +273,10 @@
 
 ## ❤️ 开源与支持
 
-> 如果你喜欢这个项目，请点个 ⭐ Star 支持！
+> 如果你喜欢这个项目，请点个 ⭐ Star 支持我们！
 
-* **原作者**：[@Rorical](https://github.com/Rorical/RoricalTheme)
-* **二次开发维护**：[@little-gt](https://github.com/little-gt/THEME-RoricalTheme)
+* **设计师**：[@Rorical](https://github.com/Rorical/RoricalTheme)
+* **维护者**：[@little-gt](https://github.com/little-gt/THEME-RoricalTheme)
 
 ---
 

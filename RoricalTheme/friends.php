@@ -2,7 +2,27 @@
 /**
  * 友情链接
  *
+ * 友情链接独立页面模板 - 用于展示网站友链信息
+ *
  * @package custom
+ * @author Rorical Theme
+ * @version 1.2.10
+ * @link https://github.com/little-gt/THEME-RoricalTheme
+ *
+ * 使用方法：
+ * 1. 在后台创建独立页面
+ * 2. 在"高级选项"中选择"友情链接"模板
+ * 3. 在页面内容中使用以下 HTML 格式添加友链：
+ *
+ * <div id="list">
+ *     <ul>
+ *         <li class="title">网站名称</li>
+ *         <li class="url">https://example.com</li>
+ *         <li class="img">https://example.com/logo.png</li>
+ *         <li class="dec">网站描述</li>
+ *     </ul>
+ * </div>
+ *
  */
 ?>
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
@@ -55,7 +75,10 @@
                     <div class="mt-5 py-5 border-top">
                         <div class="row justify-content-center">
                             <div class="col-lg-9 breakword content">
-                                <?php $this->content(); ?>
+                                <?php
+                                    $content = preg_replace('/<img(.*?)src=["\']([^"\']+)["\'](.*?)>/i', "<noscript>\$0</noscript><img\$1data-original=\"\$2\" \$3>", $this->content());
+                                    echo $content;
+                                ?>
                             </div>
                         </div>
                     </div>
@@ -68,20 +91,42 @@
         </div>
     </section>
     <script>
-        $("div#list").each(function(){
-            $(this).children("ul").each(function(){
-                var title = $(this).children("li.title").text();
-                var url = $(this).children("li.url").text();
-                var img = $(this).children("li.img").text();
-                var dec = $(this).children("li.dec").text();
-                var inner = '<div class="col-md-3 mb-5 py-5 mb-md-0 border-0 "><div class="card shadow containter py-2 text-center card-lift--hover"><a href="' + url + '" target="_blank" style="padding-top: 2rem !important"><div class="icon icon-shape rounded-circle text-white mb-3" style="background:url(' + img + ') center center / cover no-repeat;"></div><h6>' + title + '</h6><p class="description">' + dec + '</p></div></div>';
-                $(this).parent().append(inner);
-                $(this).remove();
+        function escapeHtml(text) {
+            if (!text) return '';
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        $(document).ready(function() {
+            $("div#list").each(function() {
+                var $container = $(this);
+                $container.children("ul").each(function() {
+                    var $list = $(this);
+                    var friendTitle = escapeHtml($list.children("li.title").text());
+                    var friendUrl = escapeHtml($list.children("li.url").text());
+                    var friendImg = escapeHtml($list.children("li.img").text());
+                    var friendDesc = escapeHtml($list.children("li.dec").text());
+
+                    var friendCardHtml = '<div class="col-md-3 mb-5 py-5 mb-md-0 border-0">' +
+                        '<div class="card shadow container py-2 text-center card-lift--hover">' +
+                        '<a href="' + friendUrl + '" target="_blank" rel="noopener noreferrer" style="padding-top: 2rem !important">' +
+                        '<div class="icon icon-shape rounded-circle text-white mb-3" style="background:url(' + friendImg + ') center center / cover no-repeat;"></div>' +
+                        '<h6>' + friendTitle + '</h6>' +
+                        '<p class="description">' + friendDesc + '</p>' +
+                        '</a></div></div>';
+
+                    $container.append(friendCardHtml);
+                    $list.remove();
+                });
+                $container.addClass("container-lg py-5 row justify-content-center text-center content");
             });
-            $(this).addClass("container-lg py-5 row justify-content-center text-center content");
         });
     </script>
-    <?php $this->need('comments.php'); ?>
+    <?php if (!$this->hidden && $this->allow('comment')) $this->need('comments.php'); ?>
 </main>
 
 <?php $this->need('sidebar.php'); ?>
