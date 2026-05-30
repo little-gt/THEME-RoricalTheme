@@ -188,31 +188,41 @@
         // 安全获取文章头图
         $headerPic = '';
         if ($this->is('page') || $this->is('post')) {
-            if (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) {
+          if (isset($this->fields) && isset($this->fields->pic) && !empty($this->fields->pic)) {
                 $headerPic = $this->fields->pic;
-            } else {
-                $headerPic = $this->options->randompicUrl."?random=".mt_rand(100000, 999999);
-            }
+          } else {
+                $headerPic = $this->options->randompicUrl . "?random=" . mt_rand(100000, 999999);
+          }
         }
+
+        $backgroundPc = $this->is('page') || $this->is('post')
+          ? $headerPic
+          : $this->options->pcbackgroundUrl;
+        $backgroundMobile = $this->is('page') || $this->is('post')
+          ? $headerPic
+          : $this->options->mobilebackgroundUrl;
+
+        $backgroundPc = strtr((string) $backgroundPc, ["\\" => "\\\\", "'" => "\\'"]);
+        $backgroundMobile = strtr((string) $backgroundMobile, ["\\" => "\\\\", "'" => "\\'"]);
         ?>
         <style>
-            :root {
-                <?php if ($this->is('page') || $this->is('post')): ?>
-                --main-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                --phone-bg-image: url(<?php echo htmlspecialchars($headerPic, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                <?php else: ?>
-                --main-bg-image: url(<?php echo htmlspecialchars($this->options->pcbackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                --phone-bg-image: url(<?php echo htmlspecialchars($this->options->mobilebackgroundUrl, ENT_QUOTES, 'UTF-8'); ?>) center center / cover no-repeat fixed;
-                <?php endif; ?>
-            }
-            .banner::before { background-image: url(<?php $this->options->themeUrl('./assets/css/ground.png'); ?>); }
-            .shape-background {
-                background: var(--main-bg-image);
-                height: 100%;
-                width: 100%;
-                overflow: hidden;
-            }
-            @media (max-width: 678px) {
-                .shape-background { background: var(--phone-bg-image); }
-            }
+          :root {
+            <?php if ($this->is('page') || $this->is('post')): ?>
+            --main-bg-image: url('<?php echo $backgroundPc; ?>') center center / cover no-repeat fixed;
+            --phone-bg-image: url('<?php echo $backgroundMobile; ?>') center center / cover no-repeat fixed;
+            <?php else: ?>
+            --main-bg-image: url('<?php echo $backgroundPc; ?>') center center / cover no-repeat fixed;
+            --phone-bg-image: url('<?php echo $backgroundMobile; ?>') center center / cover no-repeat fixed;
+            <?php endif; ?>
+          }
+          .banner::before { background-image: url(<?php $this->options->themeUrl('./assets/css/ground.png'); ?>); }
+          .shape-background {
+            background: var(--main-bg-image);
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+          }
+          @media (max-width: 768px) {
+            .shape-background { background: var(--phone-bg-image); }
+          }
         </style>
