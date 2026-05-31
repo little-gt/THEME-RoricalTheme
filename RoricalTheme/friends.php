@@ -2,11 +2,9 @@
 /**
  * 友情链接
  *
- * 友情链接独立页面模板 - 用于展示网站友链信息
- *
  * @package custom
  * @author Rorical Theme
- * @version 1.2.10
+ * @version 1.2.11
  * @link https://github.com/little-gt/THEME-RoricalTheme
  *
  * 使用方法：
