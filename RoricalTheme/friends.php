@@ -4,7 +4,7 @@
  *
  * @package custom
  * @author Rorical Theme
- * @version 1.2.11
+ * @version 1.2.12
  * @link https://github.com/little-gt/THEME-RoricalTheme
  *
  * 使用方法：
@@ -26,7 +26,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
 
-<script>page = 1</script>
+<script>var page = 1</script>
 <main class="profile-page">
     <section class="section-profile-cover section-shaped" style="margin: 85px 0;">
         <!-- Circles background -->

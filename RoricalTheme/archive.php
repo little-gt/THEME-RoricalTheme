@@ -1,7 +1,7 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php $this->need('header.php'); ?>
 
-<script>page = 1</script>
+<script>var page = 1</script>
 <section class="section section-components bg-secondary">
     <div class="container container-lg py-5 align-items-center" style="text-align: center;">
         <br><br>

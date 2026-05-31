@@ -4,7 +4,7 @@
  *
  * @package Rorical Theme
  * @author Rorical & little-gt
- * @version 1.2.11
+ * @version 1.2.12
  * @link https://www.garfieldtom.cool/
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
@@ -12,7 +12,7 @@ $this->need('header.php');
 ?>
 
 <!-- 设置页面标识，用于导航栏样式 -->
-<script>page = 0</script>
+<script>var page = 0</script>
 
 <!-- 动态背景与站点信息 -->
 <section class="section-hero section-shaped my-0">

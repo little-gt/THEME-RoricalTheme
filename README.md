@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![Rorical](https://img.shields.io/badge/版本-1.2.11-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.12-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
@@ -39,12 +39,7 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- **🔐 统一转义安全体系（themeTransfer）**：
-  - 新增 `themeTransfer($content, $context)` 统一转义函数，支持 6 种上下文：`HTML`、`ATTR`、`URL`、`JS`、`CSS`、`JSON`
-  - 新增 `e($content, $context)` 快捷输出函数，简化模板中的转义调用
-  - **修复** comments.php 中 `htmlspecialchars()` 缺少编码参数的潜在 XSS 风险
-  - **增强** header.php CSS 背景 URL 转义完整性（原 `strtr()` 未覆盖所有危险字符）
-  - 整合全主题 15+ 处分散的转义逻辑至统一函数，消除兼容性隐患
+- **PJAX 页面变量声明修复**：统一使用 `var page = X` 声明页面标识变量，避免 PJAX 局部刷新时出现 "Identifier 'page' has already been declared" 错误
 
 ### ⚠️ 重要变更
 - **评论系统简化**：出于兼容性和稳定性考虑，移除了复杂的嵌套评论功能。现采用扁平化评论结构，所有评论按时间顺序显示。此调整：
