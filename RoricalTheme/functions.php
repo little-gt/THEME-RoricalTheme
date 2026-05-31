@@ -4,6 +4,73 @@ if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 use Widget\Base\Contents;
 
 /**
+ * 统一内容转义函数 - 根据目标上下文自动选择合适的转义策略
+ * 
+ * @param mixed $content 待转义内容
+ * @param string $context 目标上下文：
+ *   - HTML: HTML 实体内容（默认，防止 XSS）
+ *   - ATTR: HTML 属性值（转义单双引号，用于 title/alt/value 等）
+ *   - URL: URL 地址（用于 href/src/action 等属性）
+ *   - JS: JavaScript 字符串值（用于 onclick/data-* 等 JS 上下文）
+ *   - CSS: CSS 值（用于 style 属性或 url() 函数内）
+ *   - JSON: JSON 安全输出（防止注入）
+ * @param array $options 额外选项：
+ *   - encoding: 字符编码（默认 UTF-8）
+ *   - double_encode: 是否重复编码已存在的实体（默认 true）
+ * @return string 转义后的安全字符串，非字符串输入返回空字符串
+ */
+function themeTransfer($content, $context = 'HTML', $options = []) {
+    if ($content === null || $content === '') {
+        return '';
+    }
+    
+    if (!is_string($content)) {
+        $content = (string) $content;
+    }
+    
+    $encoding = isset($options['encoding']) ? $options['encoding'] : 'UTF-8';
+    $doubleEncode = isset($options['double_encode']) ? (bool) $options['double_encode'] : true;
+    
+    $context = strtoupper(trim($context));
+    
+    switch ($context) {
+        case 'ATTR':
+            return htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, $encoding, $doubleEncode);
+        
+        case 'URL':
+            $escaped = htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, $encoding, $doubleEncode);
+            return $escaped;
+        
+        case 'JS':
+            $escaped = addslashes($content);
+            $escaped = str_replace(['</', "\n", "\r"], ['<\/', '\n', '\r'], $escaped);
+            return $escaped;
+        
+        case 'CSS':
+            $escaped = addslashes($content);
+            $escaped = strtr($escaped, [
+                '\\' => '\\\\',
+                "'" => "\\'",
+                '"' => '\\"',
+                "\n" => '\\a ',
+                "\r" => '\\a ',
+                ')' => '\\) ',
+                '(' => '\\( ',
+                ' ' => '\\ '
+            ]);
+            return $escaped;
+        
+        case 'JSON':
+            $encoded = json_encode($content, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $encoded === false ? '' : substr($encoded, 1, -1);
+        
+        case 'HTML':
+        default:
+            return htmlspecialchars($content, ENT_QUOTES | ENT_HTML5, $encoding, $doubleEncode);
+    }
+}
+
+/**
  * 主题配置函数
  * @param Typecho_Widget_Helper_Form $form 配置表单对象
  */
@@ -123,9 +190,9 @@ function get_custom_gravatar($mail, $size = 40, $author = '', $class = 'rounded-
     $size = max(1, min(2048, intval($size)));
     $url = "https://cdn.sep.cc/avatar/" . md5(strtolower($mail));
     $url .= "?s=" . $size;
-    $author = htmlspecialchars($author, ENT_QUOTES, 'UTF-8');
-    $class = htmlspecialchars($class, ENT_QUOTES, 'UTF-8');
-    echo '<img src="' . htmlspecialchars($url, ENT_QUOTES, 'UTF-8') . '" class="' . $class . '" alt="' . $author . '" width="' . $size . '" height="' . $size . '">';
+    $author = themeTransfer($author, 'ATTR');
+    $class = themeTransfer($class, 'ATTR');
+    echo '<img src="' . themeTransfer($url, 'URL') . '" class="' . $class . '" alt="' . $author . '" width="' . $size . '" height="' . $size . '">';
 }
 
 /**
@@ -371,7 +438,7 @@ function thePrev($widget, $randompicUrl) {
     if ($content) {
         echo generatePostLink($content, $widget, $randompicUrl, 'prev');
     } else {
-        $safeUrl = htmlspecialchars($randompicUrl, ENT_QUOTES, 'UTF-8');
+        $safeUrl = themeTransfer($randompicUrl, 'URL');
         echo "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$safeUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
     }
 }
@@ -392,7 +459,7 @@ function theNext($widget, $randompicUrl) {
     if ($content) {
         echo generatePostLink($content, $widget, $randompicUrl, 'next');
     } else {
-        $safeUrl = htmlspecialchars($randompicUrl, ENT_QUOTES, 'UTF-8');
+        $safeUrl = themeTransfer($randompicUrl, 'URL');
         echo "<a class=\"carousel\" title=\"没啦\"><div style=\"background-image:url({$safeUrl});\" class=\"card-img tu\"></div><div class=\"carousel-indicators\"><h3 class=\"heading-title text-info blackback\" style=\"text-transform:none;\">没啦</h3></div></a>";
     }
 }
@@ -418,9 +485,9 @@ function generatePostLink($content, $widget, $randompicUrl, $direction) {
         $pic = $randompicUrl . "?_=" . mt_rand(100000, 999999);
     }
     
-    $safePic = htmlspecialchars($pic, ENT_QUOTES, 'UTF-8');
-    $safePermalink = htmlspecialchars($post->permalink, ENT_QUOTES, 'UTF-8');
-    $safeTitle = htmlspecialchars($post->title, ENT_QUOTES, 'UTF-8');
+    $safePic = themeTransfer($pic, 'URL');
+    $safePermalink = themeTransfer($post->permalink, 'URL');
+    $safeTitle = themeTransfer($post->title, 'ATTR');
     
     $icon = $direction === 'prev' ? '<i class="ni ni-bold-left"></i>' : '<i class="ni ni-bold-right"></i>';
     $layout = $direction === 'prev' 
@@ -563,7 +630,7 @@ function getPrivacyUrl() {
         $siteUrl = $options->siteUrl;
         $privacyUrl = rtrim($siteUrl, '/') . '/' . ltrim($privacyUrl, './');
     }
-    return htmlspecialchars($privacyUrl, ENT_QUOTES, 'UTF-8');
+    return themeTransfer($privacyUrl, 'URL');
 }
 
 /**

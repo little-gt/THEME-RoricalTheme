@@ -28,9 +28,9 @@
                 ?>
                 <div class="row-grid justify-content-between mt-lg card card-lift--hover shadow border-0" style="margin:auto;">
                     <a href="<?php $this->permalink() ?>" title="<?php $this->title() ?>">
-                        <img src="<?php echo htmlspecialchars($archivePic, ENT_QUOTES, 'UTF-8'); ?>" 
-                             data-original="<?php echo htmlspecialchars($archivePic, ENT_QUOTES, 'UTF-8'); ?>" 
-                             no-viewer class="card-img" alt="<?php $this->title(); ?>">
+                        <img src="<?php echo themeTransfer($archivePic, 'URL'); ?>" 
+                             data-original="<?php echo themeTransfer($archivePic, 'URL'); ?>" 
+                             no-viewer class="card-img" alt="<?php $this->title() ?>">
                     </a>
                     <div class="card shadow">
                         <div class="card-body">
@@ -56,14 +56,14 @@
                                                 <span>
                                                     <i class="fa fa-envelope-open-o"></i> 
                                                     <?php foreach ($this->categories as $categories): ?>
-                                                        <a href="<?php echo htmlspecialchars($categories['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-info"><?php echo htmlspecialchars($categories['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+                                                        <a href="<?php echo themeTransfer($categories['permalink'], 'URL'); ?>" class="badge badge-info"><?php echo themeTransfer($categories['name'], 'HTML'); ?></a>
                                                     <?php endforeach; ?>
                                                 </span>
                                                 <span>
                                                     <i class="fa fa-tags"></i> 
                                                     <?php if (count($this->tags) > 0): ?>
                                                         <?php foreach ($this->tags as $tags): ?>
-                                                            <a href="<?php echo htmlspecialchars($tags['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-success"><?php echo htmlspecialchars($tags['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+                                                            <a href="<?php echo themeTransfer($tags['permalink'], 'URL'); ?>" class="badge badge-success"><?php echo themeTransfer($tags['name'], 'HTML'); ?></a>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <a class="badge badge-default text-white">无标签..</a>

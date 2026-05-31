@@ -167,9 +167,9 @@
                                 if (count($icon) === 3 && !empty($icon[0]) && !empty($icon[2])): 
                         ?>
                                 <li class="nav-item d-none d-lg-block ml-lg-4">
-                                    <a class="nav-link nav-link-icon" href="<?php echo htmlspecialchars($icon[2], ENT_QUOTES, 'UTF-8'); ?>" target="_blank" data-toggle="tooltip" title="<?php echo htmlspecialchars($icon[1], ENT_QUOTES, 'UTF-8'); ?>">
-                                        <i class="<?php echo htmlspecialchars($icon[0], ENT_QUOTES, 'UTF-8'); ?>"></i>
-                                        <span class="nav-link-inner--text d-lg-none"><?php echo htmlspecialchars($icon[1], ENT_QUOTES, 'UTF-8'); ?></span>
+                                    <a class="nav-link nav-link-icon" href="<?php echo themeTransfer($icon[2], 'URL'); ?>" target="_blank" data-toggle="tooltip" title="<?php echo themeTransfer($icon[1], 'ATTR'); ?>">
+                                        <i class="<?php echo themeTransfer($icon[0], 'ATTR'); ?>"></i>
+                                        <span class="nav-link-inner--text d-lg-none"><?php echo themeTransfer($icon[1], 'ATTR'); ?></span>
                                     </a>
                                 </li>
                         <?php 
@@ -202,8 +202,8 @@
           ? $headerPic
           : $this->options->mobilebackgroundUrl;
 
-        $backgroundPc = strtr((string) $backgroundPc, ["\\" => "\\\\", "'" => "\\'"]);
-        $backgroundMobile = strtr((string) $backgroundMobile, ["\\" => "\\\\", "'" => "\\'"]);
+        $backgroundPc = themeTransfer($backgroundPc, 'CSS');
+        $backgroundMobile = themeTransfer($backgroundMobile, 'CSS');
         ?>
         <style>
           :root {

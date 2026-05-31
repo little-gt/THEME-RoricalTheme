@@ -11,12 +11,12 @@
                     <?php if ($this->options->icpNumber): ?>
                         <br>
                         <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian-link">
-                            <?php echo htmlspecialchars($this->options->icpNumber); ?>
+                            <?php echo themeTransfer($this->options->icpNumber, 'HTML'); ?>
                         </a>
                     <?php endif; ?>
                     <?php if ($this->options->policeNumber): ?>
                         <a href="https://www.beian.gov.cn/" target="_blank" rel="noopener noreferrer" class="footer-beian-link">
-                            <?php echo htmlspecialchars($this->options->policeNumber); ?>
+                            <?php echo themeTransfer($this->options->policeNumber, 'HTML'); ?>
                         </a>
                     <?php endif; ?>
                 </div>

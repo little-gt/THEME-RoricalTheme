@@ -4,7 +4,7 @@
  *
  * @package Rorical Theme
  * @author Rorical & little-gt
- * @version 1.2.10
+ * @version 1.2.11
  * @link https://www.garfieldtom.cool/
  */
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
@@ -67,8 +67,8 @@ $this->need('header.php');
             ?>
             <div class="row-grid justify-content-between mt-lg card card-lift--hover shadow border-0" style="margin:auto;">
                 <a href="<?php $this->permalink(); ?>" title="<?php $this->title(); ?>">
-                    <img src="<?php echo htmlspecialchars($postPic, ENT_QUOTES, 'UTF-8'); ?>" 
-                         data-original="<?php echo htmlspecialchars($postPic, ENT_QUOTES, 'UTF-8'); ?>" 
+                    <img src="<?php echo themeTransfer($postPic, 'URL'); ?>" 
+                         data-original="<?php echo themeTransfer($postPic, 'URL'); ?>" 
                          no-viewer class="card-img" alt="<?php $this->title(); ?>">
                     <div class="card shadow">
                         <div class="card-body">
@@ -93,14 +93,14 @@ $this->need('header.php');
                                                 <span>
                                                     <i class="fa fa-envelope-open-o"></i>
                                                     <?php foreach ($this->categories as $category): ?>
-                                                        <a href="<?php echo htmlspecialchars($category['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-info"><?php echo htmlspecialchars($category['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+                                                        <a href="<?php echo themeTransfer($category['permalink'], 'URL'); ?>" class="badge badge-info"><?php echo themeTransfer($category['name'], 'HTML'); ?></a>
                                                     <?php endforeach; ?>
                                                 </span>
                                                 <span>
                                                     <?php if (count($this->tags) > 0): ?>
                                                         <i class="fa fa-tags"></i>
                                                         <?php foreach ($this->tags as $tag): ?>
-                                                            <a href="<?php echo htmlspecialchars($tag['permalink'], ENT_QUOTES, 'UTF-8'); ?>" class="badge badge-success"><?php echo htmlspecialchars($tag['name'], ENT_QUOTES, 'UTF-8'); ?></a>
+                                                            <a href="<?php echo themeTransfer($tag['permalink'], 'URL'); ?>" class="badge badge-success"><?php echo themeTransfer($tag['name'], 'HTML'); ?></a>
                                                         <?php endforeach; ?>
                                                     <?php else: ?>
                                                         <i class="fa fa-tags"></i> 

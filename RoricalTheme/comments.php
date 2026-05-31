@@ -54,7 +54,7 @@ $this->comments()->to($comments);
                                 } else {
                                     // 降级方案：使用默认 Gravatar
                                     $gravatarUrl = 'https://cdn.sep.cc/avatar/' . md5(strtolower($comments->mail)) . '?s=40';
-                                    echo '<img src="' . htmlspecialchars($gravatarUrl) . '" class="rounded-circle" alt="' . htmlspecialchars($comments->author) . '" width="40" height="40">';
+                                    echo '<img src="' . themeTransfer($gravatarUrl, 'URL') . '" class="rounded-circle" alt="' . themeTransfer($comments->author, 'ATTR') . '" width="40" height="40">';
                                 }
                                 ?>
                             </a>

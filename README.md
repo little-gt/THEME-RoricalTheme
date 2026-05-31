@@ -4,7 +4,7 @@
 >
 > 一款为 Typecho 打造的现代化卡片式主题。基于 Argon 设计，并且重构了系统的功能函数以及运行逻辑，支持无插件依赖的阅读统计以及 Cookie 管理器。
 
-[![Rorical](https://img.shields.io/badge/版本-1.2.10-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
+[![Rorical](https://img.shields.io/badge/版本-1.2.11-007EC6?style=for-the-badge)](https://github.com/little-gt/THEME-RoricalTheme/) [![License](https://img.shields.io/badge/许可证-GPLv3-blue?style=for-the-badge)](https://www.gnu.org/licenses/gpl-3.0.html) [![Argon](https://img.shields.io/badge/设计支持-Argon-orange?style=for-the-badge&logo=Argon)](https://demos.creative-tim.com/argon-design-system/)
 
 主题预览：
 
@@ -39,16 +39,12 @@
 ## 🚀 近期更新
 
 ### 🛠️ 功能与性能优化
-- **✅ 修复 friends.php 自定义模板识别问题**：完善了独立页面模板的元数据声明，确保在 Typecho 1.2.1-1.3.0 版本中能正确识别和选择"友情链接"模板。
-- **🔒 增强 friends.php 页面安全性**：
-  - 添加评论显示条件检查（防止密码保护页面错误加载评论区）
-  - 修复 XSS 跨站脚本攻击漏洞（友情链接数据现在会进行 HTML 转义）
-  - 添加 `rel="noopener noreferrer"` 属性防止反向标签钓鱼攻击
-- **🎨 优化代码质量**：
-  - 修复 CSS 类名拼写错误（`containter` → `container`）
-  - 改进 JavaScript 代码结构，使用语义化变量名
-  - 统一图片懒加载处理逻辑（与 post.php/page.php 保持一致）
-- **📝 完善自定义模板文档**：在 friends.php 文件头部添加详细的使用说明和友链 HTML 格式示例。
+- **🔐 统一转义安全体系（themeTransfer）**：
+  - 新增 `themeTransfer($content, $context)` 统一转义函数，支持 6 种上下文：`HTML`、`ATTR`、`URL`、`JS`、`CSS`、`JSON`
+  - 新增 `e($content, $context)` 快捷输出函数，简化模板中的转义调用
+  - **修复** comments.php 中 `htmlspecialchars()` 缺少编码参数的潜在 XSS 风险
+  - **增强** header.php CSS 背景 URL 转义完整性（原 `strtr()` 未覆盖所有危险字符）
+  - 整合全主题 15+ 处分散的转义逻辑至统一函数，消除兼容性隐患
 
 ### ⚠️ 重要变更
 - **评论系统简化**：出于兼容性和稳定性考虑，移除了复杂的嵌套评论功能。现采用扁平化评论结构，所有评论按时间顺序显示。此调整：
